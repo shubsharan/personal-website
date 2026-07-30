@@ -367,8 +367,7 @@
 	margin-inline: auto;
 	width: 100%;
 	/* ~70 characters of EB Garamond at 20px. */
-	max-width: 39rem;
-	padding-inline: 1.5rem;
+	max-width: 48rem;
 }
 
 /*
