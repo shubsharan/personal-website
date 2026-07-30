@@ -8,6 +8,8 @@
 import {
 	CONTRASTS,
 	DEFAULTS,
+	FIELD_SCATTER,
+	HALO,
 	RESOLUTIONS,
 	SPEEDS,
 	indexOfKey,
@@ -27,8 +29,14 @@ type SceneDeps = {
 	variants: Record<string, () => Promise<Frameset>>;
 };
 
-const NO_MASKS: TitleMasks = { titleMask: null, titleFine: null };
-const NO_PALETTE: PaletteSnapshot = { palette: [], bgColor: '', titleColor: '' };
+const NO_MASKS: TitleMasks = { titleMask: null, fine: null, letters: null };
+const NO_PALETTE: PaletteSnapshot = {
+	palette: [],
+	bgColor: '',
+	titleColor: '',
+	haloColor: '',
+	haloFade: '',
+};
 
 export async function createAsciiScene(root: HTMLElement, { loadDefault, variants }: SceneDeps) {
 	const canvas = root.querySelector<HTMLCanvasElement>('[data-ascii-canvas]');
@@ -53,6 +61,9 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	// it tracking further theme changes.
 	const state: SceneState = { ...DEFAULTS, invert: !isDarkTheme() };
 	let invertUserSet = false;
+	// Light mode paints thin ink on paper; embolden the field so it doesn't read
+	// faint. Tracks the applied theme (not the manual invert) so it stays precise.
+	let lightMode = !isDarkTheme();
 
 	let active: Frameset = defaultData;
 	// The pack alphabet is identical across resolution variants, so one LUT serves.
@@ -60,6 +71,13 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	let index = 0;
 	let masks: TitleMasks = NO_MASKS;
 	let snapshot: PaletteSnapshot = NO_PALETTE;
+
+	// The pointer `halo` lives in CSS px and drives the magenta tint + field shove.
+	const halo = { x: 0, y: 0, radius: 0, on: false };
+	// Eased 0..1 intensity of the pointer effect (glow + field scatter), so it
+	// fades in on enter and flows back out on leave rather than snapping.
+	let warp = 0;
+	let currentFrame = defaultData.frames[0] ?? '';
 
 	const paletteReader = createPaletteReader(title);
 	const carver = createTitleCarver({ canvas, title, rasterCanvas, rasterCtx });
@@ -70,10 +88,23 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	};
 	const rebuildMask = () => {
 		masks = carver.rebuild(active);
+		halo.radius = canvas.clientHeight * HALO.radius;
 	};
 
-	const paint = (frame: string) =>
-		renderer.render(frame, { active, state, lut, masks, ...snapshot });
+	const paint = (frame: string) => {
+		currentFrame = frame;
+		renderer.render(frame, {
+			active,
+			state,
+			lut,
+			masks,
+			// Position persists through the ease-out; `warp` gates the effect on.
+			halo,
+			fieldWarp: warp,
+			boldField: lightMode,
+			...snapshot,
+		});
+	};
 	const repaint = () => paint(active.frames[index] ?? active.frames[0]);
 
 	const animator = createAnimator({
@@ -88,6 +119,60 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	const repaintIfPaused = () => {
 		if (!animator.playing) repaint();
 	};
+
+	// ---- Pointer effect ---------------------------------------------------
+	// A single eased `warp` scalar drives the magenta glow and the field scatter
+	// (the actual displacement is analytic, in the renderer). This loop just eases
+	// `warp` toward on/off and repaints on its own rAF at display rate — smoother
+	// than the field's slower playback fps — until the cursor leaves and it lands
+	// back at zero, when painting is handed back to the field's own loop.
+	let physHandle = 0;
+	let physRunning = false;
+	let lastT = 0;
+
+	const stepPhysics = (t: number) => {
+		physHandle = requestAnimationFrame(stepPhysics);
+		const dt = lastT ? Math.min((t - lastT) / 1000, 1 / 30) : 1 / 60;
+		lastT = t;
+		// Ease the warp toward on/off (faster in than out).
+		const target = halo.on ? 1 : 0;
+		const rate = target > warp ? FIELD_SCATTER.ease.in : FIELD_SCATTER.ease.out;
+		warp += (target - warp) * Math.min(1, dt * rate);
+		if (Math.abs(target - warp) < 0.001) warp = target;
+		paint(currentFrame);
+		// Once the cursor is gone and the warp has settled, stop and let the field's
+		// own loop take over.
+		if (!halo.on && warp === 0) {
+			physRunning = false;
+			cancelAnimationFrame(physHandle);
+		}
+	};
+
+	const startPhysics = () => {
+		if (physRunning || reducedMotion.matches) return;
+		physRunning = true;
+		lastT = 0;
+		physHandle = requestAnimationFrame(stepPhysics);
+	};
+
+	const setHalo = (e: PointerEvent) => {
+		if (reducedMotion.matches) return;
+		const rect = canvas.getBoundingClientRect();
+		halo.x = e.clientX - rect.left;
+		halo.y = e.clientY - rect.top;
+		halo.radius = canvas.clientHeight * HALO.radius;
+		halo.on = true;
+		startPhysics();
+	};
+	const clearHalo = () => {
+		halo.on = false;
+		startPhysics(); // let the effect ease back out
+	};
+	canvas.addEventListener('pointerenter', setHalo);
+	canvas.addEventListener('pointermove', setHalo);
+	canvas.addEventListener('pointerleave', clearHalo);
+	canvas.addEventListener('pointercancel', clearHalo);
+	window.addEventListener('pagehide', () => cancelAnimationFrame(physHandle), { once: true });
 
 	// ---- Controls ---------------------------------------------------------
 	cycleControl(controls.querySelector<HTMLButtonElement>('[data-detail]'), {
@@ -158,8 +243,9 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	// OS media query and the header's data-theme toggle, since either can flip the
 	// applied theme (and the toggle wins).
 	const onThemeChange = () => {
+		lightMode = !isDarkTheme();
 		if (!invertUserSet) {
-			state.invert = !isDarkTheme();
+			state.invert = lightMode;
 			invertToggle?.set(state.invert);
 		}
 		readPalette();
@@ -174,7 +260,14 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 		rebuildMask();
 		repaintIfPaused();
 	}).observe(root);
-	reducedMotion.addEventListener('change', (e) => (e.matches ? animator.pause() : animator.play()));
+	reducedMotion.addEventListener('change', (e) => {
+		if (e.matches) {
+			halo.on = false; // drop the pointer effect; physics settles on its own
+			animator.pause();
+		} else {
+			animator.play();
+		}
+	});
 
 	// ---- Boot -------------------------------------------------------------
 	// Give the static-label buttons (color / style / invert) a hover tooltip too;

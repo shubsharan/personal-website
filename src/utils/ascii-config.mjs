@@ -95,6 +95,39 @@ export const CONTRASTS = [
 ];
 
 /*
+ * The pointer halo: a soft magenta glow that tints whatever ASCII sits under the
+ * cursor, tracking it while it's over the band. `token` is the Flexoki color it
+ * borrows; `radius` is the glow's reach as a fraction of the band's height;
+ * `strength` is the tint's opacity at the very center (fading to 0 at the edge).
+ */
+export const HALO = {
+	token: '--bl',
+	radius: 0.1,
+	strength: .5,
+};
+
+/*
+ * The field scatter: the animated ASCII behind the title parts around the
+ * cursor. Unlike the title's per-letter springs, this is an analytic radial
+ * shove (too many cells for per-cell physics) — each cell within reach is pushed
+ * straight out, tapering to zero at the edge, with a little per-cell jitter so it
+ * reads as scattered rather than a smooth lens. A single `warp` scalar eases the
+ * whole thing in and out, so the field flows back when the cursor leaves.
+ *
+ *   - `influence`: reach as a multiple of the halo radius.
+ *   - `strength`:  peak outward shift at the cursor, as a fraction of the halo
+ *                  radius (tapering to 0 at the influence edge).
+ *   - `jitter`:    per-cell random variation in the shift (0 = uniform push).
+ *   - `ease`:      approach rates (per second) for the warp fading in / out.
+ */
+export const FIELD_SCATTER = {
+	influence: 1,
+	strength: 0.4,
+	jitter: 0.5,
+	ease: { in: 16, out: 6 },
+};
+
+/*
  * Initial settings. The one place both the markup (which control starts pressed)
  * and the script (initial render state) read from, so they can't disagree.
  *

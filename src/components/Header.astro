@@ -1,17 +1,23 @@
 ---
-import { NAV, SITE_TITLE } from '../consts';
+import { NAV } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 import ThemeToggle from './ThemeToggle.astro';
 ---
 
 <header>
-	<nav class="font-sans shell flex items-baseline justify-between gap-8 py-4">
-		<!-- The wordmark is the home link; a separate "Home" item would be noise. -->
+	<nav class="font-sans shell flex items-center justify-between gap-8 py-4">
+		<!-- The mark + wordmark are the home link; a separate "Home" item would be noise. -->
 		<a
 			href="/"
-			class="text-[1.15rem] leading-none text-tx no-underline"
+			class="flex items-center gap-2.5 text-[1.15rem] leading-none text-tx no-underline"
 		>
-			{SITE_TITLE}
+			<img
+				src="/logo.svg"
+				alt=""
+				width="18"
+				height="24"
+				class="h-6 w-auto"
+			/>
 		</a>
 		<div class="flex items-baseline gap-6">
 			{NAV.map((item) => <HeaderLink href={item.href}>{item.label}</HeaderLink>)}

@@ -21,18 +21,33 @@ export type SceneState = {
 	fps: number;
 };
 
-/** A fine title grid: `solid` = the letters, `outline` = a bg ring around them. */
-export type TitleFine = {
+/**
+ * One title letter as its own little ASCII bitmap, positioned on the shared fine
+ * grid so letters can be displaced independently (the pointer scatter) yet still
+ * line up as one word at rest. `solid`/`outline` are row-major 0/1 masks over a
+ * `cols`×`rows` box (the glyph itself, and a dilated ring for legibility); the
+ * renderer maps them to the current ramp glyph so the title still follows the
+ * style control. `col`/`row` place the box's top-left on the fine grid; `cx`/`cy`
+ * are its home center in CSS px, which the spring physics pushes from and returns
+ * to.
+ */
+export type TitleLetter = {
 	solid: Uint8Array;
 	outline: Uint8Array;
 	cols: number;
 	rows: number;
+	col: number;
+	row: number;
+	cx: number;
+	cy: number;
 };
 
-/** The two grids the renderer needs to carve the heading into the field. */
+/** The data the renderer needs to carve the heading into the field. */
 export type TitleMasks = {
 	/** Coarse mask on the animation grid: 1 = blank this cell (title sits here). */
 	titleMask: Uint8Array | null;
-	/** The title's own fine grid, drawn crisply on top. */
-	titleFine: TitleFine | null;
+	/** The fine grid's dimensions, so the renderer can size the title font/cells. */
+	fine: { cols: number; rows: number } | null;
+	/** Per-letter bitmaps, drawn crisply on top and displaced by the physics. */
+	letters: TitleLetter[] | null;
 };

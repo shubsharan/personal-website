@@ -25,3 +25,8 @@ pnpm-debug.log*
 
 # Source clip for ASCII encode (not published — derived JSON is committed)
 /media/
+
+
+# Cursor
+.cursorrules
+.cursor/hooks/*
