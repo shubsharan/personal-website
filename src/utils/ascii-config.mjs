@@ -24,10 +24,8 @@ export const TITLE_OUTLINE_RADIUS = 2; // bg-colored ring drawn around the lette
  */
 export const RAMPS = {
 	classic: ' .:-=+*#%@',
-	blocks: ' ░▒▓█',
 	dots: ' .·•●',
 	round: ' .oO@',
-	minimal: ' .+#',
 	dense: ' .:-=+*abcdnuvoxIJCLQ0OZ#MW&8%B@$',
 };
 
@@ -41,10 +39,8 @@ export const POSTER_RAMP = RAMPS.classic;
 export const RAMP_ORDER = [
 	{ key: 'dense', label: 'Dense', sample: '*8@$' },
 	{ key: 'classic', label: 'Classic', sample: '.:+#' },
-	{ key: 'blocks', label: 'Blocks', sample: '░▒▓█' },
 	{ key: 'dots', label: 'Dots', sample: '.·•●' },
 	{ key: 'round', label: 'Round', sample: '.oO@' },
-	{ key: 'minimal', label: 'Minimal', sample: '.+#' },
 ];
 
 /*
@@ -53,20 +49,22 @@ export const RAMP_ORDER = [
  * Tailwind class (never interpolated, so Tailwind's scanner sees it).
  */
 export const COLORS = [
-	{ key: 'full', label: 'Full color', dot: 'before:bg-[conic-gradient(var(--or),var(--cy),var(--bl),var(--or))]' },
-	{ key: 'ink', label: 'Ink', dot: 'before:bg-tx' },
-	{ key: 'or', label: 'Orange', dot: 'before:bg-or' },
-	{ key: 'bl', label: 'Blue', dot: 'before:bg-bl' },
-	{ key: 'cy', label: 'Green', dot: 'before:bg-cy' },
+	{ key: 'full', label: 'Color', dot: 'before:bg-[conic-gradient(var(--or),var(--cy),var(--bl),var(--or))]' },
+	// `ink` forces the single default-ink bucket — black on paper / white on black.
+	{ key: 'ink', label: 'BW', dot: 'before:bg-tx' },
+	// `tone` colors each cell by its own brightness (cool shadows -> warm
+	// highlights) rather than its baked hue; the swatch previews that ramp.
+	{ key: 'tone', label: 'Tone', dot: 'before:bg-[linear-gradient(var(--bl),var(--tx),var(--or))]' },
 ];
 
 /*
- * Single-color mode -> palette index. Derived from COLORS (minus `full`) so it
- * lines up with the frameset's palette order (['--tx','--or','--bl','--cy']):
- * ink->0, or->1, bl->2, cy->3.
+ * Single-color mode -> palette index. `full` and `tone` color per cell, so they
+ * are excluded; the remaining single-bucket modes line up with the frameset's
+ * palette order (['--tx','--or','--bl','--cy']). Currently just `ink` -> 0.
  */
+export const PER_CELL_COLORS = ['full', 'tone'];
 export const SINGLE = Object.fromEntries(
-	COLORS.filter((c) => c.key !== 'full').map((c, i) => [c.key, i]),
+	COLORS.filter((c) => !PER_CELL_COLORS.includes(c.key)).map((c, i) => [c.key, i]),
 );
 
 /*

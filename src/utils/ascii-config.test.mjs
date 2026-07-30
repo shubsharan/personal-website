@@ -4,6 +4,7 @@ import {
 	COLORS,
 	CONTRASTS,
 	DEFAULTS,
+	PER_CELL_COLORS,
 	RAMPS,
 	RAMP_ORDER,
 	RESOLUTIONS,
@@ -22,12 +23,15 @@ test('every ramp toggle shown has a real ramp behind it', () => {
 	}
 });
 
-test('single-color modes map 1:1 onto palette indices 0..3', () => {
-	const singles = COLORS.filter((c) => c.key !== 'full');
+test('single-color modes map onto contiguous palette indices from 0', () => {
+	const singles = COLORS.filter((c) => !PER_CELL_COLORS.includes(c.key));
 	const indices = singles.map((c) => SINGLE[c.key]);
-	assert.deepEqual(indices, [0, 1, 2, 3]);
-	// `full` is not a single-color bucket.
-	assert.equal(SINGLE.full, undefined);
+	assert.deepEqual(
+		indices,
+		singles.map((_, i) => i),
+	);
+	// Per-cell modes (full / tone) are not single-color buckets.
+	for (const key of PER_CELL_COLORS) assert.equal(SINGLE[key], undefined);
 });
 
 test('DEFAULTS resolve to real ramp / color / resolution entries', () => {

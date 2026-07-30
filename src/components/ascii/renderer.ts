@@ -13,6 +13,16 @@ import type { Frameset, SceneState, TitleLetter, TitleMasks } from './types';
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
 
+// `tone` color mode: pick the palette bucket from the cell's own scene luminance
+// (0..1, computed before invert so it's stable across themes) instead of its
+// baked hue — cool shadows, ink midtones, warm highlights. Palette order is
+// [0 --tx, 1 --or, 2 --bl, 3 --cy]; thresholds are tuned by eye.
+const TONE_LOW = 0.34;
+const TONE_HIGH = 0.62;
+function toneBucket(lum: number): number {
+	return lum < TONE_LOW ? 2 : lum < TONE_HIGH ? 0 : 1;
+}
+
 /** Stable per-cell pseudo-random in [0,1) — so a cell always jitters the same way. */
 function hash(x: number, y: number): number {
 	let h = (x * 374761393 + y * 668265263) | 0;
@@ -68,9 +78,11 @@ export function createRenderer(canvas: HTMLCanvasElement, ctx: CanvasRenderingCo
 		const ramp = RAMPS[state.ramp] ?? RAMPS.classic;
 		const rampMax = ramp.length - 1;
 		const { contrast, invert } = state;
-		const full = state.color === 'full';
-		const buckets = full ? 4 : 1;
-		const single = full ? 0 : (SINGLE[state.color] ?? 0);
+		// `full` and `tone` both color per cell (4 buckets); the rest force one.
+		const tone = state.color === 'tone';
+		const perCell = state.color === 'full' || tone;
+		const buckets = perCell ? 4 : 1;
+		const single = perCell ? 0 : (SINGLE[state.color] ?? 0);
 
 		const fontPx = cssW / (cols * CHAR_W);
 		const cellW = cssW / cols;
@@ -81,6 +93,14 @@ export function createRenderer(canvas: HTMLCanvasElement, ctx: CanvasRenderingCo
 		// for a heavier stroke than a mono font's own glyphs — enough to shake the
 		// faded look on paper without the mass a full 700 weight makes.
 		const boldOffset = boldField ? fontPx * 0.045 : 0;
+
+		// Figure-ground shadow (light mode): a faint offset backing behind the field
+		// so each glyph lifts off the paper instead of blending into it. Drawn per
+		// row, once, under the colored passes. Off in dark mode (glyphs glow already).
+		const shadowAlpha = boldField ? 0.3 : 0;
+		const shadowColor = palette[0] || bgColor;
+		const shadowDx = fontPx * 0.09;
+		const shadowDy = fontPx * 0.09;
 
 		// Field scatter: cells within reach of the cursor are lifted out of the
 		// batched rows and drawn individually, shoved radially outward (eased by
@@ -96,20 +116,26 @@ export function createRenderer(canvas: HTMLCanvasElement, ctx: CanvasRenderingCo
 
 		for (let y = 0; y < rows; y++) {
 			const lines: string[] = new Array(buckets).fill('');
+			// One combined row of every batched glyph (any bucket), for the shadow.
+			let shadowLine = '';
 			const base = y * cols;
 			for (let x = 0; x < cols; x++) {
 				if (titleMask && titleMask[base + x]) {
 					// Under the title: clear the coarse animation glyph.
 					for (let k = 0; k < buckets; k++) lines[k] += ' ';
+					shadowLine += ' ';
 					continue;
 				}
 				const code = lut[frame.charCodeAt(base + x)];
 				const color = code & 3;
-				let v = (code >> 2) / 15;
+				const lum = (code >> 2) / 15;
+				let v = lum;
 				if (invert) v = 1 - v;
 				v = (v - 0.5) * contrast + 0.5;
 				v = v < 0 ? 0 : v > 1 ? 1 : v;
 				const glyph = ramp[Math.round(v * rampMax)];
+				// In tone mode the bucket comes from luminance, not the baked hue.
+				const bucket = perCell ? (tone ? toneBucket(lum) : color) : 0;
 
 				if (scatter) {
 					const dx = (x + 0.5) * cellW - halo!.x;
@@ -122,20 +148,29 @@ export function createRenderer(canvas: HTMLCanvasElement, ctx: CanvasRenderingCo
 						const uy = dy / d;
 						const mag = shove * fall * (1 + (hash(x, y) - 0.5) * jitter);
 						const tan = shove * fall * (hash(x + 101, y + 53) - 0.5) * jitter;
-						const idx = full ? color : single;
+						const idx = perCell ? bucket : single;
 						dPos[idx].push(x * cellW + ux * mag - uy * tan, y * lineH + uy * mag + ux * tan);
 						dGlyph[idx].push(glyph);
 						for (let k = 0; k < buckets; k++) lines[k] += ' ';
+						shadowLine += ' '; // scattered cells move; no static shadow
 						continue;
 					}
 				}
 
-				const bucket = full ? color : 0;
 				for (let k = 0; k < buckets; k++) lines[k] += k === bucket ? glyph : ' ';
+				shadowLine += glyph;
+			}
+			// Shadow first (under the colored glyphs), then the color passes on top.
+			if (shadowAlpha && shadowLine.trim().length > 0) {
+				ctx.save();
+				ctx.globalAlpha = shadowAlpha;
+				ctx.fillStyle = shadowColor;
+				ctx.fillText(shadowLine, shadowDx, y * lineH + shadowDy);
+				ctx.restore();
 			}
 			for (let k = 0; k < buckets; k++) {
 				if (lines[k].trim().length === 0) continue;
-				ctx.fillStyle = full ? palette[k] : palette[single];
+				ctx.fillStyle = perCell ? palette[k] : palette[single];
 				ctx.fillText(lines[k], 0, y * lineH);
 				if (boldOffset) ctx.fillText(lines[k], boldOffset, y * lineH);
 			}
