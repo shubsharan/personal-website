@@ -4,13 +4,13 @@
  * on the left, and a right-aligned toolbar of grouped icon toggles (detail,
  * color, style, contrast, speed, invert) separated by vertical dividers.
  * Presentational only — the behaviour lives in the scene composed by
- * ./ascii/scene.ts, which finds the toolbar and its buttons by their data-*
+ * ./scene.ts, which finds the toolbar and its buttons by their data-*
  * hooks and wires them to the renderer. The toolbar is hidden until that script
  * enables it, so the interactive icons never show without JS; the credit link
  * always shows.
  *
  * The color and style groups are generated from the SAME definitions the script
- * wires (COLORS / RAMP_ORDER in ../utils/ascii-config.mjs), and their initial
+ * wires (COLORS / RAMP_ORDER in ./config.mjs), and their initial
  * pressed state comes from DEFAULTS — so the highlighted control can never drift
  * from what actually renders.
  *
@@ -18,7 +18,7 @@
  * type via Preflight; each toggle dims by default (text-tx-3) and lights on
  * hover / when active (aria-pressed). Repeated patterns are hoisted to consts.
  */
-import { COLORS, DEFAULTS, RAMP_ORDER } from '../utils/ascii-config.mjs';
+import { COLORS, DEFAULTS, RAMP_ORDER } from './config.mjs';
 
 // Base reset shared by every toggle; most also dim -> lit on hover / active.
 const btn = 'cursor-pointer border-0 bg-transparent p-0 transition-colors';

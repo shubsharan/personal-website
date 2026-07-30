@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildLut, densestFrame, posterText } from './ascii-frames.mjs';
+import { buildLut, densestFrame, posterText } from './frames.mjs';
 
 // A tiny stand-in pack alphabet: index i encodes level = i >> 2, color = i & 3.
 const PACK = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';

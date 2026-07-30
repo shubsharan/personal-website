@@ -11,11 +11,11 @@
  * truth for what the reader sees. Within each line, letters are split into their
  * own little ASCII bitmaps (positioned on a shared fine grid) so the pointer
  * scatter can displace each one independently while they still line up as one
- * word at rest. The pixel->cell sampling is pure and tested in ascii-carve.mjs;
+ * word at rest. The pixel->cell sampling is pure and tested in carve.mjs;
  * this factory is the DOM half that produces the alpha raster.
  */
 import { layoutWithLines, prepareWithSegments } from '@chenglou/pretext';
-import { coverageMask, dilateMask } from '../../utils/ascii-carve.mjs';
+import { coverageMask, dilateMask } from './carve.mjs';
 import {
 	CARVE_HALO,
 	CARVE_THRESHOLD,
@@ -23,7 +23,7 @@ import {
 	TITLE_CELL_PX,
 	TITLE_FINE_FLOOR,
 	TITLE_OUTLINE_RADIUS,
-} from '../../utils/ascii-config.mjs';
+} from './config.mjs';
 import type { Frameset, TitleLetter, TitleMasks } from './types';
 
 type CarverDeps = {

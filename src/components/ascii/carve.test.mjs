@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { boxBlur, coverageLevels, coverageMask, dilateMask } from './ascii-carve.mjs';
+import { boxBlur, coverageLevels, coverageMask, dilateMask } from './carve.mjs';
 
 /** Count set cells in a mask. */
 const count = (m) => m.reduce((n, v) => n + v, 0);

@@ -11,7 +11,7 @@ import {
 	SINGLE,
 	SPEEDS,
 	indexOfKey,
-} from './ascii-config.mjs';
+} from './config.mjs';
 
 // These tests replace the manual "keep the two files in sync" burden: they fail
 // loudly if a toggle in the toolbar has no backing behavior, or if an initial

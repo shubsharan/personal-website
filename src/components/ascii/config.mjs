@@ -11,7 +11,7 @@
 /** Width of a monospace cell as a fraction of its height. Sizes the canvas font. */
 export const CHAR_W = 0.6;
 
-/* ---- Carved-title geometry (see ascii-carve.mjs for the sampling) --------- */
+/* ---- Carved-title geometry (see carve.mjs for the sampling) --------- */
 export const TITLE_CELL_PX = 3; // fine title cell size (px); smaller = crisper letters
 export const TITLE_FINE_FLOOR = 0.5; // fraction of a fine cell that must be ink (0..1)
 export const CARVE_THRESHOLD = 0.9; // coverage a coarse cell needs before the field clears
@@ -49,12 +49,12 @@ export const RAMP_ORDER = [
  * Tailwind class (never interpolated, so Tailwind's scanner sees it).
  */
 export const COLORS = [
+	// `tone` colors each cell by its own brightness (cool shadows -> warm
+	// highlights) rather than its baked hue; the swatch previews that ramp. Default.
+	{ key: 'tone', label: 'Tone', dot: 'before:bg-[linear-gradient(var(--bl),var(--tx),var(--or))]' },
 	{ key: 'full', label: 'Color', dot: 'before:bg-[conic-gradient(var(--or),var(--cy),var(--bl),var(--or))]' },
 	// `ink` forces the single default-ink bucket — black on paper / white on black.
 	{ key: 'ink', label: 'BW', dot: 'before:bg-tx' },
-	// `tone` colors each cell by its own brightness (cool shadows -> warm
-	// highlights) rather than its baked hue; the swatch previews that ramp.
-	{ key: 'tone', label: 'Tone', dot: 'before:bg-[linear-gradient(var(--bl),var(--tx),var(--or))]' },
 ];
 
 /*
@@ -135,7 +135,7 @@ export const FIELD_SCATTER = {
  */
 export const DEFAULTS = {
 	res: 'fine',
-	color: 'full',
+	color: 'tone',
 	ramp: 'dense',
 	contrast: 1,
 	fps: 12,

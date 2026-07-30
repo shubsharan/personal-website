@@ -10,7 +10,7 @@
     "build": "astro build && node scripts/precompress.mjs",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node --test scripts/*.test.mjs src/utils/*.test.mjs",
+    "test": "node --test scripts/*.test.mjs src/components/ascii/*.test.mjs",
     "ascii:encode": "npm run ascii:encode:coarse && npm run ascii:encode:default && npm run ascii:encode:fine",
     "ascii:encode:coarse": "node scripts/ascii-encode.mjs media/apollo-13-workbench.mp4 --crop 640:262:0:10 --cols 120 --rows 30 --color --out src/assets/apollo-ascii-coarse.json",
     "ascii:encode:default": "node scripts/ascii-encode.mjs media/apollo-13-workbench.mp4 --crop 640:262:0:10 --cols 180 --rows 45 --color --out src/assets/apollo-ascii.json",

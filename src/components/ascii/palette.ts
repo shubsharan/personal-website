@@ -1,10 +1,10 @@
 /*
  * Resolves the Flexoki palette (and background / title colors) from CSS custom
- * properties at render time, so the canvas follows the site's light/dark theme
- * and any color class on the heading. DOM-bound; re-read on theme change.
+ * properties at render time. Read from an element *inside* the band, which is
+ * pinned to the dark palette via data-theme="dark" — so the band stays a dark
+ * panel regardless of the site theme. DOM-bound; re-read on resize / detail.
  */
-import { HALO } from '../../utils/ascii-config.mjs';
-import { isDarkTheme } from './theme';
+import { HALO } from './config.mjs';
 import type { Frameset } from './types';
 
 export type PaletteSnapshot = {
@@ -16,12 +16,6 @@ export type PaletteSnapshot = {
 	haloColor: string;
 	haloFade: string;
 };
-
-// In light mode the warm/cool buckets are thin ink on paper, where the standard
-// accents read as faded; the band uses darker, higher-contrast shades instead
-// (defined in global.css). Light mode ONLY — dark mode reads well on black, and
-// these tokens are undefined there so the map falls through to the token itself.
-const BAND_ACCENT: Record<string, string> = { '--or': '--ascii-or', '--bl': '--ascii-bl' };
 
 /** Parse a resolved CSS color (hex or rgb/rgba) to [r,g,b]; magenta-400 fallback. */
 function toRgb(color: string): [number, number, number] {
@@ -37,16 +31,12 @@ function toRgb(color: string): [number, number, number] {
 	return [206, 93, 151];
 }
 
-export function createPaletteReader(title: HTMLElement | null) {
+export function createPaletteReader(title: HTMLElement | null, scope: HTMLElement) {
 	return {
 		read(active: Frameset): PaletteSnapshot {
-			const styles = getComputedStyle(document.documentElement);
-			const lightMode = !isDarkTheme();
-			const palette = active.palette.map(
-				(token) =>
-					styles.getPropertyValue((lightMode && BAND_ACCENT[token]) || token).trim() ||
-					styles.getPropertyValue(token).trim(),
-			);
+			// Read from inside the band so the pinned dark tokens win over the site theme.
+			const styles = getComputedStyle(scope);
+			const palette = active.palette.map((token) => styles.getPropertyValue(token).trim());
 			const bgColor = styles.getPropertyValue('--bg').trim();
 			// Read the heading's own resolved color rather than a hardcoded variable,
 			// so whatever color class is on the <h2> is the single source of truth for

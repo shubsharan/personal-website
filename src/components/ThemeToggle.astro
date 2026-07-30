@@ -1,11 +1,11 @@
 ---
 /*
- * Light/dark toggle. Icon visibility is pure CSS, keyed off data-theme —
- * dark is the site default (see global.css), so the moon shows unless
- * data-theme='light' is set. No JS needed just to show the right icon
- * before hydration. The click handler flips data-theme on <html> and
- * persists the choice; the inline script in BaseHead applies a stored
- * 'light' choice before first paint so there's no flash of the wrong theme.
+ * Light/dark toggle. Icon visibility is pure CSS, keyed off data-theme and the
+ * system preference — the site follows the system by default (see global.css),
+ * so the moon shows in system-dark and the sun in system-light, unless an
+ * explicit data-theme pins a choice. No JS needed to show the right icon before
+ * hydration. The click handler flips data-theme on <html> and persists it; the
+ * inline script in BaseHead re-applies a stored choice before first paint.
  */
 ---
 
@@ -38,25 +38,41 @@
 </button>
 
 <style>
-	/* Default (no data-theme set, or explicitly 'dark'): moon shows. */
+	/* Default icon is the moon (dark). Shown for system-dark and explicit dark. */
 	[data-icon='sun'] {
 		display: none;
 	}
 
-	/* Manual override to light flips both icons. */
+	/* Show the sun whenever LIGHT is the active theme: an explicit light choice… */
 	:global(:root[data-theme='light']) [data-icon='sun'] {
 		display: block;
 	}
 	:global(:root[data-theme='light']) [data-icon='moon'] {
 		display: none;
 	}
+
+	/* …or the system is light and no explicit choice is pinned. */
+	@media (prefers-color-scheme: light) {
+		:global(:root:not([data-theme])) [data-icon='sun'] {
+			display: block;
+		}
+		:global(:root:not([data-theme])) [data-icon='moon'] {
+			display: none;
+		}
+	}
 </style>
 
 <script>
 	const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 
+	const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+	// No pinned choice → follow the system; an explicit data-theme wins.
 	function isDark() {
-		return document.documentElement.getAttribute('data-theme') !== 'light';
+		const t = document.documentElement.getAttribute('data-theme');
+		if (t === 'light') return false;
+		if (t === 'dark') return true;
+		return systemDark.matches;
 	}
 
 	function syncPressed() {
@@ -64,6 +80,8 @@
 	}
 
 	syncPressed();
+	// Keep aria-pressed accurate if the OS flips while no explicit choice is set.
+	systemDark.addEventListener('change', syncPressed);
 
 	button?.addEventListener('click', () => {
 		const next = isDark() ? 'light' : 'dark';

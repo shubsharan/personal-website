@@ -8,7 +8,7 @@
  * can scatter away from the pointer. Finally, a soft magenta halo tints whatever
  * sits under the cursor.
  */
-import { CHAR_W, FIELD_SCATTER, RAMPS, SINGLE } from '../../utils/ascii-config.mjs';
+import { CHAR_W, FIELD_SCATTER, RAMPS, SINGLE } from './config.mjs';
 import type { Frameset, SceneState, TitleLetter, TitleMasks } from './types';
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';

@@ -6,7 +6,7 @@
 <circle cx="100" cy="36" r="4" fill="white" fill-opacity="0.9"/>
 <circle cx="76" cy="36" r="4" fill="white" fill-opacity="0.9"/>
 <circle cx="88" cy="216" r="24" fill="#0A0A0A"/>
-<circle cx="88" cy="216" r="16" fill="#1F2D5C" fill-opacity="0.75"/>
+<circle cx="88" cy="216" r="16" fill="#1737A0" fill-opacity="0.75"/>
 <circle cx="76" cy="204" r="4" fill="white" fill-opacity="0.9"/>
 <circle cx="100" cy="204" r="4" fill="white" fill-opacity="0.9"/>
 <circle cx="100" cy="228" r="4" fill="white" fill-opacity="0.9"/>
@@ -36,7 +36,7 @@
 <circle cx="36" cy="132" r="4" fill="white" fill-opacity="0.9"/>
 <circle cx="12" cy="132" r="4" fill="white" fill-opacity="0.9"/>
 <circle cx="24" cy="184" r="24" fill="#0A0A0A"/>
-<circle cx="24" cy="184" r="16" fill="#193B2D" fill-opacity="0.75"/>
+<circle cx="24" cy="184" r="16" fill="#287153" fill-opacity="0.75"/>
 <circle cx="12" cy="172" r="4" fill="white" fill-opacity="0.9"/>
 <circle cx="36" cy="172" r="4" fill="white" fill-opacity="0.9"/>
 <circle cx="36" cy="196" r="4" fill="white" fill-opacity="0.9"/>

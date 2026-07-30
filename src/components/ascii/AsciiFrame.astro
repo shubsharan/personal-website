@@ -13,13 +13,14 @@
  * Decorative + accessible: role="img" with a label, a static poster frame for
  * no-JS / reduced-motion, and controls that are just enhancement.
  *
- * The client behavior lives in ./ascii/* (composed by scene.ts) and the shared,
- * framework-agnostic bits in ../utils/ascii-{config,frames,carve}.mjs.
+ * Everything for the band is colocated in this folder: the client behavior in
+ * the *.ts modules (composed by scene.ts) and the shared, framework-agnostic
+ * bits — used at build time here and in the browser — in {config,frames,carve}.mjs.
  */
 import AsciiControls from './AsciiControls.astro';
-import data from '../assets/apollo-ascii-fine.json';
-import { POSTER_RAMP } from '../utils/ascii-config.mjs';
-import { buildLut, densestFrame, posterText } from '../utils/ascii-frames.mjs';
+import data from '../../assets/apollo-ascii-fine.json';
+import { POSTER_RAMP } from './config.mjs';
+import { buildLut, densestFrame, posterText } from './frames.mjs';
 
 const cols: number = data.cols;
 const rows: number = data.rows;
@@ -35,8 +36,9 @@ const posterLines = posterText(poster, { cols, rows, lut, ramp: POSTER_RAMP });
 	style="animation-delay: 40ms"
 	data-ascii-frame
 >
-	{/* Positioning + inline-size container so the heading can overlay the stage exactly and size itself to the band (cqi below). */}
-	<div class="relative [container-type:inline-size]">
+	{/* Positioning + inline-size container so the heading can overlay the stage exactly and size itself to the band (cqi below).
+	    data-theme="dark" pins the band (and its carved title) to the dark palette regardless of the site theme — the settings bar sits outside it and follows the site. */}
+	<div class="relative [container-type:inline-size]" data-theme="dark">
 		<div
 			class="relative aspect-[64/27] overflow-hidden border-y border-ui bg-[radial-gradient(circle_at_50%_45%,var(--bg-2),var(--bg)_72%)]"
 			role="img"
@@ -66,8 +68,8 @@ const posterLines = posterText(poster, { cols, rows, lut, ramp: POSTER_RAMP });
 </figure>
 
 <script>
-	import { createAsciiScene } from './ascii/scene';
-	import { loadDefault, VARIANTS } from './ascii/framesets';
+	import { createAsciiScene } from './scene';
+	import { loadDefault, VARIANTS } from './framesets';
 
 	document
 		.querySelectorAll<HTMLElement>('[data-ascii-frame]')

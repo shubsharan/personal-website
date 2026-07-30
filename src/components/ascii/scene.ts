@@ -3,7 +3,7 @@
  * and current frame index, wires the factories together (palette, title carver,
  * renderer, animator) and the settings-bar controls, and handles boot, resize,
  * theme, reduced-motion, and webfont settling. Everything DOM- or state-bound
- * lives here; the pure math is in ../../utils/ascii-{config,frames,carve}.mjs.
+ * lives here; the pure math is in ./{config,frames,carve}.mjs.
  */
 import {
 	CONTRASTS,
@@ -13,14 +13,13 @@ import {
 	RESOLUTIONS,
 	SPEEDS,
 	indexOfKey,
-} from '../../utils/ascii-config.mjs';
-import { buildLut, densestFrame } from '../../utils/ascii-frames.mjs';
+} from './config.mjs';
+import { buildLut, densestFrame } from './frames.mjs';
 import { createAnimator } from './animator';
 import { cycleControl, groupControl, setLabel, toggleControl } from './controls';
 import { rasterCanvas, rasterCtx } from './framesets';
 import { createPaletteReader, type PaletteSnapshot } from './palette';
 import { createRenderer } from './renderer';
-import { isDarkTheme } from './theme';
 import { createTitleCarver } from './title-carve';
 import type { Frameset, SceneState, TitleMasks } from './types';
 
@@ -52,18 +51,12 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	const title = root.querySelector<HTMLElement>('[data-ascii-title]');
 
 	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-	const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
-	// The renderer leaves dark pixels as empty cells that show the background
-	// through, so the brightness ramp is tied to that background: light glyphs on
-	// black (dark mode) vs. dark ink on paper (light mode). Default invert to the
-	// applied theme (data-theme toggle, else OS); a manual toggle pins it and stops
-	// it tracking further theme changes.
-	const state: SceneState = { ...DEFAULTS, invert: !isDarkTheme() };
-	let invertUserSet = false;
-	// Light mode paints thin ink on paper; embolden the field so it doesn't read
-	// faint. Tracks the applied theme (not the manual invert) so it stays precise.
-	let lightMode = !isDarkTheme();
+	// The band is pinned to the dark palette (data-theme="dark" on its container),
+	// so it always renders as light glyphs on black — no invert, no light-mode
+	// emboldening — regardless of the site theme. The Invert control can still flip
+	// it by hand; it just no longer follows the site.
+	const state: SceneState = { ...DEFAULTS, invert: false };
 
 	let active: Frameset = defaultData;
 	// The pack alphabet is identical across resolution variants, so one LUT serves.
@@ -79,7 +72,7 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	let warp = 0;
 	let currentFrame = defaultData.frames[0] ?? '';
 
-	const paletteReader = createPaletteReader(title);
+	const paletteReader = createPaletteReader(title, canvas);
 	const carver = createTitleCarver({ canvas, title, rasterCanvas, rasterCtx });
 	const renderer = createRenderer(canvas, ctx, fallback);
 
@@ -101,7 +94,7 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 			// Position persists through the ease-out; `warp` gates the effect on.
 			halo,
 			fieldWarp: warp,
-			boldField: lightMode,
+			boldField: false,
 			...snapshot,
 		});
 	};
@@ -227,35 +220,18 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 		},
 	});
 
-	const invertToggle = toggleControl(
+	toggleControl(
 		controls.querySelector<HTMLButtonElement>('[data-invert]'),
 		state.invert,
 		(on) => {
 			state.invert = on;
-			invertUserSet = true; // pin it; stop auto-tracking the OS theme
 			repaintIfPaused();
 		},
 	);
 
 	// ---- Reactivity -------------------------------------------------------
-	// Keep the ink/background relationship correct across a live theme switch —
-	// unless the user has taken manual control of the invert. Fires for both the
-	// OS media query and the header's data-theme toggle, since either can flip the
-	// applied theme (and the toggle wins).
-	const onThemeChange = () => {
-		lightMode = !isDarkTheme();
-		if (!invertUserSet) {
-			state.invert = lightMode;
-			invertToggle?.set(state.invert);
-		}
-		readPalette();
-		repaint();
-	};
-	darkScheme.addEventListener('change', onThemeChange);
-	new MutationObserver(onThemeChange).observe(document.documentElement, {
-		attributes: true,
-		attributeFilter: ['data-theme'],
-	});
+	// The band's palette is pinned dark via CSS, so it doesn't react to the site
+	// theme at all — no theme listener here. It only re-measures on resize.
 	new ResizeObserver(() => {
 		rebuildMask();
 		repaintIfPaused();
