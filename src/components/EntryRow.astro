@@ -1,0 +1,44 @@
+---
+/*
+ * One row of an index. The left rail carries the time — a span for projects, a
+ * date for writing — and the right column carries the label, title, and line.
+ * Both indexes use this so the two lists read as one ledger.
+ */
+import type { PROJECT_STATUS } from '../consts';
+import StatusMark from './StatusMark.astro';
+
+interface Props {
+	href: string;
+	/** Left rail: "2024–now" for a project, "Mar 2026" for a post. */
+	rail: string;
+	/** Small uppercase label above the title: a status or a kind. */
+	label: string;
+	title: string;
+	description: string;
+	status?: keyof typeof PROJECT_STATUS;
+}
+
+const { href, rail, label, title, description, status } = Astro.props;
+---
+
+<li class="border-t border-ui">
+	<a
+		href={href}
+		class="group grid gap-x-8 gap-y-1.5 py-7 no-underline md:grid-cols-[7rem_1fr]"
+	>
+		<span class="label pt-[0.6em] text-tx-3 max-md:hidden">{rail}</span>
+		<span class="block">
+			<span class="label flex items-center gap-2 text-tx-3">
+				{status && <StatusMark status={status} />}
+				{label}
+				<span class="md:hidden">· {rail}</span>
+			</span>
+			<h2
+				class="mt-2 font-serif text-[1.4rem] leading-[1.25] text-tx transition-colors duration-150 group-hover:text-[var(--accent)]"
+			>
+				{title}
+			</h2>
+			<p class="mt-1.5 text-[0.95em] leading-[1.55] text-tx-2">{description}</p>
+		</span>
+	</a>
+</li>

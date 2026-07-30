@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import EntryRow from '../../components/EntryRow.astro';
+import { PROJECT_STATUS, SITE_TITLE } from '../../consts';
+import Base from '../../layouts/Base.astro';
+import { span } from '../../utils/dates';
+
+// Most recently touched first: anything still active has no end date, so it
+// sorts to the top on its own.
+const projects = (await getCollection('projects', (p) => !p.data.draft)).sort(
+	(a, b) =>
+		(b.data.endDate ?? new Date()).valueOf() -
+		(a.data.endDate ?? new Date()).valueOf(),
+);
+
+const activeCount = projects.filter((p) => p.data.status === 'active').length;
+const description = 'Everything I’ve started, including the ones that ended.';
+---
+
+<Base title={`Projects · ${SITE_TITLE}`} description={description}>
+	<div class="shell">
+		<header class="pt-6 pb-10 max-md:pt-2 max-md:pb-8">
+			<h1 class="font-serif text-[2.1rem] leading-[1.15] max-md:text-[1.75rem]">
+				Projects
+			</h1>
+			<p class="mt-3 text-tx-2">{description}</p>
+			{
+				projects.length > 0 && (
+					<p class="label mt-5 text-tx-3">
+						{projects.length} total · {activeCount} active
+					</p>
+				)
+			}
+		</header>
+
+		{
+			projects.length > 0 ? (
+				<ul>
+					{projects.map((project) => (
+						<EntryRow
+							href={`/projects/${project.id}/`}
+							rail={span(project.data.startDate, project.data.endDate)}
+							label={PROJECT_STATUS[project.data.status].label}
+							status={project.data.status}
+							title={project.data.title}
+							description={project.data.description}
+						/>
+					))}
+				</ul>
+			) : (
+				<p class="border-t border-ui py-7 text-tx-2">
+					Nothing here yet. The first project goes in{' '}
+					<code>src/content/projects/</code>.
+				</p>
+			)
+		}
+	</div>
+</Base>

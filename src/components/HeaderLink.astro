@@ -14,10 +14,10 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 	aria-current={isActive ? 'page' : undefined}
 	class:list={[
 		className,
-		'no-underline transition-colors',
-		isActive
-			? 'text-tx underline decoration-tx decoration-1 underline-offset-[6px]'
-			: 'text-tx-2 hover:text-tx',
+		'label no-underline transition-colors duration-150',
+		// One colour per element — never a base colour plus a conditional one, or
+		// Tailwind's sort order decides the winner instead of this ternary.
+		isActive ? 'text-tx' : 'text-tx-3 hover:text-tx',
 	]}
 	{...props}
 >

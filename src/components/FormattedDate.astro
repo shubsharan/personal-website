@@ -1,17 +1,14 @@
 ---
+import { longDate, monthYear } from '../utils/dates';
+
 interface Props {
 	date: Date;
+	format?: 'long' | 'short';
 }
 
-const { date } = Astro.props;
+const { date, format = 'long' } = Astro.props;
 ---
 
 <time datetime={date.toISOString()}>
-	{
-		date.toLocaleDateString('en-us', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		})
-	}
+	{format === 'short' ? monthYear(date) : longDate(date)}
 </time>

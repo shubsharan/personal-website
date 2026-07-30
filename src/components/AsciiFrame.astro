@@ -1,0 +1,474 @@
+---
+/*
+ * The Apollo 13 "everything on the table" scene as animated ASCII — a quiet,
+ * colored band above the hero, with a settings bar to reshape it live.
+ *
+ * Frames are pre-rendered offline (scripts/ascii-encode.mjs --color) into
+ * apollo-ascii*.json. Each cell is ONE packed char encoding a brightness level
+ * (0..15) and a Flexoki palette bucket (0..3) — see PACK_ALPHABET. Because we
+ * store the level (not a baked glyph), the browser can re-map the ASCII ramp,
+ * contrast, invert, and color live without the source video. Only resolution
+ * is a true pre-baked variant (coarse/default/fine), loaded on demand.
+ *
+ * Decorative + accessible: role="img" with a label, a static poster frame for
+ * no-JS / reduced-motion, and controls that are just enhancement.
+ */
+import AsciiControls from './AsciiControls.astro';
+import data from '../assets/apollo-ascii.json';
+
+const cols: number = data.cols;
+const rows: number = data.rows;
+const pack: string = data.pack;
+
+/* Poster (no-JS / reduced-motion still): densest frame, default ramp applied. */
+const POSTER_RAMP = ' .:-=+*#%@';
+const levelOf = (ch: string) => pack.indexOf(ch) >> 2;
+const density = (f: string) => {
+	let n = 0;
+	for (const ch of f) if (levelOf(ch) > 2) n++;
+	return n;
+};
+const poster = (data.frames as string[]).reduce(
+	(best, f) => (density(f) > density(best) ? f : best),
+	data.frames[0],
+);
+const posterText = poster
+	? Array.from({ length: rows }, (_, y) => {
+			let line = '';
+			for (let x = 0; x < cols; x++) {
+				const lvl = levelOf(poster[y * cols + x]);
+				line += POSTER_RAMP[Math.round((lvl / 15) * (POSTER_RAMP.length - 1))];
+			}
+			return line;
+		}).join('\n')
+	: '';
+---
+
+<figure
+	class="rise mx-auto mt-7 w-[min(56rem,100%)] px-6 max-[40rem]:mt-2"
+	style="animation-delay: 40ms"
+	data-ascii-frame
+>
+	{/* Positioning + inline-size container so the heading can overlay the stage exactly and size itself to the band (cqi below). */}
+	<div class="relative [container-type:inline-size]">
+		<div
+			class="relative aspect-[64/27] overflow-hidden border-y border-ui bg-[radial-gradient(circle_at_50%_45%,var(--bg-2),var(--bg)_72%)]"
+			role="img"
+			aria-label="Engineers spread improvised materials across a workbench, rendered as animated ASCII art."
+		>
+			<pre
+				class="absolute inset-0 m-0 box-border h-full w-full overflow-hidden whitespace-pre py-[0.4rem] font-mono text-[clamp(0.3rem,1.1vw,0.6rem)] font-normal leading-none text-tx-2"
+				data-ascii-fallback
+				aria-hidden="true">{posterText}</pre>
+			<canvas
+				class="absolute inset-0 block h-full w-full opacity-0 transition-opacity duration-[180ms] [&.is-ready]:opacity-100 motion-reduce:transition-none"
+				data-ascii-canvas
+				aria-hidden="true"></canvas>
+		</div>
+		{/*
+		 * The heading the ASCII parts around. Real text: accessible, indexable,
+		 * and visible without JS. Sized to the band (cqi) so the phrase holds one
+		 * line. The script inserts pretext's line breaks and adds `.is-carved`
+		 * once the grid is masked, which drops the legibility scrim.
+		 */}
+		<h2
+			class="pointer-events-none absolute left-1/2 top-1/2 m-0 w-[92%] -translate-x-1/2 -translate-y-1/2 p-0 text-center text-[clamp(1rem,7cqi,4.5rem)] font-bold leading-[1.1] whitespace-nowrap text-tx [font-family:var(--font-serif)] [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--bg),0_0_1.2em_var(--bg)]"
+			data-ascii-title>Everything on the table</h2>
+	</div>
+
+	<AsciiControls />
+</figure>
+
+<script>
+	import { layoutWithLines, prepareWithSegments } from '@chenglou/pretext';
+	import defaultData from '../assets/apollo-ascii.json';
+	import { coverageMask } from '../utils/ascii-carve.mjs';
+
+	type Frameset = {
+		cols: number;
+		rows: number;
+		fps: number;
+		frames: string[];
+		palette: string[];
+		pack: string;
+	};
+
+	// Style ramps (dark -> dense). Because storage is a brightness level, the
+	// renderer maps that level onto whichever ramp is selected, live.
+	const RAMPS: Record<string, string> = {
+		classic: ' .:-=+*#%@',
+		blocks: ' ░▒▓█',
+		dots: ' .·•●',
+		round: ' .oO@',
+		minimal: ' .+#',
+		dense: ' .:-=+*abcdnuvoxIJCLQ0OZ#MW&8%B@$',
+	};
+
+	// Lazy loaders for the pre-baked resolution variants.
+	const VARIANTS: Record<string, () => Promise<Frameset>> = {
+		coarse: () => import('../assets/apollo-ascii-coarse.json').then((m) => m.default as Frameset),
+		default: () => Promise.resolve(defaultData as Frameset),
+		fine: () => import('../assets/apollo-ascii-fine.json').then((m) => m.default as Frameset),
+	};
+
+	// Single-color modes -> palette index; 'full' uses each cell's own bucket.
+	const SINGLE: Record<string, number> = { ink: 0, or: 1, bl: 2, cy: 3 };
+	const CHAR_W = 0.6;
+
+	// ---- Carved title ------------------------------------------------------
+	// The heading is drawn to an offscreen canvas and sampled per grid cell, so
+	// the ASCII parts around the actual letterforms (and shows through counters).
+	// pretext lays the phrase into lines; the alpha -> cell sampling lives in
+	// ascii-carve.mjs (pure, unit-tested). Higher THRESHOLD = tighter carve.
+	const CARVE_THRESHOLD = 0.15;
+	const rasterCanvas = document.createElement('canvas');
+	const rasterCtx = rasterCanvas.getContext('2d', { willReadFrequently: true });
+
+	document.querySelectorAll<HTMLElement>('[data-ascii-frame]').forEach((root) => {
+		const canvas = root.querySelector<HTMLCanvasElement>('[data-ascii-canvas]');
+		const fallback = root.querySelector<HTMLElement>('[data-ascii-fallback]');
+		const controls = root.querySelector<HTMLElement>('[data-ascii-controls]');
+		const context = canvas?.getContext('2d');
+		if (!canvas || !fallback || !controls || !context) return;
+
+		// The carved heading; optional — the band still animates without it.
+		const title = root.querySelector<HTMLElement>('[data-ascii-title]');
+		const titleText = (title?.textContent ?? '').replace(/\s+/g, ' ').trim();
+
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+		const state = {
+			res: 'default',
+			color: 'full',
+			ramp: 'classic',
+			contrast: 1,
+			invert: false,
+			fps: defaultData.fps,
+		};
+
+		let active: Frameset = defaultData as Frameset;
+
+		// charCode -> packed code, for fast unpacking in the hot loop.
+		const lut = new Int16Array(128);
+		for (let i = 0; i < active.pack.length; i++) lut[active.pack.charCodeAt(i)] = i;
+
+		let palette: string[] = [];
+		const readPalette = () => {
+			const styles = getComputedStyle(document.documentElement);
+			palette = active.palette.map((t) => styles.getPropertyValue(t).trim());
+		};
+
+		const densest = (set: Frameset) =>
+			set.frames.reduce((best, f) => {
+				const d = (s: string) => {
+					let n = 0;
+					for (let i = 0; i < s.length; i++) if (lut[s.charCodeAt(i)] >> 2 > 2) n++;
+					return n;
+				};
+				return d(f) > d(best) ? f : best;
+			}, set.frames[0]);
+
+		let index = 0;
+		let lastPaint = 0;
+		let handle = 0;
+		let playing = false;
+		let bufferW = 0;
+		let bufferH = 0;
+		let ready = false;
+		let carveMask: Uint8Array | null = null;
+
+		// Draw the heading to the offscreen raster in the canvas's own pixel space
+		// and return its alpha channel for per-cell coverage sampling. pretext
+		// breaks the phrase into lines; each line is painted at its centred,
+		// baseline-aligned position so the raster matches what the browser shows.
+		const paintTitleCoverage = () => {
+			if (!title || !rasterCtx) return null;
+			const cssW = canvas.clientWidth;
+			const cssH = canvas.clientHeight;
+			if (!cssW || !cssH) return null;
+
+			const cs = getComputedStyle(title);
+			const fontSize = parseFloat(cs.fontSize) || 16;
+			let lineHeight = parseFloat(cs.lineHeight);
+			if (!lineHeight || cs.lineHeight === 'normal') lineHeight = fontSize * 1.2;
+			else if (lineHeight < 4) lineHeight = fontSize * lineHeight; // unitless ratio
+			const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+			const maxWidth = title.clientWidth;
+			if (!titleText || maxWidth <= 0) return null;
+
+			let lines: { text: string }[];
+			try {
+				const prepared = prepareWithSegments(titleText, font);
+				lines = layoutWithLines(prepared, maxWidth, lineHeight).lines;
+			} catch {
+				return null; // pretext is pre-1.0; never let it break the band
+			}
+
+			// Paint the heading on pretext's own line breaks so it matches the carve.
+			title.textContent = lines.map((l) => l.text.replace(/\s+$/, '')).join('\n');
+
+			const W = Math.max(1, Math.round(cssW));
+			const H = Math.max(1, Math.round(cssH));
+			rasterCanvas.width = W;
+			rasterCanvas.height = H;
+			rasterCtx.clearRect(0, 0, W, H);
+			rasterCtx.font = font;
+			rasterCtx.textBaseline = 'alphabetic';
+			rasterCtx.fillStyle = '#fff';
+
+			// Place each line's baseline the way CSS does: the extra line-height is
+			// split as half-leading above and below the ascent+descent.
+			const fm = rasterCtx.measureText('Hg');
+			const ascent = fm.fontBoundingBoxAscent || fontSize * 0.8;
+			const descent = fm.fontBoundingBoxDescent || fontSize * 0.2;
+			const halfLeading = (lineHeight - (ascent + descent)) / 2;
+
+			// Shift from the heading's content box into the canvas's own box.
+			const tRect = title.getBoundingClientRect();
+			const cRect = canvas.getBoundingClientRect();
+			const dx = tRect.left - cRect.left;
+			const dy = tRect.top - cRect.top;
+
+			lines.forEach((line, li) => {
+				const text = line.text.replace(/^\s+|\s+$/g, '');
+				if (!text) return;
+				const lineWidth = rasterCtx.measureText(text).width;
+				const x = dx + (maxWidth - lineWidth) / 2;
+				const y = dy + li * lineHeight + halfLeading + ascent;
+				rasterCtx.fillText(text, x, y);
+			});
+
+			const rgba = rasterCtx.getImageData(0, 0, W, H).data;
+			const alpha = new Uint8Array(W * H);
+			for (let i = 0; i < alpha.length; i++) alpha[i] = rgba[i * 4 + 3];
+			return { alpha, W, H };
+		};
+
+		const rebuildMask = () => {
+			if (!title) return;
+			const cov = paintTitleCoverage();
+			if (!cov) {
+				carveMask = null;
+				return;
+			}
+			carveMask = coverageMask(cov.alpha, cov.W, cov.H, {
+				cols: active.cols,
+				rows: active.rows,
+				threshold: CARVE_THRESHOLD,
+				dilate: 1,
+			});
+			title.classList.add('is-carved');
+		};
+
+		const render = (frame: string) => {
+			const cssW = canvas.clientWidth;
+			const cssH = canvas.clientHeight;
+			if (cssW === 0 || cssH === 0) return;
+
+			const dpr = Math.min(window.devicePixelRatio || 1, 2);
+			const nextW = Math.round(cssW * dpr);
+			const nextH = Math.round(cssH * dpr);
+			if (nextW !== bufferW || nextH !== bufferH) {
+				bufferW = nextW;
+				bufferH = nextH;
+				canvas.width = nextW;
+				canvas.height = nextH;
+				context.setTransform(dpr, 0, 0, dpr, 0, 0);
+				context.textBaseline = 'top';
+			}
+
+			const { cols, rows } = active;
+			const ramp = RAMPS[state.ramp] ?? RAMPS.classic;
+			const rampMax = ramp.length - 1;
+			const contrast = state.contrast;
+			const invert = state.invert;
+			const full = state.color === 'full';
+			const buckets = full ? 4 : 1;
+			const single = full ? 0 : (SINGLE[state.color] ?? 0);
+
+			const fontPx = cssW / (cols * CHAR_W);
+			const lineH = cssH / rows;
+			context.font = `${fontPx}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
+			context.clearRect(0, 0, cssW, cssH);
+
+			for (let y = 0; y < rows; y++) {
+				const lines = new Array(buckets).fill('');
+				const base = y * cols;
+				for (let x = 0; x < cols; x++) {
+					if (carveMask && carveMask[base + x]) {
+						for (let k = 0; k < buckets; k++) lines[k] += ' ';
+						continue;
+					}
+					const code = lut[frame.charCodeAt(base + x)];
+					const color = code & 3;
+					let v = (code >> 2) / 15;
+					if (invert) v = 1 - v;
+					v = (v - 0.5) * contrast + 0.5;
+					v = v < 0 ? 0 : v > 1 ? 1 : v;
+					const glyph = ramp[Math.round(v * rampMax)];
+					const bucket = full ? color : 0;
+					for (let k = 0; k < buckets; k++) lines[k] += k === bucket ? glyph : ' ';
+				}
+				for (let k = 0; k < buckets; k++) {
+					if (lines[k].trim().length === 0) continue;
+					context.fillStyle = full ? palette[k] : palette[single];
+					context.fillText(lines[k], 0, y * lineH);
+				}
+			}
+
+			if (!ready) {
+				ready = true;
+				fallback.hidden = true;
+				canvas.classList.add('is-ready');
+			}
+		};
+
+		const repaint = () => render(active.frames[index] ?? active.frames[0]);
+
+		const loop = (t: number) => {
+			handle = requestAnimationFrame(loop);
+			const interval = 1000 / state.fps;
+			if (t - lastPaint < interval) return;
+			lastPaint = t - ((t - lastPaint) % interval);
+			render(active.frames[index]);
+			index = (index + 1) % active.frames.length;
+		};
+
+		// The band loops forever; there's no play/pause control. pause() exists
+		// only so a reduced-motion preference can freeze it on the poster frame.
+		const play = () => {
+			if (playing) return;
+			playing = true;
+			lastPaint = 0;
+			handle = requestAnimationFrame(loop);
+		};
+
+		const pause = () => {
+			if (!playing) return;
+			playing = false;
+			cancelAnimationFrame(handle);
+		};
+
+		// ---- Controls (chrome-less word toggles) ------------------------------
+		// Light the clicked word, dim its siblings.
+		const groupSelect = (btn: HTMLButtonElement) => {
+			btn.parentElement
+				?.querySelectorAll('button')
+				.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+		};
+
+		// Detail: one dot-grid icon; denser grid = finer resolution. Click cycles.
+		const RES_KEYS = ['coarse', 'default', 'fine'];
+		let loadingRes = false;
+		let detailIdx = Math.max(0, RES_KEYS.indexOf(state.res));
+		const detailBtn = controls.querySelector<HTMLButtonElement>('[data-detail]');
+		const renderDetail = () => {
+			detailBtn?.style.setProperty('--n', String(detailIdx + 1));
+			detailBtn?.setAttribute('aria-label', `Detail: ${RES_KEYS[detailIdx]}`);
+		};
+		detailBtn?.addEventListener('click', async () => {
+			if (loadingRes) return;
+			const next = (detailIdx + 1) % RES_KEYS.length;
+			const key = RES_KEYS[next];
+			loadingRes = true;
+			try {
+				active = await VARIANTS[key]();
+				state.res = key;
+				detailIdx = next;
+				index = index % active.frames.length;
+				readPalette();
+				rebuildMask();
+				renderDetail();
+				if (!playing) repaint();
+			} finally {
+				loadingRes = false;
+			}
+		});
+		renderDetail();
+
+		controls.querySelectorAll<HTMLButtonElement>('[data-color]').forEach((btn) =>
+			btn.addEventListener('click', () => {
+				state.color = btn.dataset.color!;
+				groupSelect(btn);
+				if (!playing) repaint();
+			}),
+		);
+		controls.querySelectorAll<HTMLButtonElement>('[data-ramp]').forEach((btn) =>
+			btn.addEventListener('click', () => {
+				state.ramp = btn.dataset.ramp!;
+				groupSelect(btn);
+				if (!playing) repaint();
+			}),
+		);
+
+		// Contrast: one split-disc icon whose tones diverge per level. Click cycles.
+		const CONTRASTS = [0.7, 1, 1.5];
+		const CONTRAST_NAMES = ['Soft', 'Normal', 'Hard'];
+		let contrastIdx = Math.max(0, CONTRASTS.indexOf(state.contrast));
+		const contrastBtn = controls.querySelector<HTMLButtonElement>('[data-contrast-cycle]');
+		const renderContrast = () => {
+			if (!contrastBtn) return;
+			contrastBtn.dataset.level = String(contrastIdx);
+			contrastBtn.setAttribute('aria-label', `Contrast: ${CONTRAST_NAMES[contrastIdx]}`);
+			state.contrast = CONTRASTS[contrastIdx];
+		};
+		contrastBtn?.addEventListener('click', () => {
+			contrastIdx = (contrastIdx + 1) % CONTRASTS.length;
+			renderContrast();
+			if (!playing) repaint();
+		});
+		renderContrast();
+		// Speed: one fast-forward icon; each level adds a triangle. Click cycles.
+		const SPEEDS = [6, 12, 20];
+		const SPEED_NAMES = ['Slow', 'Steady', 'Fast'];
+		let speedIdx = SPEEDS.indexOf(state.fps);
+		if (speedIdx < 0) speedIdx = 1;
+		const speedBtn = controls.querySelector<HTMLButtonElement>('[data-speed]');
+		const renderSpeed = () => {
+			if (!speedBtn) return;
+			speedBtn.textContent = '▶'.repeat(speedIdx + 1);
+			speedBtn.setAttribute('aria-label', `Speed: ${SPEED_NAMES[speedIdx]}`);
+			state.fps = SPEEDS[speedIdx];
+		};
+		speedBtn?.addEventListener('click', () => {
+			speedIdx = (speedIdx + 1) % SPEEDS.length;
+			renderSpeed();
+		});
+		renderSpeed();
+
+		const invertBtn = controls.querySelector<HTMLButtonElement>('[data-invert]');
+		invertBtn?.addEventListener('click', () => {
+			state.invert = !state.invert;
+			invertBtn.setAttribute('aria-pressed', String(state.invert));
+			if (!playing) repaint();
+		});
+
+		darkScheme.addEventListener('change', () => {
+			readPalette();
+			repaint();
+		});
+		new ResizeObserver(() => {
+			rebuildMask();
+			if (!playing) repaint();
+		}).observe(root);
+
+		// ---- Boot -------------------------------------------------------------
+		readPalette();
+		rebuildMask();
+		controls.hidden = false;
+		render(densest(active));
+		if (!reducedMotion.matches) play();
+		reducedMotion.addEventListener('change', (e) => (e.matches ? pause() : play()));
+
+		// Webfonts (EB Garamond) load async; remeasure once they settle or the
+		// carve would sit offset from the painted glyphs on first paint.
+		document.fonts?.ready.then(() => {
+			rebuildMask();
+			if (!playing) repaint();
+		});
+
+		window.addEventListener('pagehide', () => cancelAnimationFrame(handle), { once: true });
+	});
+</script>
+

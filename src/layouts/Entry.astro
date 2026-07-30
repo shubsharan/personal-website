@@ -1,0 +1,93 @@
+---
+/*
+ * The reading page, shared by projects and writing. The masthead carries the
+ * same ledger line the index rows do — mark, label, rail — so arriving from an
+ * index feels like following one row down into itself.
+ */
+import StatusMark from '../components/StatusMark.astro';
+import type { PROJECT_STATUS } from '../consts';
+import Base from './Base.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	/** Small uppercase label: a project status or a writing kind. */
+	label: string;
+	/** Right-hand metadata: a span for projects, a date for writing. */
+	rail: string;
+	status?: keyof typeof PROJECT_STATUS;
+	/** Optional second line under the title — a role, or a book being reviewed. */
+	subtitle?: string;
+	/** Where the thing itself lives, for projects that are online. */
+	url?: string;
+	/** "Updated March 2026", when it has been. */
+	updatedNote?: string;
+	backHref: string;
+	backLabel: string;
+}
+
+const {
+	title,
+	description,
+	label,
+	rail,
+	status,
+	subtitle,
+	url,
+	updatedNote,
+	backHref,
+	backLabel,
+} = Astro.props;
+
+// Strip the scheme so the link reads as a destination, not a URL.
+const displayUrl = url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
+---
+
+<Base title={title} description={description}>
+	<article class="shell">
+		<header class="border-t border-ui pt-7">
+			<div class="label flex items-center justify-between gap-4 text-tx-3">
+				<span class="flex items-center gap-2">
+					{status && <StatusMark status={status} />}
+					{label}
+				</span>
+				<span>{rail}</span>
+			</div>
+
+			<h1 class="mt-5 font-serif text-[2.1rem] leading-[1.15] max-md:text-[1.75rem]">
+				{title}
+			</h1>
+
+			{subtitle && <p class="mt-3 text-tx-2 italic">{subtitle}</p>}
+
+			{
+				url && (
+					<p class="mt-5">
+						<a
+							href={url}
+							target="_blank"
+							rel="noopener"
+							class="label text-tx-2 no-underline transition-colors duration-150 hover:text-tx"
+						>
+							{displayUrl} ↗
+						</a>
+					</p>
+				)
+			}
+		</header>
+
+		<div class="prose mt-10">
+			<slot />
+		</div>
+
+		<footer class="mt-14 flex items-center justify-between gap-4 border-t border-ui pt-6">
+			<a
+				href={backHref}
+				class="label text-tx-3 no-underline transition-colors duration-150 hover:text-tx"
+			>
+				← {backLabel}
+			</a>
+			{updatedNote && <span class="label text-tx-3">{updatedNote}</span>}
+		</footer>
+	</article>
+</Base>

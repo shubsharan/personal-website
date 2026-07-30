@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import EntryRow from '../../components/EntryRow.astro';
+import { SITE_TITLE, WRITING_KIND } from '../../consts';
+import Base from '../../layouts/Base.astro';
+import { monthYear } from '../../utils/dates';
+
+const posts = (await getCollection('writing', (p) => !p.data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const description = 'Essays, notes, and reviews of what I’m reading.';
+---
+
+<Base title={`Writing · ${SITE_TITLE}`} description={description}>
+	<div class="shell">
+		<header class="pt-6 pb-10 max-md:pt-2 max-md:pb-8">
+			<h1 class="font-serif text-[2.1rem] leading-[1.15] max-md:text-[1.75rem]">
+				Writing
+			</h1>
+			<p class="mt-3 text-tx-2">{description}</p>
+		</header>
+
+		{
+			posts.length > 0 ? (
+				<ul>
+					{posts.map((post) => (
+						<EntryRow
+							href={`/writing/${post.id}/`}
+							rail={monthYear(post.data.pubDate)}
+							label={WRITING_KIND[post.data.kind]}
+							title={post.data.title}
+							description={post.data.description}
+						/>
+					))}
+				</ul>
+			) : (
+				<p class="border-t border-ui py-7 text-tx-2">
+					Nothing published yet. The first piece goes in{' '}
+					<code>src/content/writing/</code>.
+				</p>
+			)
+		}
+	</div>
+</Base>

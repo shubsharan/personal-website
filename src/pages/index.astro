@@ -1,20 +1,146 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import AsciiFrame from '../components/AsciiFrame.astro';
+import EntryRow from '../components/EntryRow.astro';
+import StatusMark from '../components/StatusMark.astro';
+import { SITE_DESCRIPTION, SITE_TITLE, WRITING_KIND } from '../consts';
+import Base from '../layouts/Base.astro';
+import { monthYear } from '../utils/dates';
+
+/*
+ * The hero is a sentence, not a grid: project names are the navigation. It
+ * reads from the collection so the claim stays true as the ledger changes —
+ * add a project, and the paragraph rewrites itself.
+ */
+const projects = (await getCollection('projects', (p) => !p.data.draft)).sort(
+	(a, b) => b.data.startDate.valueOf() - a.data.startDate.valueOf(),
+);
+const active = projects.filter((p) => p.data.status === 'active');
+const past = projects.filter((p) => p.data.status !== 'active').slice(0, 3);
+
+const posts = (await getCollection('writing', (p) => !p.data.draft))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 3);
+
+/** Serial commas for a spoken list: "a", "a and b", "a, b, and c". */
+function joiner(index: number, total: number): string {
+	if (index === 0) return '';
+	if (index === total - 1) return total === 2 ? ' and ' : ', and ';
+	return ', ';
+}
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main class="container mx-auto px-4">
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-		</main>
-		<Footer />
-	</body>
-</html>
+<Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<AsciiFrame />
+
+	<div class="shell pt-10 max-md:pt-4">
+		<p class="rise text-[1.45rem] leading-[1.5] max-md:text-[1.25rem]">
+			I’m Shub. I make things.
+		</p>
+
+		<p
+			class="rise mt-6 text-[1.45rem] leading-[1.5] text-tx-2 max-md:text-[1.25rem]"
+			style="animation-delay: 120ms"
+		>
+			{
+				active.length > 0 ? (
+					<Fragment>
+						Right now that’s{' '}
+						{active.map((project, i) => (
+							<Fragment>
+								{joiner(i, active.length)}
+								<a href={`/projects/${project.id}/`} class="mention">
+									<StatusMark
+										status={project.data.status}
+										class="mr-[0.35em]"
+									/><span class="mention-name">{project.data.title}</span>
+								</a>
+							</Fragment>
+						))}
+						.{' '}
+					</Fragment>
+				) : (
+					<Fragment>Between projects at the moment. </Fragment>
+				)
+			}
+			{
+				past.length > 0 && (
+					<Fragment>
+						Before that,{' '}
+						{past.map((project, i) => (
+							<Fragment>
+								{joiner(i, past.length)}
+								<a href={`/projects/${project.id}/`} class="mention">
+									<StatusMark
+										status={project.data.status}
+										class="mr-[0.35em]"
+									/><span class="mention-name">{project.data.title}</span>
+								</a>
+							</Fragment>
+						))}
+						.
+					</Fragment>
+				)
+			}
+		</p>
+
+		<p
+			class="rise mt-6 text-[1.45rem] leading-[1.5] text-tx-2 max-md:text-[1.25rem]"
+			style="animation-delay: 240ms"
+		>
+			In between I write — <a href="/writing/" class="mention">essays</a>, and
+			notes on whatever I’m reading — and I paint.
+		</p>
+	</div>
+
+	{
+		posts.length > 0 && (
+			<section class="shell mt-20 max-md:mt-14">
+				<h2 class="label mb-4 text-tx-3">Latest writing</h2>
+				<ul>
+					{posts.map((post) => (
+						<EntryRow
+							href={`/writing/${post.id}/`}
+							rail={monthYear(post.data.pubDate)}
+							label={WRITING_KIND[post.data.kind]}
+							title={post.data.title}
+							description={post.data.description}
+						/>
+					))}
+				</ul>
+				<a
+					href="/writing/"
+					class="label mt-6 inline-block text-tx-3 no-underline transition-colors duration-150 hover:text-tx"
+				>
+					All writing →
+				</a>
+			</section>
+		)
+	}
+</Base>
+
+<style>
+	/*
+	 * Inline project links. Underlined only faintly, so the sentence still reads
+	 * as a sentence and the status marks stay the loudest thing in it. The rule
+	 * sits on the name alone — running it under the mark and its space would
+	 * leave a stray tick floating ahead of the word.
+	 */
+	.mention {
+		color: var(--tx);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.mention-name {
+		text-decoration: underline;
+		text-decoration-color: var(--ui-3);
+		text-underline-offset: 0.18em;
+		text-decoration-thickness: 1px;
+		transition: text-decoration-color 0.15s ease;
+	}
+
+	.mention:hover .mention-name {
+		text-decoration-color: var(--accent);
+	}
+</style>
