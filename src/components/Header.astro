@@ -1,6 +1,7 @@
 ---
 import { NAV, SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import ThemeToggle from './ThemeToggle.astro';
 ---
 
 <header>
@@ -14,6 +15,7 @@ import HeaderLink from './HeaderLink.astro';
 		</a>
 		<div class="flex items-baseline gap-6">
 			{NAV.map((item) => <HeaderLink href={item.href}>{item.label}</HeaderLink>)}
+			<ThemeToggle />
 		</div>
 	</nav>
 </header>

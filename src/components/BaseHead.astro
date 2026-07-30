@@ -31,6 +31,18 @@ const { title, description, image } = Astro.props;
 />
 <meta name="generator" content={Astro.generator} />
 
+<script is:inline>
+	// Blocking (no defer/async) so the theme is set before first paint —
+	// avoids a flash of the wrong theme. Mirrors the toggle's own logic in
+	// ThemeToggle.astro; keep the two in sync.
+	(function () {
+		var stored = localStorage.getItem('theme');
+		if (stored === 'light' || stored === 'dark') {
+			document.documentElement.setAttribute('data-theme', stored);
+		}
+	})();
+</script>
+
 <Font cssVariable="--font-eb-garamond" preload />
 <Font cssVariable="--font-inter" preload />
 

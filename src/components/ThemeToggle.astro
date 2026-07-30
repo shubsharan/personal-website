@@ -1,0 +1,74 @@
+---
+/*
+ * Light/dark toggle. Icon visibility is pure CSS, keyed off data-theme —
+ * dark is the site default (see global.css), so the moon shows unless
+ * data-theme='light' is set. No JS needed just to show the right icon
+ * before hydration. The click handler flips data-theme on <html> and
+ * persists the choice; the inline script in BaseHead applies a stored
+ * 'light' choice before first paint so there's no flash of the wrong theme.
+ */
+---
+
+<button
+	type="button"
+	class="inline-flex cursor-pointer self-center border-0 bg-transparent p-0 text-tx-2 transition-colors hover:text-tx -mt-1.5"
+	data-theme-toggle
+	aria-label="Toggle dark mode"
+	aria-pressed="true"
+>
+	<svg
+		data-icon="sun"
+		width="16"
+		height="16"
+		viewBox="0 0 16 16"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="1.5"
+		stroke-linecap="round"
+		aria-hidden="true"
+	>
+		<circle cx="9" cy="9" r="3.5" />
+		<path
+			d="M9 1.5v2M9 14.5v2M16.5 9h-2M3.5 9h-2M14.4 3.6l-1.4 1.4M5 12l-1.4 1.4M14.4 14.4l-1.4-1.4M5 6 3.6 4.6"
+		/>
+	</svg>
+	<svg data-icon="moon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+		<path d="M15.5 11.3A6.5 6.5 0 0 1 6.7 2.5a6.5 6.5 0 1 0 8.8 8.8Z" />
+	</svg>
+</button>
+
+<style>
+	/* Default (no data-theme set, or explicitly 'dark'): moon shows. */
+	[data-icon='sun'] {
+		display: none;
+	}
+
+	/* Manual override to light flips both icons. */
+	:global(:root[data-theme='light']) [data-icon='sun'] {
+		display: block;
+	}
+	:global(:root[data-theme='light']) [data-icon='moon'] {
+		display: none;
+	}
+</style>
+
+<script>
+	const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+
+	function isDark() {
+		return document.documentElement.getAttribute('data-theme') !== 'light';
+	}
+
+	function syncPressed() {
+		button?.setAttribute('aria-pressed', String(isDark()));
+	}
+
+	syncPressed();
+
+	button?.addEventListener('click', () => {
+		const next = isDark() ? 'light' : 'dark';
+		document.documentElement.setAttribute('data-theme', next);
+		localStorage.setItem('theme', next);
+		syncPressed();
+	});
+</script>

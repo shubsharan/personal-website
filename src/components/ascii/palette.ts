@@ -3,6 +3,7 @@
  * properties at render time, so the canvas follows the site's light/dark theme
  * and any color class on the heading. DOM-bound; re-read on theme change.
  */
+import { isDarkTheme } from './theme';
 import type { Frameset } from './types';
 
 export type PaletteSnapshot = {
@@ -22,7 +23,7 @@ export function createPaletteReader(title: HTMLElement | null) {
 	return {
 		read(active: Frameset): PaletteSnapshot {
 			const styles = getComputedStyle(document.documentElement);
-			const lightMode = !window.matchMedia('(prefers-color-scheme: dark)').matches;
+			const lightMode = !isDarkTheme();
 			const palette = active.palette.map(
 				(token) =>
 					styles.getPropertyValue((lightMode && BAND_ACCENT[token]) || token).trim() ||

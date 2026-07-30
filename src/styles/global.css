@@ -177,8 +177,59 @@
 }
 
 :root {
-	color-scheme: light dark;
+	color-scheme: dark;
 
+	/* Dark is the site's default — no `prefers-color-scheme` lookup. Light is
+	   available only via the header toggle, which sets data-theme='light'
+	   below (persisted to localStorage, applied pre-paint by BaseHead). */
+	--bg: var(--color-black);
+	--bg-2: var(--color-base-950);
+	--ui: var(--color-base-900);
+	--ui-2: var(--color-base-850);
+	--ui-3: var(--color-base-800);
+	--tx: var(--color-base-200);
+	--tx-2: var(--color-base-500);
+	--tx-3: var(--color-base-700);
+
+	--re: var(--color-red-400);
+	--or: var(--color-orange-400);
+	--ye: var(--color-yellow-400);
+	--gr: var(--color-green-400);
+	--cy: var(--color-cyan-400);
+	--bl: var(--color-blue-400);
+	--pu: var(--color-purple-400);
+	--ma: var(--color-magenta-400);
+	--re-2: var(--color-red-600);
+	--or-2: var(--color-orange-600);
+	--ye-2: var(--color-yellow-600);
+	--gr-2: var(--color-green-600);
+	--cy-2: var(--color-cyan-600);
+	--bl-2: var(--color-blue-600);
+	--pu-2: var(--color-purple-600);
+	--ma-2: var(--color-magenta-600);
+
+	/* Flexoki maps links and active states to cy. */
+	--accent: var(--cy);
+
+	/* ASCII band accents, light mode only: painted as thin glyphs on paper, the
+	   standard orange/blue accents read as faded, so the band uses a darker,
+	   higher-contrast shade. Consumed only by ascii/palette.ts (light mode);
+	   dark mode keeps the standard --or/--bl, which already read well on black. */
+	--ascii-or: var(--color-orange-700);
+	--ascii-bl: var(--color-blue-700);
+
+	--box-shadow:
+		0 2px 6px color-mix(in oklab, var(--color-black) 10%, transparent),
+		0 8px 24px color-mix(in oklab, var(--color-black) 8%, transparent),
+		0 16px 32px color-mix(in oklab, var(--color-black) 8%, transparent);
+}
+
+/*
+ * Manual theme override, set by the header's dark-mode toggle. A `data-theme`
+ * attribute on <html> (written by an inline script in BaseHead) wins over the
+ * dark default in either direction. No attribute = dark (the site default).
+ */
+:root[data-theme='light'] {
 	--bg: var(--color-paper);
 	--bg-2: var(--color-base-50);
 	--ui: var(--color-base-100);
@@ -204,51 +255,34 @@
 	--bl-2: var(--color-blue-400);
 	--pu-2: var(--color-purple-400);
 	--ma-2: var(--color-magenta-400);
-
-	/* Flexoki maps links and active states to cy. */
-	--accent: var(--cy);
-
-	/* ASCII band accents, light mode only: painted as thin glyphs on paper, the
-	   standard orange/blue accents read as faded, so the band uses a darker,
-	   higher-contrast shade. Consumed only by ascii/palette.ts (light mode);
-	   dark mode keeps the standard --or/--bl, which already read well on black. */
-	--ascii-or: var(--color-orange-700);
-	--ascii-bl: var(--color-blue-700);
-
-	--box-shadow:
-		0 2px 6px color-mix(in oklab, var(--color-black) 10%, transparent),
-		0 8px 24px color-mix(in oklab, var(--color-black) 8%, transparent),
-		0 16px 32px color-mix(in oklab, var(--color-black) 8%, transparent);
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--bg: var(--color-black);
-		--bg-2: var(--color-base-950);
-		--ui: var(--color-base-900);
-		--ui-2: var(--color-base-850);
-		--ui-3: var(--color-base-800);
-		--tx: var(--color-base-200);
-		--tx-2: var(--color-base-500);
-		--tx-3: var(--color-base-700);
+:root[data-theme='dark'] {
+	--bg: var(--color-black);
+	--bg-2: var(--color-base-950);
+	--ui: var(--color-base-900);
+	--ui-2: var(--color-base-850);
+	--ui-3: var(--color-base-800);
+	--tx: var(--color-base-200);
+	--tx-2: var(--color-base-500);
+	--tx-3: var(--color-base-700);
 
-		--re: var(--color-red-400);
-		--or: var(--color-orange-400);
-		--ye: var(--color-yellow-400);
-		--gr: var(--color-green-400);
-		--cy: var(--color-cyan-400);
-		--bl: var(--color-blue-400);
-		--pu: var(--color-purple-400);
-		--ma: var(--color-magenta-400);
-		--re-2: var(--color-red-600);
-		--or-2: var(--color-orange-600);
-		--ye-2: var(--color-yellow-600);
-		--gr-2: var(--color-green-600);
-		--cy-2: var(--color-cyan-600);
-		--bl-2: var(--color-blue-600);
-		--pu-2: var(--color-purple-600);
-		--ma-2: var(--color-magenta-600);
-	}
+	--re: var(--color-red-400);
+	--or: var(--color-orange-400);
+	--ye: var(--color-yellow-400);
+	--gr: var(--color-green-400);
+	--cy: var(--color-cyan-400);
+	--bl: var(--color-blue-400);
+	--pu: var(--color-purple-400);
+	--ma: var(--color-magenta-400);
+	--re-2: var(--color-red-600);
+	--or-2: var(--color-orange-600);
+	--ye-2: var(--color-yellow-600);
+	--gr-2: var(--color-green-600);
+	--cy-2: var(--color-cyan-600);
+	--bl-2: var(--color-blue-600);
+	--pu-2: var(--color-purple-600);
+	--ma-2: var(--color-magenta-600);
 }
 /*
  * Element styles all live in `@layer base` so that any utility class in markup

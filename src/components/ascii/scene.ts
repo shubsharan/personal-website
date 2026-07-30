@@ -18,6 +18,7 @@ import { cycleControl, groupControl, setLabel, toggleControl } from './controls'
 import { rasterCanvas, rasterCtx } from './framesets';
 import { createPaletteReader, type PaletteSnapshot } from './palette';
 import { createRenderer } from './renderer';
+import { isDarkTheme } from './theme';
 import { createTitleCarver } from './title-carve';
 import type { Frameset, SceneState, TitleMasks } from './types';
 
@@ -48,8 +49,9 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	// The renderer leaves dark pixels as empty cells that show the background
 	// through, so the brightness ramp is tied to that background: light glyphs on
 	// black (dark mode) vs. dark ink on paper (light mode). Default invert to the
-	// scheme; a manual toggle pins it and stops it tracking further theme changes.
-	const state: SceneState = { ...DEFAULTS, invert: !darkScheme.matches };
+	// applied theme (data-theme toggle, else OS); a manual toggle pins it and stops
+	// it tracking further theme changes.
+	const state: SceneState = { ...DEFAULTS, invert: !isDarkTheme() };
 	let invertUserSet = false;
 
 	let active: Frameset = defaultData;
@@ -151,15 +153,22 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	);
 
 	// ---- Reactivity -------------------------------------------------------
-	darkScheme.addEventListener('change', () => {
-		// Keep the ink/background relationship correct across a live theme switch —
-		// unless the user has taken manual control of the invert.
+	// Keep the ink/background relationship correct across a live theme switch —
+	// unless the user has taken manual control of the invert. Fires for both the
+	// OS media query and the header's data-theme toggle, since either can flip the
+	// applied theme (and the toggle wins).
+	const onThemeChange = () => {
 		if (!invertUserSet) {
-			state.invert = !darkScheme.matches;
+			state.invert = !isDarkTheme();
 			invertToggle?.set(state.invert);
 		}
 		readPalette();
 		repaint();
+	};
+	darkScheme.addEventListener('change', onThemeChange);
+	new MutationObserver(onThemeChange).observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ['data-theme'],
 	});
 	new ResizeObserver(() => {
 		rebuildMask();
