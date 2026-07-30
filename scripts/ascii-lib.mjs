@@ -56,7 +56,7 @@ export function streamToFrames(buffer, cols, rows, opts = {}) {
  *
  * Rather than bake a glyph, we store a quantized brightness LEVEL (0..15, one
  * hex char) plus a palette bucket index into PALETTE_TOKENS:
- *   0 = --tx (default ink), 1 = --or, 2 = --bl, 3 = --cy.
+ *   0 = --tx (default ink), 1 = --or (warm), 2 = --bl, 3 = --cy.
  * Storing the level (not a glyph) is what lets the settings bar re-map the
  * ASCII ramp, contrast, and invert live in the browser without the source
  * video. Polarity is bright -> dense: dark pixels become level 0 and drop out.

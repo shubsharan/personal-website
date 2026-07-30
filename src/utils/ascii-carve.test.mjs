@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { coverageMask, dilateMask } from './ascii-carve.mjs';
+import { boxBlur, coverageLevels, coverageMask, dilateMask } from './ascii-carve.mjs';
 
 /** Count set cells in a mask. */
 const count = (m) => m.reduce((n, v) => n + v, 0);
@@ -77,6 +77,48 @@ test('dilateMask clamps at the grid edges', () => {
 	mask[0] = 1; // top-left corner
 	const grown = dilateMask(mask, 3, 3, 1);
 	assert.equal(count(grown), 4); // corner + right + down + diagonal, no wrap
+});
+
+test('coverageLevels reports per-cell ink fraction as 0..255', () => {
+	// One 4x4 cell, 4 of 16 pixels ink -> 0.25 -> ~64.
+	const alpha = new Uint8Array(16);
+	for (let y = 0; y < 4; y++) alpha[y * 4 + 1] = 255;
+	const levels = coverageLevels(alpha, 4, 4, { cols: 1, rows: 1 });
+	assert.equal(levels[0], Math.round((4 / 16) * 255));
+});
+
+test('coverageLevels: full cell = 255, empty cell = 0', () => {
+	// 2x2 raster, left pixel column ink on both rows -> left cell full, right empty.
+	const alpha = Uint8Array.from([
+		255, 0,
+		255, 0,
+	]);
+	const levels = coverageLevels(alpha, 2, 2, { cols: 2, rows: 1 });
+	assert.equal(levels[0], 255); // left cell fully ink
+	assert.equal(levels[1], 0); // right cell empty
+});
+
+test('boxBlur spreads a hot cell to its neighbours and leaves far cells cold', () => {
+	// A single 255 cell in the middle of a 5x5 grid, radius 1.
+	const src = new Uint8Array(25);
+	src[2 * 5 + 2] = 255;
+	const out = boxBlur(src, 5, 5, 1);
+	assert.ok(out[2 * 5 + 2] > 0, 'centre stays warm');
+	assert.ok(out[2 * 5 + 1] > 0, 'orthogonal neighbour warms up');
+	assert.equal(out[2 * 5 + 0], 0, 'two cells away (outside radius reach) stays cold');
+	assert.equal(out[0], 0, 'far corner stays cold');
+});
+
+test('boxBlur preserves a uniform field', () => {
+	const src = new Uint8Array(9).fill(100);
+	const out = boxBlur(src, 3, 3, 1);
+	for (const v of out) assert.equal(v, 100);
+});
+
+test('boxBlur with radius 0 is a copy', () => {
+	const src = Uint8Array.from([1, 2, 3, 4]);
+	const out = boxBlur(src, 2, 2, 0);
+	assert.deepEqual([...out], [1, 2, 3, 4]);
 });
 
 test('degenerate raster dimensions yield an empty mask, not a throw', () => {

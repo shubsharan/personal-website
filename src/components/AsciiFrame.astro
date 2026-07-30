@@ -14,7 +14,7 @@
  * no-JS / reduced-motion, and controls that are just enhancement.
  */
 import AsciiControls from './AsciiControls.astro';
-import data from '../assets/apollo-ascii.json';
+import data from '../assets/apollo-ascii-fine.json';
 
 const cols: number = data.cols;
 const rows: number = data.rows;
@@ -45,7 +45,7 @@ const posterText = poster
 ---
 
 <figure
-	class="rise mx-auto mt-7 w-[min(56rem,100%)] px-6 max-[40rem]:mt-2"
+	class="rise w-full max-[40rem]:mt-2"
 	style="animation-delay: 40ms"
 	data-ascii-frame
 >
@@ -67,22 +67,21 @@ const posterText = poster
 		</div>
 		{/*
 		 * The heading the ASCII parts around. Real text: accessible, indexable,
-		 * and visible without JS. Sized to the band (cqi) so the phrase holds one
-		 * line. The script inserts pretext's line breaks and adds `.is-carved`
-		 * once the grid is masked, which drops the legibility scrim.
+		 * and visible without JS. Sized to the band (cqi) and always one line.
+		 * The script carves that single line and adds `.is-carved` once the grid
+		 * is masked, which drops the legibility scrim.
 		 */}
 		<h2
-			class="pointer-events-none absolute left-1/2 top-1/2 m-0 w-[92%] -translate-x-1/2 -translate-y-1/2 p-0 text-center text-[clamp(1rem,7cqi,4.5rem)] font-bold leading-[1.1] whitespace-nowrap text-tx [font-family:var(--font-serif)] [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--bg),0_0_1.2em_var(--bg)]"
-			data-ascii-title>Everything on the table</h2>
+			class="font-sans pointer-events-none absolute left-1/2 top-1/2 m-0 w-[90%] -translate-x-1/2 -translate-y-1/2 p-0 text-center text-[clamp(1.05rem,6cqi,16rem)] whitespace-nowrap text-ma-2 [font-family:var(--font-serif)] [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--bg),0_0_1.2em_var(--bg)]"
+			data-ascii-title>EVERYTHING ON THE TABLE</h2>
 	</div>
 
 	<AsciiControls />
 </figure>
 
 <script>
-	import { layoutWithLines, prepareWithSegments } from '@chenglou/pretext';
-	import defaultData from '../assets/apollo-ascii.json';
-	import { coverageMask } from '../utils/ascii-carve.mjs';
+	import defaultData from '../assets/apollo-ascii-fine.json';
+	import { coverageMask, dilateMask } from '../utils/ascii-carve.mjs';
 
 	type Frameset = {
 		cols: number;
@@ -107,20 +106,30 @@ const posterText = poster
 	// Lazy loaders for the pre-baked resolution variants.
 	const VARIANTS: Record<string, () => Promise<Frameset>> = {
 		coarse: () => import('../assets/apollo-ascii-coarse.json').then((m) => m.default as Frameset),
-		default: () => Promise.resolve(defaultData as Frameset),
-		fine: () => import('../assets/apollo-ascii-fine.json').then((m) => m.default as Frameset),
+		default: () => import('../assets/apollo-ascii.json').then((m) => m.default as Frameset),
+		fine: () => Promise.resolve(defaultData as Frameset),
 	};
 
 	// Single-color modes -> palette index; 'full' uses each cell's own bucket.
 	const SINGLE: Record<string, number> = { ink: 0, or: 1, bl: 2, cy: 3 };
 	const CHAR_W = 0.6;
 
-	// ---- Carved title ------------------------------------------------------
-	// The heading is drawn to an offscreen canvas and sampled per grid cell, so
-	// the ASCII parts around the actual letterforms (and shows through counters).
-	// pretext lays the phrase into lines; the alpha -> cell sampling lives in
-	// ascii-carve.mjs (pure, unit-tested). Higher THRESHOLD = tighter carve.
-	const CARVE_THRESHOLD = 0.15;
+	// ---- ASCII title -------------------------------------------------------
+	// The heading is drawn to an offscreen canvas and sampled twice: once at the
+	// animation's coarse grid (to CLEAR the big glyphs where the title sits), and
+	// once at a much finer grid of its own (to DRAW the letters crisply, in the
+	// ink colour, on top). Decoupling the title from the animation resolution is
+	// what makes the words legible. Sampling lives in ascii-carve.mjs (tested).
+
+	const TITLE_CELL_PX = 4; // fine title cell size (px); smaller = crisper letters
+	const TITLE_FINE_FLOOR = 0.43; // fraction of a fine cell that must be ink (0..1)
+	const CARVE_THRESHOLD = 0.5; // coverage a coarse cell needs before the field clears
+	const CARVE_HALO = 0.5; // cells the coarse clearing grows by, so no animation glyph touches the title
+	
+	// A background-coloured ring drawn around the letters (on the fine grid,
+	// before the ink pass) so the title stays legible against the video no
+	// matter what's playing behind it — contrast by outline, not just clearing.
+	const TITLE_OUTLINE_RADIUS = 2;
 	const rasterCanvas = document.createElement('canvas');
 	const rasterCtx = rasterCanvas.getContext('2d', { willReadFrequently: true });
 
@@ -154,9 +163,17 @@ const posterText = poster
 		for (let i = 0; i < active.pack.length; i++) lut[active.pack.charCodeAt(i)] = i;
 
 		let palette: string[] = [];
+		let bgColor = '';
+		let titleColor = '';
 		const readPalette = () => {
 			const styles = getComputedStyle(document.documentElement);
 			palette = active.palette.map((t) => styles.getPropertyValue(t).trim());
+			bgColor = styles.getPropertyValue('--bg').trim();
+			// Read the heading's own resolved color rather than a hardcoded
+			// variable, so whatever color class is on the <h2> (e.g. text-ye)
+			// is the single source of truth for both the no-JS fallback and the
+			// canvas-rendered title — change the class, the canvas follows.
+			titleColor = title ? getComputedStyle(title).color : '';
 		};
 
 		const densest = (set: Frameset) =>
@@ -176,12 +193,12 @@ const posterText = poster
 		let bufferW = 0;
 		let bufferH = 0;
 		let ready = false;
-		let carveMask: Uint8Array | null = null;
+		let titleMask: Uint8Array | null = null;
+		let titleFine: { solid: Uint8Array; outline: Uint8Array; cols: number; rows: number } | null = null;
 
 		// Draw the heading to the offscreen raster in the canvas's own pixel space
-		// and return its alpha channel for per-cell coverage sampling. pretext
-		// breaks the phrase into lines; each line is painted at its centred,
-		// baseline-aligned position so the raster matches what the browser shows.
+		// and return its alpha channel for per-cell coverage sampling. Always one
+		// line — the CSS is whitespace-nowrap and the phrase is sized to fit.
 		const paintTitleCoverage = () => {
 			if (!title || !rasterCtx) return null;
 			const cssW = canvas.clientWidth;
@@ -197,16 +214,7 @@ const posterText = poster
 			const maxWidth = title.clientWidth;
 			if (!titleText || maxWidth <= 0) return null;
 
-			let lines: { text: string }[];
-			try {
-				const prepared = prepareWithSegments(titleText, font);
-				lines = layoutWithLines(prepared, maxWidth, lineHeight).lines;
-			} catch {
-				return null; // pretext is pre-1.0; never let it break the band
-			}
-
-			// Paint the heading on pretext's own line breaks so it matches the carve.
-			title.textContent = lines.map((l) => l.text.replace(/\s+$/, '')).join('\n');
+			title.textContent = titleText;
 
 			const W = Math.max(1, Math.round(cssW));
 			const H = Math.max(1, Math.round(cssH));
@@ -217,8 +225,8 @@ const posterText = poster
 			rasterCtx.textBaseline = 'alphabetic';
 			rasterCtx.fillStyle = '#fff';
 
-			// Place each line's baseline the way CSS does: the extra line-height is
-			// split as half-leading above and below the ascent+descent.
+			// Place the baseline the way CSS does: the extra line-height is split
+			// as half-leading above and below the ascent+descent.
 			const fm = rasterCtx.measureText('Hg');
 			const ascent = fm.fontBoundingBoxAscent || fontSize * 0.8;
 			const descent = fm.fontBoundingBoxDescent || fontSize * 0.2;
@@ -230,14 +238,10 @@ const posterText = poster
 			const dx = tRect.left - cRect.left;
 			const dy = tRect.top - cRect.top;
 
-			lines.forEach((line, li) => {
-				const text = line.text.replace(/^\s+|\s+$/g, '');
-				if (!text) return;
-				const lineWidth = rasterCtx.measureText(text).width;
-				const x = dx + (maxWidth - lineWidth) / 2;
-				const y = dy + li * lineHeight + halfLeading + ascent;
-				rasterCtx.fillText(text, x, y);
-			});
+			const lineWidth = rasterCtx.measureText(titleText).width;
+			const x = dx + (maxWidth - lineWidth) / 2;
+			const y = dy + halfLeading + ascent;
+			rasterCtx.fillText(titleText, x, y);
 
 			const rgba = rasterCtx.getImageData(0, 0, W, H).data;
 			const alpha = new Uint8Array(W * H);
@@ -249,16 +253,37 @@ const posterText = poster
 			if (!title) return;
 			const cov = paintTitleCoverage();
 			if (!cov) {
-				carveMask = null;
+				titleMask = null;
+				titleFine = null;
+				title.style.opacity = '';
 				return;
 			}
-			carveMask = coverageMask(cov.alpha, cov.W, cov.H, {
+			// Coarse mask: clear the animation's big glyphs wherever the title sits.
+			titleMask = coverageMask(cov.alpha, cov.W, cov.H, {
 				cols: active.cols,
 				rows: active.rows,
 				threshold: CARVE_THRESHOLD,
-				dilate: 1,
+				dilate: CARVE_HALO,
 			});
+			// Fine grid: the title's own high-res character grid, independent of the
+			// animation, so the letters read. Derived from a small target cell size.
+			const tCols = Math.max(1, Math.round(canvas.clientWidth / (TITLE_CELL_PX * CHAR_W)));
+			const tRows = Math.max(1, Math.round(canvas.clientHeight / TITLE_CELL_PX));
+			const solid = coverageMask(cov.alpha, cov.W, cov.H, {
+				cols: tCols,
+				rows: tRows,
+				threshold: TITLE_FINE_FLOOR,
+			});
+			titleFine = {
+				solid,
+				outline: dilateMask(solid, tCols, tRows, TITLE_OUTLINE_RADIUS),
+				cols: tCols,
+				rows: tRows,
+			};
 			title.classList.add('is-carved');
+			// The ASCII rendering is the visible title now; keep the real <h2> in
+			// the DOM for accessibility / no-JS, but hide its own glyphs.
+			title.style.opacity = '0';
 		};
 
 		const render = (frame: string) => {
@@ -296,7 +321,8 @@ const posterText = poster
 				const lines = new Array(buckets).fill('');
 				const base = y * cols;
 				for (let x = 0; x < cols; x++) {
-					if (carveMask && carveMask[base + x]) {
+					if (titleMask && titleMask[base + x]) {
+						// Under the title: clear the coarse animation glyph.
 						for (let k = 0; k < buckets; k++) lines[k] += ' ';
 						continue;
 					}
@@ -314,6 +340,40 @@ const posterText = poster
 					if (lines[k].trim().length === 0) continue;
 					context.fillStyle = full ? palette[k] : palette[single];
 					context.fillText(lines[k], 0, y * lineH);
+				}
+			}
+
+			// The title, on its own fine character grid so the letters stay crisp.
+			// Drawn in two passes for contrast against the moving field: a
+			// background-coloured outline first, then the ink letters on top — so
+			// the title reads clearly no matter what's playing behind it.
+			if (titleFine) {
+				const { solid: tSolid, outline: tOutline, cols: tCols, rows: tRows } = titleFine;
+				const tLineH = cssH / tRows;
+				const tFontPx = cssW / (tCols * CHAR_W);
+				// Bold weight for a heavier stroke than the field's own glyphs use.
+				context.font = `700 ${tFontPx}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
+				const glyph = ramp[rampMax];
+
+				context.fillStyle = bgColor || palette[0];
+				for (let y = 0; y < tRows; y++) {
+					let row = '';
+					const b = y * tCols;
+					for (let x = 0; x < tCols; x++) row += tOutline[b + x] ? glyph : ' ';
+					if (row.trim().length > 0) context.fillText(row, 0, y * tLineH);
+				}
+
+				// A hue distinct from the field's tx/or/bl/cy buckets, so the title
+				// pops instead of blending into a brightly lit patch of video. Drawn
+				// twice with a hair's offset (faux-bold) for a heavier stroke.
+				context.fillStyle = titleColor || palette[0];
+				for (let y = 0; y < tRows; y++) {
+					let row = '';
+					const b = y * tCols;
+					for (let x = 0; x < tCols; x++) row += tSolid[b + x] ? glyph : ' ';
+					if (row.trim().length === 0) continue;
+					context.fillText(row, 0, y * tLineH);
+					context.fillText(row, tFontPx * 0.08, y * tLineH);
 				}
 			}
 
@@ -358,6 +418,13 @@ const posterText = poster
 				.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
 		};
 
+		// The controls are icon-only: mirror each label into both aria-label (for
+		// assistive tech) and title (a hover tooltip for sighted mouse users).
+		const setLabel = (el: Element | null, text: string) => {
+			el?.setAttribute('aria-label', text);
+			el?.setAttribute('title', text);
+		};
+
 		// Detail: one dot-grid icon; denser grid = finer resolution. Click cycles.
 		const RES_KEYS = ['coarse', 'default', 'fine'];
 		let loadingRes = false;
@@ -365,7 +432,7 @@ const posterText = poster
 		const detailBtn = controls.querySelector<HTMLButtonElement>('[data-detail]');
 		const renderDetail = () => {
 			detailBtn?.style.setProperty('--n', String(detailIdx + 1));
-			detailBtn?.setAttribute('aria-label', `Detail: ${RES_KEYS[detailIdx]}`);
+			setLabel(detailBtn, `Detail: ${RES_KEYS[detailIdx]}`);
 		};
 		detailBtn?.addEventListener('click', async () => {
 			if (loadingRes) return;
@@ -410,7 +477,7 @@ const posterText = poster
 		const renderContrast = () => {
 			if (!contrastBtn) return;
 			contrastBtn.dataset.level = String(contrastIdx);
-			contrastBtn.setAttribute('aria-label', `Contrast: ${CONTRAST_NAMES[contrastIdx]}`);
+			setLabel(contrastBtn, `Contrast: ${CONTRAST_NAMES[contrastIdx]}`);
 			state.contrast = CONTRASTS[contrastIdx];
 		};
 		contrastBtn?.addEventListener('click', () => {
@@ -428,7 +495,7 @@ const posterText = poster
 		const renderSpeed = () => {
 			if (!speedBtn) return;
 			speedBtn.textContent = '▶'.repeat(speedIdx + 1);
-			speedBtn.setAttribute('aria-label', `Speed: ${SPEED_NAMES[speedIdx]}`);
+			setLabel(speedBtn, `Speed: ${SPEED_NAMES[speedIdx]}`);
 			state.fps = SPEEDS[speedIdx];
 		};
 		speedBtn?.addEventListener('click', () => {
@@ -454,6 +521,12 @@ const posterText = poster
 		}).observe(root);
 
 		// ---- Boot -------------------------------------------------------------
+		// Give the static-label buttons (color / style / invert) a hover tooltip
+		// too; the cycling ones already set title in their render functions.
+		controls
+			.querySelectorAll<HTMLButtonElement>('button[aria-label]:not([title])')
+			.forEach((b) => b.setAttribute('title', b.getAttribute('aria-label') ?? ''));
+
 		readPalette();
 		rebuildMask();
 		controls.hidden = false;
