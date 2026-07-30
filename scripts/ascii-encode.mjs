@@ -22,6 +22,9 @@
  *   --no-invert    bright source -> dense char (default: dark -> dense)
  *   --ss <t>       ffmpeg start time  (e.g. 0:38) — trim without pre-cutting
  *   --to <t>       ffmpeg end time    (e.g. 1:05)
+ *   --crop <spec>  ffmpeg crop applied before scaling, to drop letterbox bars.
+ *                  ffmpeg's `w:h:x:y` (e.g. 640:262:0:10). Find a clip's bars
+ *                  with `ffmpeg -i in.mp4 -vf cropdetect -f null -`.
  *
  * Requires ffmpeg on PATH.
  */
@@ -62,6 +65,7 @@ function parseArgs(argv) {
 		color: false,
 		ss: null,
 		to: null,
+		crop: null,
 	};
 	const positional = [];
 	for (let i = 0; i < argv.length; i++) {
@@ -75,6 +79,7 @@ function parseArgs(argv) {
 			case '--color': opts.color = true; break;
 			case '--ss': opts.ss = argv[++i]; break;
 			case '--to': opts.to = argv[++i]; break;
+			case '--crop': opts.crop = argv[++i]; break;
 			default: positional.push(arg);
 		}
 	}
@@ -90,8 +95,13 @@ function runFfmpeg(bin, opts) {
 	if (opts.ss) args.push('-ss', opts.ss);
 	args.push('-i', opts.input);
 	if (opts.to) args.push('-to', opts.to);
+	// Crop (to drop letterbox bars) must run before the scale that squashes the
+	// frame to the ASCII grid, or the bars would be baked into the grid.
+	const filters = [`fps=${opts.fps}`];
+	if (opts.crop) filters.push(`crop=${opts.crop}`);
+	filters.push(`scale=${opts.cols}:${opts.rows}:flags=area`, `format=${pixel}`);
 	args.push(
-		'-vf', `fps=${opts.fps},scale=${opts.cols}:${opts.rows}:flags=area,format=${pixel}`,
+		'-vf', filters.join(','),
 		'-f', 'rawvideo',
 		'-pix_fmt', pixel,
 		'-',

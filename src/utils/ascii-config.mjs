@@ -103,9 +103,9 @@ export const CONTRASTS = [
  * toggle pins it — see scene.ts.
  */
 export const DEFAULTS = {
-	res: 'default',
+	res: 'fine',
 	color: 'full',
-	ramp: 'classic',
+	ramp: 'dense',
 	contrast: 1,
 	fps: 12,
 };
