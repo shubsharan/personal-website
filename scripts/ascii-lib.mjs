@@ -63,9 +63,6 @@ export function streamToFrames(buffer, cols, rows, opts = {}) {
  * Only reasonably saturated, not-too-bright cells earn an accent.
  */
 
-/** Default brightness ramp (two leading spaces = airier darks). */
-export const GLYPHS_COLOR = '  .:-=+*#%@';
-
 /** CSS custom properties the palette indices map to, in order. */
 export const PALETTE_TOKENS = ['--tx', '--or', '--bl', '--cy'];
 

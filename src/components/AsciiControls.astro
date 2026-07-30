@@ -3,19 +3,28 @@
  * The ASCII scene's settings bar: the film credit (a link to the source clip)
  * on the left, and a right-aligned toolbar of grouped icon toggles (detail,
  * color, style, contrast, speed, invert) separated by vertical dividers.
- * Presentational only — the behaviour lives in AsciiFrame's script, which
- * finds the toolbar and its buttons by their data-* hooks and wires them to
- * the renderer. The toolbar is hidden until that script enables it, so the
- * interactive icons never show without JS; the credit link always shows.
+ * Presentational only — the behaviour lives in the scene composed by
+ * ./ascii/scene.ts, which finds the toolbar and its buttons by their data-*
+ * hooks and wires them to the renderer. The toolbar is hidden until that script
+ * enables it, so the interactive icons never show without JS; the credit link
+ * always shows.
+ *
+ * The color and style groups are generated from the SAME definitions the script
+ * wires (COLORS / RAMP_ORDER in ../utils/ascii-config.mjs), and their initial
+ * pressed state comes from DEFAULTS — so the highlighted control can never drift
+ * from what actually renders.
  *
  * Styled with Tailwind utilities. Buttons inherit the bar's tracked-out label
  * type via Preflight; each toggle dims by default (text-tx-3) and lights on
  * hover / when active (aria-pressed). Repeated patterns are hoisted to consts.
  */
+import { COLORS, DEFAULTS, RAMP_ORDER } from '../utils/ascii-config.mjs';
 
 // Base reset shared by every toggle; most also dim -> lit on hover / active.
 const btn = 'cursor-pointer border-0 bg-transparent p-0 transition-colors';
 const toggle = `${btn} text-tx-3 hover:text-tx aria-pressed:text-tx`;
+// A ramp toggle shows a few sample glyphs of its style, in mono.
+const rampBtn = `${toggle} font-mono text-[0.8em] normal-case tracking-[0.05em]`;
 
 // Color swatch: a hued dot (::before); the selected one gains a ring.
 const swatch = `${btn} leading-[0] before:block before:h-[9px] before:w-[9px] before:rounded-full before:opacity-65 before:content-[''] before:[transition:opacity_0.15s_ease,box-shadow_0.15s_ease] hover:before:opacity-100 aria-pressed:before:opacity-100 aria-pressed:before:shadow-[0_0_0_1px_var(--bg),0_0_0_2px_var(--tx)]`;
@@ -50,22 +59,27 @@ const divider = 'h-[0.95em] w-px flex-none bg-ui-3';
 		<span class={divider} aria-hidden="true"></span>
 
 		<span class={group} role="group" aria-label="Color">
-			<button type="button" class={`${swatch} before:bg-[conic-gradient(var(--or),var(--cy),var(--bl),var(--or))]`} data-color="full" aria-pressed="true" aria-label="Full color"></button>
-			<button type="button" class={`${swatch} before:bg-tx`} data-color="ink" aria-label="Ink"></button>
-			<button type="button" class={`${swatch} before:bg-or`} data-color="or" aria-label="Orange"></button>
-			<button type="button" class={`${swatch} before:bg-bl`} data-color="bl" aria-label="Blue"></button>
-			<button type="button" class={`${swatch} before:bg-cy`} data-color="cy" aria-label="Green"></button>
+			{
+				COLORS.map((c) => (
+					<button
+						type="button"
+						class={`${swatch} ${c.dot}`}
+						data-color={c.key}
+						aria-pressed={c.key === DEFAULTS.color}
+						aria-label={c.label}
+					/>
+				))
+			}
 		</span>
 
 		<span class={divider} aria-hidden="true"></span>
 
 		<span class="inline-flex items-center gap-[0.5rem]" role="group" aria-label="Style">
-			<button type="button" class={`${toggle} font-mono text-[0.8em] normal-case tracking-[0.05em]`} data-ramp="dense" aria-pressed="true" aria-label="Dense">*8@$</button>
-			<button type="button" class={`${toggle} font-mono text-[0.8em] normal-case tracking-[0.05em]`} data-ramp="classic" aria-label="Classic">.:+#</button>
-			<button type="button" class={`${toggle} font-mono text-[0.8em] normal-case tracking-[0.05em]`} data-ramp="blocks" aria-label="Blocks">░▒▓█</button>
-			<button type="button" class={`${toggle} font-mono text-[0.8em] normal-case tracking-[0.05em]`} data-ramp="dots" aria-label="Dots">.·•●</button>
-			<button type="button" class={`${toggle} font-mono text-[0.8em] normal-case tracking-[0.05em]`} data-ramp="round" aria-label="Round">.oO@</button>
-			<button type="button" class={`${toggle} font-mono text-[0.8em] normal-case tracking-[0.05em]`} data-ramp="minimal" aria-label="Minimal">.+#</button>
+			{
+				RAMP_ORDER.map((r) => (
+					<button type="button" class={rampBtn} data-ramp={r.key} aria-pressed={r.key === DEFAULTS.ramp} aria-label={r.label}>{r.sample}</button>
+				))
+			}
 		</span>
 
 		<span class={divider} aria-hidden="true"></span>

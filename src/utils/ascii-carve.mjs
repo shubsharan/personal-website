@@ -81,14 +81,6 @@ export function coverageMask(alpha, width, height, { cols, rows, threshold = 0.1
 }
 
 /**
- * Grow a cell mask outward by `radius` cells (Chebyshev / square neighbourhood).
- * @param {Uint8Array} mask
- * @param {number} cols
- * @param {number} rows
- * @param {number} radius
- * @returns {Uint8Array}
- */
-/**
  * Separable box blur of a grid of 0..255 values, clamped at the edges. Used to
  * turn the title's per-cell coverage into a soft "glow" that fades outward, so
  * the field can be dimmed around the letters for contrast.

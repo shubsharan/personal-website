@@ -54,6 +54,26 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `pnpm astro -- --help` | Get help using the Astro CLI                     |
 
+## 🗜️ Deploying (pre-compressed assets)
+
+`pnpm build` runs `scripts/precompress.mjs` after `astro build`, writing `.br`
+(brotli, quality 11) and `.gz` siblings for every compressible file in `dist/`.
+This matters most for the ASCII header's frame JSON (`src/assets/apollo-ascii*.json`):
+the `fine` variant is 4.5 MB raw but ~788 KB brotli, and it's fetched at runtime
+as a standalone asset (not inlined into the JS bundle), so the poster shows first
+and the frames stream in behind it.
+
+For the win to reach visitors, the host must serve the pre-compressed files with
+`Content-Encoding` when the browser sends `Accept-Encoding: br` / `gzip`:
+
+- **Netlify, Cloudflare Pages** — serve `.br`/`.gz` siblings automatically.
+- **nginx** — enable `brotli_static on;` (ngx_brotli) and/or `gzip_static on;`.
+- **Vercel** — compresses responses on the fly and ignores the siblings; still fine,
+  though its on-the-fly brotli for large files may be a lower quality than q11.
+
+The uncompressed originals remain as the fallback for clients that don't advertise
+`br`/`gzip`, so nothing breaks on hosts that ignore the siblings.
+
 ## 👀 Want to learn more?
 
 Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

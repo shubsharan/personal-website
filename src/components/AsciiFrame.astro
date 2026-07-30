@@ -1,6 +1,6 @@
 ---
 /*
- * The Apollo 13 "everything on the table" scene as animated ASCII — a quiet,
+ * The Apollo 13 "everything on the table" scene as animated ASCII — a silent,
  * colored band above the hero, with a settings bar to reshape it live.
  *
  * Frames are pre-rendered offline (scripts/ascii-encode.mjs --color) into
@@ -12,40 +12,26 @@
  *
  * Decorative + accessible: role="img" with a label, a static poster frame for
  * no-JS / reduced-motion, and controls that are just enhancement.
+ *
+ * The client behavior lives in ./ascii/* (composed by scene.ts) and the shared,
+ * framework-agnostic bits in ../utils/ascii-{config,frames,carve}.mjs.
  */
 import AsciiControls from './AsciiControls.astro';
 import data from '../assets/apollo-ascii-fine.json';
+import { POSTER_RAMP } from '../utils/ascii-config.mjs';
+import { buildLut, densestFrame, posterText } from '../utils/ascii-frames.mjs';
 
 const cols: number = data.cols;
 const rows: number = data.rows;
-const pack: string = data.pack;
 
 /* Poster (no-JS / reduced-motion still): densest frame, default ramp applied. */
-const POSTER_RAMP = ' .:-=+*#%@';
-const levelOf = (ch: string) => pack.indexOf(ch) >> 2;
-const density = (f: string) => {
-	let n = 0;
-	for (const ch of f) if (levelOf(ch) > 2) n++;
-	return n;
-};
-const poster = (data.frames as string[]).reduce(
-	(best, f) => (density(f) > density(best) ? f : best),
-	data.frames[0],
-);
-const posterText = poster
-	? Array.from({ length: rows }, (_, y) => {
-			let line = '';
-			for (let x = 0; x < cols; x++) {
-				const lvl = levelOf(poster[y * cols + x]);
-				line += POSTER_RAMP[Math.round((lvl / 15) * (POSTER_RAMP.length - 1))];
-			}
-			return line;
-		}).join('\n')
-	: '';
+const lut = buildLut(data.pack);
+const poster = densestFrame(data.frames as string[], lut);
+const posterLines = posterText(poster, { cols, rows, lut, ramp: POSTER_RAMP });
 ---
 
 <figure
-	class="rise w-full max-[40rem]:mt-2"
+	class="rise w-full"
 	style="animation-delay: 40ms"
 	data-ascii-frame
 >
@@ -59,7 +45,7 @@ const posterText = poster
 			<pre
 				class="absolute inset-0 m-0 box-border h-full w-full overflow-hidden whitespace-pre py-[0.4rem] font-mono text-[clamp(0.3rem,1.1vw,0.6rem)] font-normal leading-none text-tx-2"
 				data-ascii-fallback
-				aria-hidden="true">{posterText}</pre>
+				aria-hidden="true">{posterLines}</pre>
 			<canvas
 				class="absolute inset-0 block h-full w-full opacity-0 transition-opacity duration-[180ms] [&.is-ready]:opacity-100 motion-reduce:transition-none"
 				data-ascii-canvas
@@ -72,7 +58,7 @@ const posterText = poster
 		 * is masked, which drops the legibility scrim.
 		 */}
 		<h2
-			class="font-sans pointer-events-none absolute left-1/2 top-1/2 m-0 w-[90%] -translate-x-1/2 -translate-y-1/2 p-0 text-center text-[clamp(1.05rem,6cqi,16rem)] whitespace-nowrap text-ma-2 [font-family:var(--font-serif)] [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--bg),0_0_1.2em_var(--bg)]"
+			class="pointer-events-none absolute left-1/2 top-1/2 m-0 w-[90%] -translate-x-1/2 -translate-y-1/2 p-0 text-center text-[clamp(2.5rem,4cqi,16rem)] leading-[1.05] text-balance text-tx [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--bg),0_0_1.2em_var(--bg)]"
 			data-ascii-title>EVERYTHING ON THE TABLE</h2>
 	</div>
 
@@ -80,468 +66,10 @@ const posterText = poster
 </figure>
 
 <script>
-	import defaultData from '../assets/apollo-ascii-fine.json';
-	import { coverageMask, dilateMask } from '../utils/ascii-carve.mjs';
+	import { createAsciiScene } from './ascii/scene';
+	import { loadDefault, VARIANTS } from './ascii/framesets';
 
-	type Frameset = {
-		cols: number;
-		rows: number;
-		fps: number;
-		frames: string[];
-		palette: string[];
-		pack: string;
-	};
-
-	// Style ramps (dark -> dense). Because storage is a brightness level, the
-	// renderer maps that level onto whichever ramp is selected, live.
-	const RAMPS: Record<string, string> = {
-		classic: ' .:-=+*#%@',
-		blocks: ' ░▒▓█',
-		dots: ' .·•●',
-		round: ' .oO@',
-		minimal: ' .+#',
-		dense: ' .:-=+*abcdnuvoxIJCLQ0OZ#MW&8%B@$',
-	};
-
-	// Lazy loaders for the pre-baked resolution variants.
-	const VARIANTS: Record<string, () => Promise<Frameset>> = {
-		coarse: () => import('../assets/apollo-ascii-coarse.json').then((m) => m.default as Frameset),
-		default: () => import('../assets/apollo-ascii.json').then((m) => m.default as Frameset),
-		fine: () => Promise.resolve(defaultData as Frameset),
-	};
-
-	// Single-color modes -> palette index; 'full' uses each cell's own bucket.
-	const SINGLE: Record<string, number> = { ink: 0, or: 1, bl: 2, cy: 3 };
-	const CHAR_W = 0.6;
-
-	// ---- ASCII title -------------------------------------------------------
-	// The heading is drawn to an offscreen canvas and sampled twice: once at the
-	// animation's coarse grid (to CLEAR the big glyphs where the title sits), and
-	// once at a much finer grid of its own (to DRAW the letters crisply, in the
-	// ink colour, on top). Decoupling the title from the animation resolution is
-	// what makes the words legible. Sampling lives in ascii-carve.mjs (tested).
-
-	const TITLE_CELL_PX = 4; // fine title cell size (px); smaller = crisper letters
-	const TITLE_FINE_FLOOR = 0.43; // fraction of a fine cell that must be ink (0..1)
-	const CARVE_THRESHOLD = 0.5; // coverage a coarse cell needs before the field clears
-	const CARVE_HALO = 0.5; // cells the coarse clearing grows by, so no animation glyph touches the title
-	
-	// A background-coloured ring drawn around the letters (on the fine grid,
-	// before the ink pass) so the title stays legible against the video no
-	// matter what's playing behind it — contrast by outline, not just clearing.
-	const TITLE_OUTLINE_RADIUS = 2;
-	const rasterCanvas = document.createElement('canvas');
-	const rasterCtx = rasterCanvas.getContext('2d', { willReadFrequently: true });
-
-	document.querySelectorAll<HTMLElement>('[data-ascii-frame]').forEach((root) => {
-		const canvas = root.querySelector<HTMLCanvasElement>('[data-ascii-canvas]');
-		const fallback = root.querySelector<HTMLElement>('[data-ascii-fallback]');
-		const controls = root.querySelector<HTMLElement>('[data-ascii-controls]');
-		const context = canvas?.getContext('2d');
-		if (!canvas || !fallback || !controls || !context) return;
-
-		// The carved heading; optional — the band still animates without it.
-		const title = root.querySelector<HTMLElement>('[data-ascii-title]');
-		const titleText = (title?.textContent ?? '').replace(/\s+/g, ' ').trim();
-
-		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-		const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-
-		const state = {
-			res: 'default',
-			color: 'full',
-			ramp: 'classic',
-			contrast: 1,
-			invert: false,
-			fps: defaultData.fps,
-		};
-
-		let active: Frameset = defaultData as Frameset;
-
-		// charCode -> packed code, for fast unpacking in the hot loop.
-		const lut = new Int16Array(128);
-		for (let i = 0; i < active.pack.length; i++) lut[active.pack.charCodeAt(i)] = i;
-
-		let palette: string[] = [];
-		let bgColor = '';
-		let titleColor = '';
-		const readPalette = () => {
-			const styles = getComputedStyle(document.documentElement);
-			palette = active.palette.map((t) => styles.getPropertyValue(t).trim());
-			bgColor = styles.getPropertyValue('--bg').trim();
-			// Read the heading's own resolved color rather than a hardcoded
-			// variable, so whatever color class is on the <h2> (e.g. text-ye)
-			// is the single source of truth for both the no-JS fallback and the
-			// canvas-rendered title — change the class, the canvas follows.
-			titleColor = title ? getComputedStyle(title).color : '';
-		};
-
-		const densest = (set: Frameset) =>
-			set.frames.reduce((best, f) => {
-				const d = (s: string) => {
-					let n = 0;
-					for (let i = 0; i < s.length; i++) if (lut[s.charCodeAt(i)] >> 2 > 2) n++;
-					return n;
-				};
-				return d(f) > d(best) ? f : best;
-			}, set.frames[0]);
-
-		let index = 0;
-		let lastPaint = 0;
-		let handle = 0;
-		let playing = false;
-		let bufferW = 0;
-		let bufferH = 0;
-		let ready = false;
-		let titleMask: Uint8Array | null = null;
-		let titleFine: { solid: Uint8Array; outline: Uint8Array; cols: number; rows: number } | null = null;
-
-		// Draw the heading to the offscreen raster in the canvas's own pixel space
-		// and return its alpha channel for per-cell coverage sampling. Always one
-		// line — the CSS is whitespace-nowrap and the phrase is sized to fit.
-		const paintTitleCoverage = () => {
-			if (!title || !rasterCtx) return null;
-			const cssW = canvas.clientWidth;
-			const cssH = canvas.clientHeight;
-			if (!cssW || !cssH) return null;
-
-			const cs = getComputedStyle(title);
-			const fontSize = parseFloat(cs.fontSize) || 16;
-			let lineHeight = parseFloat(cs.lineHeight);
-			if (!lineHeight || cs.lineHeight === 'normal') lineHeight = fontSize * 1.2;
-			else if (lineHeight < 4) lineHeight = fontSize * lineHeight; // unitless ratio
-			const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-			const maxWidth = title.clientWidth;
-			if (!titleText || maxWidth <= 0) return null;
-
-			title.textContent = titleText;
-
-			const W = Math.max(1, Math.round(cssW));
-			const H = Math.max(1, Math.round(cssH));
-			rasterCanvas.width = W;
-			rasterCanvas.height = H;
-			rasterCtx.clearRect(0, 0, W, H);
-			rasterCtx.font = font;
-			rasterCtx.textBaseline = 'alphabetic';
-			rasterCtx.fillStyle = '#fff';
-
-			// Place the baseline the way CSS does: the extra line-height is split
-			// as half-leading above and below the ascent+descent.
-			const fm = rasterCtx.measureText('Hg');
-			const ascent = fm.fontBoundingBoxAscent || fontSize * 0.8;
-			const descent = fm.fontBoundingBoxDescent || fontSize * 0.2;
-			const halfLeading = (lineHeight - (ascent + descent)) / 2;
-
-			// Shift from the heading's content box into the canvas's own box.
-			const tRect = title.getBoundingClientRect();
-			const cRect = canvas.getBoundingClientRect();
-			const dx = tRect.left - cRect.left;
-			const dy = tRect.top - cRect.top;
-
-			const lineWidth = rasterCtx.measureText(titleText).width;
-			const x = dx + (maxWidth - lineWidth) / 2;
-			const y = dy + halfLeading + ascent;
-			rasterCtx.fillText(titleText, x, y);
-
-			const rgba = rasterCtx.getImageData(0, 0, W, H).data;
-			const alpha = new Uint8Array(W * H);
-			for (let i = 0; i < alpha.length; i++) alpha[i] = rgba[i * 4 + 3];
-			return { alpha, W, H };
-		};
-
-		const rebuildMask = () => {
-			if (!title) return;
-			const cov = paintTitleCoverage();
-			if (!cov) {
-				titleMask = null;
-				titleFine = null;
-				title.style.opacity = '';
-				return;
-			}
-			// Coarse mask: clear the animation's big glyphs wherever the title sits.
-			titleMask = coverageMask(cov.alpha, cov.W, cov.H, {
-				cols: active.cols,
-				rows: active.rows,
-				threshold: CARVE_THRESHOLD,
-				dilate: CARVE_HALO,
-			});
-			// Fine grid: the title's own high-res character grid, independent of the
-			// animation, so the letters read. Derived from a small target cell size.
-			const tCols = Math.max(1, Math.round(canvas.clientWidth / (TITLE_CELL_PX * CHAR_W)));
-			const tRows = Math.max(1, Math.round(canvas.clientHeight / TITLE_CELL_PX));
-			const solid = coverageMask(cov.alpha, cov.W, cov.H, {
-				cols: tCols,
-				rows: tRows,
-				threshold: TITLE_FINE_FLOOR,
-			});
-			titleFine = {
-				solid,
-				outline: dilateMask(solid, tCols, tRows, TITLE_OUTLINE_RADIUS),
-				cols: tCols,
-				rows: tRows,
-			};
-			title.classList.add('is-carved');
-			// The ASCII rendering is the visible title now; keep the real <h2> in
-			// the DOM for accessibility / no-JS, but hide its own glyphs.
-			title.style.opacity = '0';
-		};
-
-		const render = (frame: string) => {
-			const cssW = canvas.clientWidth;
-			const cssH = canvas.clientHeight;
-			if (cssW === 0 || cssH === 0) return;
-
-			const dpr = Math.min(window.devicePixelRatio || 1, 2);
-			const nextW = Math.round(cssW * dpr);
-			const nextH = Math.round(cssH * dpr);
-			if (nextW !== bufferW || nextH !== bufferH) {
-				bufferW = nextW;
-				bufferH = nextH;
-				canvas.width = nextW;
-				canvas.height = nextH;
-				context.setTransform(dpr, 0, 0, dpr, 0, 0);
-				context.textBaseline = 'top';
-			}
-
-			const { cols, rows } = active;
-			const ramp = RAMPS[state.ramp] ?? RAMPS.classic;
-			const rampMax = ramp.length - 1;
-			const contrast = state.contrast;
-			const invert = state.invert;
-			const full = state.color === 'full';
-			const buckets = full ? 4 : 1;
-			const single = full ? 0 : (SINGLE[state.color] ?? 0);
-
-			const fontPx = cssW / (cols * CHAR_W);
-			const lineH = cssH / rows;
-			context.font = `${fontPx}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
-			context.clearRect(0, 0, cssW, cssH);
-
-			for (let y = 0; y < rows; y++) {
-				const lines = new Array(buckets).fill('');
-				const base = y * cols;
-				for (let x = 0; x < cols; x++) {
-					if (titleMask && titleMask[base + x]) {
-						// Under the title: clear the coarse animation glyph.
-						for (let k = 0; k < buckets; k++) lines[k] += ' ';
-						continue;
-					}
-					const code = lut[frame.charCodeAt(base + x)];
-					const color = code & 3;
-					let v = (code >> 2) / 15;
-					if (invert) v = 1 - v;
-					v = (v - 0.5) * contrast + 0.5;
-					v = v < 0 ? 0 : v > 1 ? 1 : v;
-					const glyph = ramp[Math.round(v * rampMax)];
-					const bucket = full ? color : 0;
-					for (let k = 0; k < buckets; k++) lines[k] += k === bucket ? glyph : ' ';
-				}
-				for (let k = 0; k < buckets; k++) {
-					if (lines[k].trim().length === 0) continue;
-					context.fillStyle = full ? palette[k] : palette[single];
-					context.fillText(lines[k], 0, y * lineH);
-				}
-			}
-
-			// The title, on its own fine character grid so the letters stay crisp.
-			// Drawn in two passes for contrast against the moving field: a
-			// background-coloured outline first, then the ink letters on top — so
-			// the title reads clearly no matter what's playing behind it.
-			if (titleFine) {
-				const { solid: tSolid, outline: tOutline, cols: tCols, rows: tRows } = titleFine;
-				const tLineH = cssH / tRows;
-				const tFontPx = cssW / (tCols * CHAR_W);
-				// Bold weight for a heavier stroke than the field's own glyphs use.
-				context.font = `700 ${tFontPx}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
-				const glyph = ramp[rampMax];
-
-				context.fillStyle = bgColor || palette[0];
-				for (let y = 0; y < tRows; y++) {
-					let row = '';
-					const b = y * tCols;
-					for (let x = 0; x < tCols; x++) row += tOutline[b + x] ? glyph : ' ';
-					if (row.trim().length > 0) context.fillText(row, 0, y * tLineH);
-				}
-
-				// A hue distinct from the field's tx/or/bl/cy buckets, so the title
-				// pops instead of blending into a brightly lit patch of video. Drawn
-				// twice with a hair's offset (faux-bold) for a heavier stroke.
-				context.fillStyle = titleColor || palette[0];
-				for (let y = 0; y < tRows; y++) {
-					let row = '';
-					const b = y * tCols;
-					for (let x = 0; x < tCols; x++) row += tSolid[b + x] ? glyph : ' ';
-					if (row.trim().length === 0) continue;
-					context.fillText(row, 0, y * tLineH);
-					context.fillText(row, tFontPx * 0.08, y * tLineH);
-				}
-			}
-
-			if (!ready) {
-				ready = true;
-				fallback.hidden = true;
-				canvas.classList.add('is-ready');
-			}
-		};
-
-		const repaint = () => render(active.frames[index] ?? active.frames[0]);
-
-		const loop = (t: number) => {
-			handle = requestAnimationFrame(loop);
-			const interval = 1000 / state.fps;
-			if (t - lastPaint < interval) return;
-			lastPaint = t - ((t - lastPaint) % interval);
-			render(active.frames[index]);
-			index = (index + 1) % active.frames.length;
-		};
-
-		// The band loops forever; there's no play/pause control. pause() exists
-		// only so a reduced-motion preference can freeze it on the poster frame.
-		const play = () => {
-			if (playing) return;
-			playing = true;
-			lastPaint = 0;
-			handle = requestAnimationFrame(loop);
-		};
-
-		const pause = () => {
-			if (!playing) return;
-			playing = false;
-			cancelAnimationFrame(handle);
-		};
-
-		// ---- Controls (chrome-less word toggles) ------------------------------
-		// Light the clicked word, dim its siblings.
-		const groupSelect = (btn: HTMLButtonElement) => {
-			btn.parentElement
-				?.querySelectorAll('button')
-				.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-		};
-
-		// The controls are icon-only: mirror each label into both aria-label (for
-		// assistive tech) and title (a hover tooltip for sighted mouse users).
-		const setLabel = (el: Element | null, text: string) => {
-			el?.setAttribute('aria-label', text);
-			el?.setAttribute('title', text);
-		};
-
-		// Detail: one dot-grid icon; denser grid = finer resolution. Click cycles.
-		const RES_KEYS = ['coarse', 'default', 'fine'];
-		let loadingRes = false;
-		let detailIdx = Math.max(0, RES_KEYS.indexOf(state.res));
-		const detailBtn = controls.querySelector<HTMLButtonElement>('[data-detail]');
-		const renderDetail = () => {
-			detailBtn?.style.setProperty('--n', String(detailIdx + 1));
-			setLabel(detailBtn, `Detail: ${RES_KEYS[detailIdx]}`);
-		};
-		detailBtn?.addEventListener('click', async () => {
-			if (loadingRes) return;
-			const next = (detailIdx + 1) % RES_KEYS.length;
-			const key = RES_KEYS[next];
-			loadingRes = true;
-			try {
-				active = await VARIANTS[key]();
-				state.res = key;
-				detailIdx = next;
-				index = index % active.frames.length;
-				readPalette();
-				rebuildMask();
-				renderDetail();
-				if (!playing) repaint();
-			} finally {
-				loadingRes = false;
-			}
-		});
-		renderDetail();
-
-		controls.querySelectorAll<HTMLButtonElement>('[data-color]').forEach((btn) =>
-			btn.addEventListener('click', () => {
-				state.color = btn.dataset.color!;
-				groupSelect(btn);
-				if (!playing) repaint();
-			}),
-		);
-		controls.querySelectorAll<HTMLButtonElement>('[data-ramp]').forEach((btn) =>
-			btn.addEventListener('click', () => {
-				state.ramp = btn.dataset.ramp!;
-				groupSelect(btn);
-				if (!playing) repaint();
-			}),
-		);
-
-		// Contrast: one split-disc icon whose tones diverge per level. Click cycles.
-		const CONTRASTS = [0.7, 1, 1.5];
-		const CONTRAST_NAMES = ['Soft', 'Normal', 'Hard'];
-		let contrastIdx = Math.max(0, CONTRASTS.indexOf(state.contrast));
-		const contrastBtn = controls.querySelector<HTMLButtonElement>('[data-contrast-cycle]');
-		const renderContrast = () => {
-			if (!contrastBtn) return;
-			contrastBtn.dataset.level = String(contrastIdx);
-			setLabel(contrastBtn, `Contrast: ${CONTRAST_NAMES[contrastIdx]}`);
-			state.contrast = CONTRASTS[contrastIdx];
-		};
-		contrastBtn?.addEventListener('click', () => {
-			contrastIdx = (contrastIdx + 1) % CONTRASTS.length;
-			renderContrast();
-			if (!playing) repaint();
-		});
-		renderContrast();
-		// Speed: one fast-forward icon; each level adds a triangle. Click cycles.
-		const SPEEDS = [6, 12, 20];
-		const SPEED_NAMES = ['Slow', 'Steady', 'Fast'];
-		let speedIdx = SPEEDS.indexOf(state.fps);
-		if (speedIdx < 0) speedIdx = 1;
-		const speedBtn = controls.querySelector<HTMLButtonElement>('[data-speed]');
-		const renderSpeed = () => {
-			if (!speedBtn) return;
-			speedBtn.textContent = '▶'.repeat(speedIdx + 1);
-			setLabel(speedBtn, `Speed: ${SPEED_NAMES[speedIdx]}`);
-			state.fps = SPEEDS[speedIdx];
-		};
-		speedBtn?.addEventListener('click', () => {
-			speedIdx = (speedIdx + 1) % SPEEDS.length;
-			renderSpeed();
-		});
-		renderSpeed();
-
-		const invertBtn = controls.querySelector<HTMLButtonElement>('[data-invert]');
-		invertBtn?.addEventListener('click', () => {
-			state.invert = !state.invert;
-			invertBtn.setAttribute('aria-pressed', String(state.invert));
-			if (!playing) repaint();
-		});
-
-		darkScheme.addEventListener('change', () => {
-			readPalette();
-			repaint();
-		});
-		new ResizeObserver(() => {
-			rebuildMask();
-			if (!playing) repaint();
-		}).observe(root);
-
-		// ---- Boot -------------------------------------------------------------
-		// Give the static-label buttons (color / style / invert) a hover tooltip
-		// too; the cycling ones already set title in their render functions.
-		controls
-			.querySelectorAll<HTMLButtonElement>('button[aria-label]:not([title])')
-			.forEach((b) => b.setAttribute('title', b.getAttribute('aria-label') ?? ''));
-
-		readPalette();
-		rebuildMask();
-		controls.hidden = false;
-		render(densest(active));
-		if (!reducedMotion.matches) play();
-		reducedMotion.addEventListener('change', (e) => (e.matches ? pause() : play()));
-
-		// Webfonts (EB Garamond) load async; remeasure once they settle or the
-		// carve would sit offset from the painted glyphs on first paint.
-		document.fonts?.ready.then(() => {
-			rebuildMask();
-			if (!playing) repaint();
-		});
-
-		window.addEventListener('pagehide', () => cancelAnimationFrame(handle), { once: true });
-	});
+	document
+		.querySelectorAll<HTMLElement>('[data-ascii-frame]')
+		.forEach((root) => createAsciiScene(root, { loadDefault, variants: VARIANTS }));
 </script>
-
