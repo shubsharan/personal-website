@@ -25,11 +25,12 @@ const writing = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    kind: z.enum(["essay", "review", "note"]).default("essay"),
+    publication: z
+      .enum(["Failing Loudly", "Book Reviews", "Essays"])
+      .default("Essays"),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    // For reviews: the work under discussion, e.g. "Robert Caro, The Power Broker".
-    subject: z.string().optional(),
+    canonicalURL: z.url().optional(),
     draft: z.boolean().default(false),
   }),
 });

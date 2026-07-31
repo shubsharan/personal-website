@@ -1,6 +1,5 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
-import { WRITING_KIND } from '../../consts';
 import Entry from '../../layouts/Entry.astro';
 import { longDate, monthYear } from '../../utils/dates';
 
@@ -15,18 +14,18 @@ type Props = CollectionEntry<'writing'>;
 
 const post = Astro.props;
 const { Content } = await render(post);
-const { title, description, kind, pubDate, updatedDate, subject } = post.data;
+const { title, description, publication, pubDate, updatedDate, canonicalURL } = post.data;
 ---
 
 <Entry
 	title={title}
 	description={description}
-	label={WRITING_KIND[kind]}
+	label={publication}
 	rail={longDate(pubDate)}
-	subtitle={subject}
 	updatedNote={updatedDate ? `Updated ${monthYear(updatedDate)}` : undefined}
 	backHref="/writing/"
 	backLabel="All writing"
+	canonicalURL={canonicalURL}
 >
 	<Content />
 </Entry>

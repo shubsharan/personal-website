@@ -27,8 +27,3 @@ export const PROJECT_STATUS = {
   ended: { label: "Ended", dot: "hollow" },
 } as const;
 
-export const WRITING_KIND = {
-  essay: "Essay",
-  review: "Review",
-  note: "Note",
-} as const;

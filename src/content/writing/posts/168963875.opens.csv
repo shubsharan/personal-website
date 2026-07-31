@@ -1,0 +1,15 @@
+post_id,timestamp,email,post_type,post_audience,active_subscription,country,city,region,device_type,client_os,client_type,user_agent
+168963875,2025-07-22T19:06:51.127Z,kawaevents@gmail.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)
+168963875,2025-07-22T19:17:36.191Z,stuartomeara@gmail.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)
+168963875,2025-07-22T19:18:27.018Z,vikas@vikassharan.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0
+168963875,2025-07-22T19:25:51.808Z,vikas@vikassharan.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0
+168963875,2025-07-22T19:54:26.489Z,tonymilgram@gmail.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)
+168963875,2025-07-22T19:54:56.431Z,tonymilgram@gmail.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)
+168963875,2025-07-22T19:56:26.412Z,tonymilgram@gmail.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)
+168963875,2025-07-22T20:18:35.283Z,vikas@vikassharan.com,newsletter,everyone,true,NL,,,,,,Mozilla/5.0
+168963875,2025-07-22T20:21:25.077Z,stuartomeara@gmail.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0
+168963875,2025-07-22T21:13:08.028Z,tonymilgram@gmail.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0
+168963875,2025-07-22T23:58:46.172Z,malak@berkeley.edu,newsletter,everyone,true,US,,,,,,Mozilla/5.0
+168963875,2025-07-23T02:12:58.622Z,vikas@vikassharan.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0
+168963875,2025-07-23T08:15:10.689Z,eamonjahani@yahoo.com,newsletter,everyone,true,NL,,,,,,Mozilla/5.0
+168963875,2025-07-27T07:19:26.723Z,stuartomeara@gmail.com,newsletter,everyone,true,US,,,,,,Mozilla/5.0

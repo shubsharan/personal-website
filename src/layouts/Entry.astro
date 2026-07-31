@@ -24,6 +24,8 @@ interface Props {
 	updatedNote?: string;
 	backHref: string;
 	backLabel: string;
+	/** Overrides the default self-referencing canonical, e.g. for posts cross-posted from Substack. */
+	canonicalURL?: string;
 }
 
 const {
@@ -37,13 +39,14 @@ const {
 	updatedNote,
 	backHref,
 	backLabel,
+	canonicalURL,
 } = Astro.props;
 
 // Strip the scheme so the link reads as a destination, not a URL.
 const displayUrl = url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} canonicalURL={canonicalURL}>
 	<article class="container max-w-3xl">
 		<header class="pt-7">
 			<div class="label flex items-center justify-between gap-4 text-tx-3">
