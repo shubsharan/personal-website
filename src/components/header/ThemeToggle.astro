@@ -1,73 +1,77 @@
 ---
 /*
- * Light/dark toggle. Icon visibility is pure CSS, keyed off data-theme and the
- * system preference — the site follows the system by default (see global.css),
- * so the moon shows in system-dark and the sun in system-light, unless an
- * explicit data-theme pins a choice. No JS needed to show the right icon before
- * hydration. The click handler flips data-theme on <html> and persists it; the
- * inline script in BaseHead re-applies a stored choice before first paint.
+ * Segmented Light/Dark theme switch. Sizing is driven by the icon: options are
+ * flex + padding around the SVG, and the track/pill follow that intrinsic size.
+ * Pill position and active icon color are Tailwind utilities keyed off data-theme
+ * and the system preference — the site follows the system by default (see
+ * global.css). The click/keyboard handlers set data-theme on <html> and persist
+ * it; BaseHead re-applies a stored choice before first paint.
  */
+
+import { Icon } from 'astro-icon/components';
+
+const iconSize = 14;
+
+const optionClass =
+	'relative z-1 inline-flex items-center justify-center rounded-full border-0 bg-transparent p-1.5 text-tx-2';
 ---
 
-<button
-	type="button"
-	class="inline-flex cursor-pointer self-center border-0 bg-transparent p-0 text-tx-2 transition-colors hover:text-tx -mt-1.5"
+<div
+	class="relative inline-flex rounded-full border border-ui bg-2 p-0.5"
+	role="radiogroup"
+	aria-label="Theme"
 	data-theme-toggle
-	aria-label="Toggle dark mode"
-	aria-pressed="true"
 >
-	<svg
-		data-icon="sun"
-		width="16"
-		height="16"
-		viewBox="0 0 16 16"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="1.5"
-		stroke-linecap="round"
-		aria-hidden="true"
+	<span class="pointer-events-none absolute inset-0.5 flex" aria-hidden="true">
+		<span
+			class:list={[
+				'w-1/2 rounded-full bg-bg-2',
+				'translate-x-full transition-transform duration-200 ease-in-out motion-reduce:transition-none',
+				'[:root[data-theme=light]_&]:translate-x-0',
+				'[:root[data-theme=dark]_&]:translate-x-full',
+				'[@media(prefers-color-scheme:light)]:[:root:not([data-theme])_&]:translate-x-0',
+			]}
+		></span>
+	</span>
+	<button
+		type="button"
+		role="radio"
+		aria-label="Light"
+		aria-checked="false"
+		data-theme-option="light"
+		tabindex="-1"
+		class:list={[
+			optionClass,
+			'[:root[data-theme=light]_&]:text-tx',
+			'[@media(prefers-color-scheme:light)]:[:root:not([data-theme])_&]:text-tx',
+		]}
 	>
-		<circle cx="9" cy="9" r="3.5" />
-		<path
-			d="M9 1.5v2M9 14.5v2M16.5 9h-2M3.5 9h-2M14.4 3.6l-1.4 1.4M5 12l-1.4 1.4M14.4 14.4l-1.4-1.4M5 6 3.6 4.6"
-		/>
-	</svg>
-	<svg data-icon="moon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-		<path d="M15.5 11.3A6.5 6.5 0 0 1 6.7 2.5a6.5 6.5 0 1 0 8.8 8.8Z" />
-	</svg>
-</button>
-
-<style>
-	/* Default icon is the moon (dark). Shown for system-dark and explicit dark. */
-	[data-icon='sun'] {
-		display: none;
-	}
-
-	/* Show the sun whenever LIGHT is the active theme: an explicit light choice… */
-	:global(:root[data-theme='light']) [data-icon='sun'] {
-		display: block;
-	}
-	:global(:root[data-theme='light']) [data-icon='moon'] {
-		display: none;
-	}
-
-	/* …or the system is light and no explicit choice is pinned. */
-	@media (prefers-color-scheme: light) {
-		:global(:root:not([data-theme])) [data-icon='sun'] {
-			display: block;
-		}
-		:global(:root:not([data-theme])) [data-icon='moon'] {
-			display: none;
-		}
-	}
-</style>
+		<Icon name="feather:sun" width={iconSize} height={iconSize} aria-hidden="true" />
+	</button>
+	<button
+		type="button"
+		role="radio"
+		aria-label="Dark"
+		aria-checked="true"
+		data-theme-option="dark"
+		tabindex="0"
+		class:list={[
+			optionClass,
+			'[:root[data-theme=dark]_&]:text-tx',
+			'[@media(prefers-color-scheme:dark)]:[:root:not([data-theme])_&]:text-tx',
+		]}
+	>
+		<Icon name="feather:moon" width={iconSize} height={iconSize} aria-hidden="true" />
+	</button>
+</div>
 
 <script>
-	const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
-
+	const root = document.querySelector<HTMLElement>('[data-theme-toggle]');
+	const options = root
+		? Array.from(root.querySelectorAll<HTMLButtonElement>('[data-theme-option]'))
+		: [];
 	const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-	// No pinned choice → follow the system; an explicit data-theme wins.
 	function isDark() {
 		const t = document.documentElement.getAttribute('data-theme');
 		if (t === 'light') return false;
@@ -75,18 +79,41 @@
 		return systemDark.matches;
 	}
 
-	function syncPressed() {
-		button?.setAttribute('aria-pressed', String(isDark()));
+	function currentTheme(): 'light' | 'dark' {
+		return isDark() ? 'dark' : 'light';
 	}
 
-	syncPressed();
-	// Keep aria-pressed accurate if the OS flips while no explicit choice is set.
-	systemDark.addEventListener('change', syncPressed);
+	function sync() {
+		const theme = currentTheme();
+		for (const opt of options) {
+			const on = opt.dataset.themeOption === theme;
+			opt.setAttribute('aria-checked', String(on));
+			opt.tabIndex = on ? 0 : -1;
+		}
+	}
 
-	button?.addEventListener('click', () => {
-		const next = isDark() ? 'light' : 'dark';
-		document.documentElement.setAttribute('data-theme', next);
-		localStorage.setItem('theme', next);
-		syncPressed();
+	function setTheme(theme: 'light' | 'dark') {
+		document.documentElement.setAttribute('data-theme', theme);
+		localStorage.setItem('theme', theme);
+		sync();
+	}
+
+	sync();
+	systemDark.addEventListener('change', sync);
+
+	root?.addEventListener('click', (e) => {
+		const btn = (e.target as Element | null)?.closest<HTMLButtonElement>('[data-theme-option]');
+		if (!btn || !root.contains(btn)) return;
+		const theme = btn.dataset.themeOption;
+		if (theme === 'light' || theme === 'dark') setTheme(theme);
+	});
+
+	root?.addEventListener('keydown', (e) => {
+		const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+		if (!keys.includes(e.key)) return;
+		e.preventDefault();
+		const next = currentTheme() === 'light' ? 'dark' : 'light';
+		setTheme(next);
+		options.find((o) => o.dataset.themeOption === next)?.focus();
 	});
 </script>

@@ -392,19 +392,17 @@
 
 @media (width < 48rem) {
 	body {
-		font-size: 18px;
+		font-size: 1rem;
 	}
 }
 
 /*
- * One measure for the whole site. Header, indexes, and body text all sit on the
- * same 42rem column so the hairline rules line up from page to page.
+ * Site content width. Extends Tailwind's built-in `container` (breakpoint-stepping
+ * max-widths) with centering and a fixed horizontal inset.
  */
-@utility shell {
+@utility container {
 	margin-inline: auto;
-	width: 100%;
-	/* ~70 characters of EB Garamond at 20px. */
-	max-width: 48rem;
+	padding-inline: 1.5rem;
 }
 
 /*

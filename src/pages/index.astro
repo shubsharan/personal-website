@@ -33,7 +33,7 @@ function joiner(index: number, total: number): string {
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
 	<AsciiFrame />
 
-	<div class="shell pt-10 max-md:pt-4">
+	<div class="container max-w-3xl pt-10 max-md:pt-4">
 		<p class="rise text-[1.45rem] leading-[1.5] max-md:text-[1.25rem]">
 			I’m Shub. I make things.
 		</p>
@@ -95,7 +95,7 @@ function joiner(index: number, total: number): string {
 
 	{
 		posts.length > 0 && (
-			<section class="shell mt-20 max-md:mt-14">
+			<section class="container max-w-3xl mt-20 max-md:mt-14">
 				<h2 class="label mb-4 text-tx-3">Latest writing</h2>
 				<ul>
 					{posts.map((post) => (

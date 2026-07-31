@@ -4,9 +4,8 @@ import HeaderLink from './HeaderLink.astro';
 import ThemeToggle from './ThemeToggle.astro';
 ---
 
-<header>
-	<nav class="font-sans shell flex items-center justify-between gap-8 py-4">
-		<!-- The mark + wordmark are the home link; a separate "Home" item would be noise. -->
+<header class="w-full border-b border-ui">
+	<nav class="font-sans container max-w-3xl flex items-center justify-between gap-8 py-4">
 		<a
 			href="/"
 			class="flex items-center gap-2.5 text-[1.15rem] leading-none text-tx no-underline"
@@ -19,7 +18,7 @@ import ThemeToggle from './ThemeToggle.astro';
 				class="h-6 w-auto"
 			/>
 		</a>
-		<div class="flex items-baseline gap-6">
+		<div class="flex items-center gap-6">
 			{NAV.map((item) => <HeaderLink href={item.href}>{item.label}</HeaderLink>)}
 			<ThemeToggle />
 		</div>
