@@ -10,7 +10,9 @@ Hello friends! Welcome to Failing Loudly #2. I’m your host, Shub. We are curre
 
 👋 There are 23 more of you here now than before. That’s very exciting. Today’s episode is more meme-heavy on the back-end, so stick around.
 
-![](https://substackcdn.com/image/fetch/$s_!SrSC!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd819e7a3-1643-494e-84e9-03b627e53a93_220x220.gif)
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!SrSC!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd819e7a3-1643-494e-84e9-03b627e53a93_220x220.gif" alt="" />
+</figure>
 
 ## What the hell are we doing?
 
@@ -102,9 +104,10 @@ Marketing is hard. I have yet to figure it out and if someone tells you they can
 
 That being said, here’s what I’m going to try. Once upon a time, I bought a business book. Like an actual physical book. It’s called *Traction*, by Gabriel Weinberg and Justin Mares. They built [DuckDuckGo](https://duckduckgo.com/).
 
-![](https://substackcdn.com/image/fetch/$s_!BGM_!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F38358aac-dbee-4ee0-a591-24ad02155be0.heic)
-
-*Everybody say hi to Rich in the comments or it’s bad luck*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!BGM_!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F38358aac-dbee-4ee0-a591-24ad02155be0.heic" alt="" />
+  <figcaption>Everybody say hi to Rich in the comments or it’s bad luck</figcaption>
+</figure>
 
 I quite like this book, actually. In it, the authors outline 19 channels you should experiment with to generate (you guessed it) traction.
 
@@ -122,15 +125,18 @@ Due to time, budget, and domain issues, some of these channels will be irrelevan
 
 4. **Social and Display Ads**: I have like $3 but if we kick Instagram maybe something falls out?
 
-    ![](https://substackcdn.com/image/fetch/$s_!n9tU!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe58c04d9-f806-41c2-a218-2546de4f75d2_600x417.jpeg)
+    <figure>
+      <img src="https://substackcdn.com/image/fetch/$s_!n9tU!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe58c04d9-f806-41c2-a218-2546de4f75d2_600x417.jpeg" alt="" />
+    </figure>
 
 5. **Offline Ads**: For us, this basically means flyers. Unless you’re a pilot, in which case I’ll give you $500 for some skywriting.
 
 6. **Content Marketing**: Running a blog or newsletter. Wait a second. This is a blog or newsletter. Are we… is this marketing right now???
 
-    ![](https://substackcdn.com/image/fetch/$s_!jTVb!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Feb5a83b8-d910-4961-9832-3cfa71a9e3a8_888x499.jpeg)
-
-    *it**
+    <figure>
+      <img src="https://substackcdn.com/image/fetch/$s_!jTVb!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Feb5a83b8-d910-4961-9832-3cfa71a9e3a8_888x499.jpeg" alt="" />
+      <figcaption>it*</figcaption>
+    </figure>
 
 7. **Viral Marketing**: Encouraging our users to refer other users.
 
@@ -188,7 +194,9 @@ Should each edition be a more general update, or a deep-dive into a specific par
 
 Seriously. Let me know in the comments. At some point, the void must shout back.
 
-![](https://substackcdn.com/image/fetch/$s_!meEd!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F49ce08af-7551-4bf8-929e-fc529d690ca4_2400x2400.png)
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!meEd!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F49ce08af-7551-4bf8-929e-fc529d690ca4_2400x2400.png" alt="" />
+</figure>
 
 * * *
 

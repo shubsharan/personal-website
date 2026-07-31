@@ -172,7 +172,7 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 		items: RESOLUTIONS,
 		initialIndex: indexOfKey(RESOLUTIONS, 'key', state.res),
 		render: (res, idx, btn) => {
-			btn.style.setProperty('--n', String(idx + 1));
+			btn.dataset.level = String(idx);
 			setLabel(btn, `Detail: ${res.label}`);
 		},
 		onChange: async (res) => {
@@ -212,7 +212,7 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 		items: SPEEDS,
 		initialIndex: indexOfKey(SPEEDS, 'fps', state.fps),
 		render: (s, idx, btn) => {
-			btn.textContent = '▶'.repeat(idx + 1);
+			btn.dataset.level = String(idx);
 			setLabel(btn, `Speed: ${s.name}`);
 		},
 		onChange: (s) => {

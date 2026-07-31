@@ -27,5 +27,16 @@ const { title, description, publication, pubDate, updatedDate, canonicalURL } = 
 	backLabel="All writing"
 	canonicalURL={canonicalURL}
 >
+	{
+		canonicalURL && (
+			<p class="mb-2 text-sm text-tx-3">
+				This post originally appeared on{' '}
+				<a href={canonicalURL} target="_blank" rel="noopener" class="text-tx-3">
+					Substack
+				</a>
+				.
+			</p>
+		)
+	}
 	<Content />
 </Entry>

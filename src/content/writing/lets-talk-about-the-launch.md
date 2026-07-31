@@ -10,7 +10,9 @@ Hello, friends! Welcome to Failing Loudly #5. I’m your host, Shub and I’m bu
 
 Let’s talk about it.
 
-![We did it Joe Blank Template - Imgflip](https://substackcdn.com/image/fetch/$s_!CR1k!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F31e92559-3358-410a-a297-90518a6520c3_1048x819.jpeg)
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!CR1k!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F31e92559-3358-410a-a297-90518a6520c3_1048x819.jpeg" alt="We did it Joe Blank Template - Imgflip" />
+</figure>
 
 * * *
 
@@ -34,7 +36,9 @@ Check it out. Here are some screens from the game, as well as a look at the inbo
 
 A few eagle-eyed players were able to make the connection between Kempelen Labs and Wolfgang Von Kempelen, the 18th century Hungarian engineer behind [the Mechanical Turk](https://en.wikipedia.org/wiki/Mechanical_Turk), a famous con that involved a chess-playing automaton designed to impress the Empress of Austria, which was later revealed to be just some guy hiding in a machine.
 
-![You like Jazz? in 24 different languages](https://substackcdn.com/image/fetch/$s_!n2tG!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F19ffc76f-15ff-42a2-9a49-21758721dc86_1280x720.jpeg)
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!n2tG!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F19ffc76f-15ff-42a2-9a49-21758721dc86_1280x720.jpeg" alt="You like Jazz? in 24 different languages" />
+</figure>
 
 * * *
 
@@ -70,9 +74,10 @@ In the future, I’d like to add some more granular tracking so I can see exactl
 
 ## I designed the game poorly
 
-![](https://substackcdn.com/image/fetch/$s_!JqNs!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F15a31027-209f-4b55-a3da-1ef7269fb638_656x492.png)
-
-*33.8% of players made it past the password puzzle*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!JqNs!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F15a31027-209f-4b55-a3da-1ef7269fb638_656x492.png" alt="" />
+  <figcaption>33.8% of players made it past the password puzzle</figcaption>
+</figure>
 
 Yikes, those drop-offs were scary to watch happen in real time. Only one-third of players made it past the first password puzzle and only 5.4% of users were able to finish the game.
 

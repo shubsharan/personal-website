@@ -36,5 +36,5 @@ Consult these guides before working on related tasks:
 - Tailwind v4 gotchas that already bit this repo: colors only generate utilities from `@theme`, not a plain `:root`, and unlayered element rules (e.g. `a { color }`) outrank utilities unless wrapped in `@layer base`. Never put two conflicting color utilities on one element (e.g. `text-tx-2` plus a conditional `text-tx`) — Tailwind's sort order decides the winner, not class order.
 - Fonts are configured in `astro.config.mjs` with `fontProviders.google()`: EB Garamond → `--font-eb-garamond` / `--font-serif`, Inter → `--font-inter` / `--font-sans`; loaded from `BaseHead`.
 - Site content width is Tailwind `container` in `global.css` (breakpoint-stepping max-widths, centered, `1.5rem` horizontal padding); header, indexes, and body share it. Body is a column flex with `main { flex: 1 }` so the footer stays at the bottom on short pages.
-- UI chrome (nav, status labels, dates, footer) uses the `.label` class (Inter, small, tracked, uppercase). Header mark is `/logo.svg`; icons use `astro-icon` with the Feather set.
+- UI chrome (nav, status labels, dates, footer) uses the `.label` class (Inter, small, tracked, uppercase). Header mark is `/logo.svg`; icons use `astro-icon` with the Lucide set.
 - Repo remote is `https://github.com/shubsharan/personal-website.git`.

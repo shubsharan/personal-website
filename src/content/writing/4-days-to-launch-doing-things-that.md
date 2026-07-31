@@ -10,7 +10,9 @@ Hello, friends! Welcome to **Failing Loudly #4**. I’m your host, Shub. We are 
 
 So today, let’s talk about… going outside.
 
-![Steam Community :: Guide :: How to start touching grass?](https://substackcdn.com/image/fetch/$s_!8Nzz!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F03c363fe-1834-49bf-b58e-93890a27d001_1200x675.jpeg)
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!8Nzz!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F03c363fe-1834-49bf-b58e-93890a27d001_1200x675.jpeg" alt="Steam Community :: Guide :: How to start touching grass?" />
+</figure>
 
 ## The real world exists
 
@@ -48,13 +50,16 @@ These people are strangers!
 
 For weeks, I’ve been stuck in my network bubble. Most of you reading this are friends and family (hi, I love you). But for Plotpoint to succeed, we need to expand beyond that. This was our first real step.
 
-![](https://substackcdn.com/image/fetch/$s_!hYD6!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7d65ec32-b9ce-4246-b08b-332c15203d40_1290x2796.png)
-
-*I really need to charge my phone*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!hYD6!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7d65ec32-b9ce-4246-b08b-332c15203d40_1290x2796.png" alt="" />
+  <figcaption>I really need to charge my phone</figcaption>
+</figure>
 
 * * *
 
-![](https://substackcdn.com/image/fetch/$s_!TL35!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F96af5429-3452-4359-b197-154e53024216_498x343.gif)
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!TL35!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F96af5429-3452-4359-b197-154e53024216_498x343.gif" alt="" />
+</figure>
 
 * * *
 
@@ -89,6 +94,7 @@ I’m now also extending that same philosophy to the product. Instead of creatin
 
 We have four days to go. This is a heads-down sprint to get the story finished and ready. I’ll send out another update on Thursday, just before the festival. Wish me luck!
 
-![Without a goal, Sprint Plannings are wasted time ? - Matthias Orgler](https://substackcdn.com/image/fetch/$s_!1hu6!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fccad7f88-ab6f-4023-bde2-4a405229ad3f_666x500.jpeg)
-
-*of course there’s a facebook page called “Agile Methodology Memes”*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!1hu6!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fccad7f88-ab6f-4023-bde2-4a405229ad3f_666x500.jpeg" alt="Without a goal, Sprint Plannings are wasted time ? - Matthias Orgler" />
+  <figcaption>of course there’s a facebook page called “Agile Methodology Memes”</figcaption>
+</figure>

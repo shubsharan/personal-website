@@ -38,9 +38,10 @@ Is that even something I want to do?
 
 I know it’s common sense to just go get any new job, but there’s something inside me that is very resistant to that idea. I think I’m just wired to build stuff, and I don’t know if I’ll be happy working a 9-5. Now, is that a valid reason to continue taking risky career plays? Is it a smarter idea to take the safe route and start earning income again *before* thinking about a new project? I don’t know the answer to that.
 
-![Angel Investor $???: MONEY PLEASE! - The Fireside Wake](https://substackcdn.com/image/fetch/$s_!TRtx!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fecb52f19-7d24-404c-a9bb-7172f9a3ab77_2202x1170.jpeg)
-
-*Note: if you are someone on a team that’s willing to pay me money for work, pls disregard the entire previous section*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!TRtx!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fecb52f19-7d24-404c-a9bb-7172f9a3ab77_2202x1170.jpeg" alt="Angel Investor $???: MONEY PLEASE! - The Fireside Wake" />
+  <figcaption>Note: if you are someone on a team that’s willing to pay me money for work, pls disregard the entire previous section</figcaption>
+</figure>
 
 ## What should I do with Plotpoint?
 

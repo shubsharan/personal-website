@@ -16,9 +16,10 @@ What are we talking about today?
 
 2. We launched a waitlist website!
 
-![](https://substackcdn.com/image/fetch/$s_!OSXp!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd231007e-0cf9-4dd1-81d1-8640ec20d84b_640x360.jpeg)
-
-*Me, deploying my build to Cloudflare*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!OSXp!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd231007e-0cf9-4dd1-81d1-8640ec20d84b_640x360.jpeg" alt="" />
+  <figcaption>Me, deploying my build to Cloudflare</figcaption>
+</figure>
 
 ## 👀 Introducing… Plotpoint!
 
@@ -58,9 +59,10 @@ I’d love to add more challenges over time so that anyone else who makes their 
 
 3. For the Waypoint Challenge, we are using open-source tools like [MapLibre](https://maplibre.org/) (Mapping), [OpenStreetMaps](https://www.openstreetmap.org/#map=5/38.01/-95.84) (Location data and map tiles) and [Turf](https://turfjs.org/) (geospatial analysis).
 
-![](https://substackcdn.com/image/fetch/$s_!Aqvf!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F849759d1-f162-44cb-b4ab-e4df273aed3e_3840x2160.png)
-
-*this is what our database looks like*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!Aqvf!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F849759d1-f162-44cb-b4ab-e4df273aed3e_3840x2160.png" alt="" />
+  <figcaption>this is what our database looks like</figcaption>
+</figure>
 
 Why do we have so many tables all linked together? Wouldn’t it be easier to have one big “file” that has all the data we need for each story?
 
@@ -72,7 +74,9 @@ Maybe! If the goal is to just deliver one game to play at Outside Lands, then th
 
 I’d like to create a platform where anyone can create and publish their own stories. I’m hacking together this first one, sure, but I’d like to invite writers and creators everywhere to join us and start creating stories for locations that are special to them, all across the world.
 
-![](https://substackcdn.com/image/fetch/$s_!0Jap!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd95eec65-e032-47f1-95ea-d46c87361bc5_245x152.gif)
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!0Jap!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd95eec65-e032-47f1-95ea-d46c87361bc5_245x152.gif" alt="" />
+</figure>
 
 ## 🗒️ What’s next for product?
 
@@ -90,9 +94,10 @@ In terms of the product, here’s what’s left:
 
 ## 👀 We launched a waitlist!
 
-![](https://substackcdn.com/image/fetch/$s_!4kn9!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F82de5a1b-fe35-474f-bb6b-d861faeee780_4800x4800.png)
-
-*Check it out at plotpoint.io*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!4kn9!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F82de5a1b-fe35-474f-bb6b-d861faeee780_4800x4800.png" alt="" />
+  <figcaption>Check it out at plotpoint.io</figcaption>
+</figure>
 
 We launched a [waitlist website](https://plotpoint.io/) on Saturday. It’s extremely janky and it’s only one page, but it does the job. Here’s how it works:
 
@@ -106,9 +111,10 @@ I’m using the plotpoint.io domain I bought last year when I set this up to pro
 
 ## 📊 Let’s talk numbers
 
-![](https://substackcdn.com/image/fetch/$s_!Qbfr!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff1523016-d33d-4872-a878-8b6dc45f914f_1024x1190.png)
-
-*Substack stats after 1 week*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!Qbfr!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff1523016-d33d-4872-a878-8b6dc45f914f_1024x1190.png" alt="" />
+  <figcaption>Substack stats after 1 week</figcaption>
+</figure>
 
 I created this Substack newsletter on July 20th and published my first post ([Let’s Build a Company in Two Weeks](https://failingloudly.substack.com/p/lets-build-a-company-in-two-weeks)) on July 22nd. That means we’ve been building publicly for just about one week, and we have 11 days left to get as many waitlist users as possible.
 

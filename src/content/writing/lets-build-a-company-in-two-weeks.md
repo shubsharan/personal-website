@@ -36,9 +36,10 @@ Her requirements:
 
 3. No public spectacles (she will leave me if I do it at a ballgame)
 
-![](https://substackcdn.com/image/fetch/$s_!08OL!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F798a9644-6490-458b-9717-51e362a4e51e_667x374.jpeg)
-
-*It’s like Dumb Starbucks, except even dumber*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!08OL!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F798a9644-6490-458b-9717-51e362a4e51e_667x374.jpeg" alt="" />
+  <figcaption>It’s like Dumb Starbucks, except even dumber</figcaption>
+</figure>
 
 Here’s something about Malak: she’s knows what’s going on around town. A new coffee shop opened up in the Richmond? A Michelin-starred chef is leaving his restaurant to open a smashburger popup? There’s a secret garden hidden in an alley somewhere that presents an incredible picnicking opportunity? She already knows about it, and she’s already been. The woman loves to explore, adventure, galavant, and (most importantly) enjoy a sweet treat. That’s the what.
 
@@ -49,9 +50,10 @@ The where is easy: San Francisco. We love San Francisco so much. It’s provided
 
 ## Welcome to Plotpoint
 
-![](https://substackcdn.com/image/fetch/$s_!9BFG!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F65bcde95-3ff1-4e2d-bedd-57fcea43a574_2400x2400.png)
-
-*I made it a little janky on purpose so she wouldn’t suspect it was me. Yes, this is a humblebrag.*
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!9BFG!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F65bcde95-3ff1-4e2d-bedd-57fcea43a574_2400x2400.png" alt="" />
+  <figcaption>I made it a little janky on purpose so she wouldn’t suspect it was me. Yes, this is a humblebrag.</figcaption>
+</figure>
 
 Plotpoint is a location-based storytelling experience. Think scavenger hunts meets Pokemon Go, meets geocaching, meets a murder mystery dinner party. Imagine a crime thriller set across town, or a series of cozy romances set in your local coffee shop. The premise is simple: people are begging for an excuse to go outside, to engage with the real world, and to use their phones for something other than doomscrolling.
 
@@ -113,7 +115,9 @@ That’s all for today. Thank you for allowing me to shout into the void. I hope
 
 If you liked what you read, please like, comment, subscribe, share, etc. Alert the Almighty Algorithm to our presence and maybe one day it will turn a baleful, Lovecraftian eye in our direction.
 
-![](https://substackcdn.com/image/fetch/$s_!jCnG!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F5863c6db-f052-476e-ace9-b755269ba69d_1080x1113.jpeg)
+<figure>
+  <img src="https://substackcdn.com/image/fetch/$s_!jCnG!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F5863c6db-f052-476e-ace9-b755269ba69d_1080x1113.jpeg" alt="" />
+</figure>
 
 [^1]: https://www.failory.com/blog/startup-failure-rate
 [^2]: https://www.cbinsights.com/research/report/startup-failure-reasons-top/

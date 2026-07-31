@@ -40,6 +40,7 @@ export default defineConfig({
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['cursive'],
+      display: 'block',
     },
   ],
 

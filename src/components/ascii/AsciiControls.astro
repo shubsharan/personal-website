@@ -1,28 +1,18 @@
 ---
-/*
- * The ASCII scene's settings bar: the film credit (a link to the source clip)
- * on the left, and a right-aligned toolbar of grouped icon toggles (detail,
- * color, style, contrast, speed, invert) separated by vertical dividers.
- * Presentational only — the behaviour lives in the scene composed by
- * ./scene.ts, which finds the toolbar and its buttons by their data-*
- * hooks and wires them to the renderer. The toolbar is hidden until that script
- * enables it, so the interactive icons never show without JS; the credit link
- * always shows.
- *
- * The color and style groups are generated from the SAME definitions the script
- * wires (COLORS / RAMP_ORDER in ./config.mjs), and their initial
- * pressed state comes from DEFAULTS — so the highlighted control can never drift
- * from what actually renders.
- *
- * Styled with Tailwind utilities. Buttons inherit the bar's tracked-out label
- * type via Preflight; each toggle dims by default (text-tx-3) and lights on
- * hover / when active (aria-pressed). Repeated patterns are hoisted to consts.
- */
-import { COLORS, DEFAULTS, RAMP_ORDER } from './config.mjs';
+import { Icon } from 'astro-icon/components';
+import {
+	COLORS,
+	CONTRASTS,
+	DEFAULTS,
+	RAMP_ORDER,
+	RESOLUTIONS,
+	SPEEDS,
+	indexOfKey,
+} from './config.mjs';
 
 // Base reset shared by every toggle; most also dim -> lit on hover / active.
 const btn = 'cursor-pointer border-0 bg-transparent p-0 transition-colors';
-const toggle = `${btn} text-tx-3 hover:text-tx aria-pressed:text-tx`;
+const toggle = `${btn} inline-flex items-center text-tx-3 hover:text-tx aria-pressed:text-tx`;
 // A ramp toggle shows a few sample glyphs of its style, in mono.
 const rampBtn = `${toggle} font-mono text-[0.8em] normal-case tracking-[0.05em]`;
 
@@ -32,10 +22,15 @@ const swatch = `${btn} leading-[0] before:block before:h-[9px] before:w-[9px] be
 // A control group (buttons cluster tightly) and the rule that divides groups.
 const group = 'inline-flex items-center gap-[0.4rem]';
 const divider = 'h-[0.95em] w-px flex-none bg-ui-3';
+
+const iconSize = 12;
+const detailLevel = indexOfKey(RESOLUTIONS, 'key', DEFAULTS.res);
+const contrastLevel = indexOfKey(CONTRASTS, 'value', DEFAULTS.contrast);
+const speedLevel = indexOfKey(SPEEDS, 'fps', DEFAULTS.fps);
 ---
 
 <div
-	class="label mt-[0.7rem] flex flex-wrap items-center justify-between gap-x-4 gap-y-[0.4rem] px-6 text-tx-3 max-[40rem]:gap-x-[0.8rem] max-[40rem]:text-[0.625rem]"
+	class="label py-2 border-b border-ui bg-bg-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 px-6 text-tx-3 max-[40rem]:gap-x-2 max-[40rem]:text-xs"
 >
 	<a
 		class="whitespace-nowrap text-tx-3 no-underline transition-colors hover:text-tx"
@@ -51,9 +46,15 @@ const divider = 'h-[0.95em] w-px flex-none bg-ui-3';
 		<span class={group} role="group" aria-label="Detail">
 			<button
 				type="button"
-				class={`${btn} box-border inline-block h-3 w-3 border border-current bg-[radial-gradient(currentColor_40%,transparent_44%)] bg-center align-middle text-tx-2 [background-size:calc(12px/var(--n,2))_calc(12px/var(--n,2))] hover:text-tx`}
+				class={`group ${toggle}`}
 				data-detail
-				aria-label="Detail"></button>
+				data-level={detailLevel}
+				aria-label="Detail"
+			>
+				<Icon name="lucide:grid-2x2" width={iconSize} height={iconSize} class="hidden group-data-[level=0]:block" aria-hidden="true" />
+				<Icon name="lucide:grid-3x2" width={iconSize} height={iconSize} class="hidden group-data-[level=1]:block" aria-hidden="true" />
+				<Icon name="lucide:grid-3x3" width={iconSize} height={iconSize} class="hidden group-data-[level=2]:block" aria-hidden="true" />
+			</button>
 		</span>
 
 		<span class={divider} aria-hidden="true"></span>
@@ -87,15 +88,40 @@ const divider = 'h-[0.95em] w-px flex-none bg-ui-3';
 		<span class={group} role="group" aria-label="Contrast">
 			<button
 				type="button"
-				class={`${btn} box-border inline-block h-3 w-3 rounded-full border border-tx-3 align-middle data-[level=0]:bg-[linear-gradient(90deg,var(--tx)_50%,var(--tx-2)_50%)] data-[level=1]:bg-[linear-gradient(90deg,var(--tx)_50%,var(--tx-3)_50%)] data-[level=2]:bg-[linear-gradient(90deg,var(--tx)_50%,var(--bg)_50%)]`}
+				class={`group ${toggle} gap-1`}
 				data-contrast-cycle
-				aria-label="Contrast"></button>
+				data-level={contrastLevel}
+				aria-label="Contrast"
+			>
+				<Icon name="lucide:contrast" width={iconSize} height={iconSize} aria-hidden="true" />
+				<span class="inline-flex items-center gap-0.5" aria-hidden="true">
+					<span
+						class="h-2.5 w-[3px] rounded-sm bg-current opacity-30 group-data-[level=0]:opacity-100 group-data-[level=1]:opacity-100 group-data-[level=2]:opacity-100"
+					></span>
+					<span
+						class="h-2.5 w-[3px] rounded-sm bg-current opacity-30 group-data-[level=1]:opacity-100 group-data-[level=2]:opacity-100"
+					></span>
+					<span
+						class="h-2.5 w-[3px] rounded-sm bg-current opacity-30 group-data-[level=2]:opacity-100"
+					></span>
+				</span>
+			</button>
 		</span>
 
 		<span class={divider} aria-hidden="true"></span>
 
 		<span class={group} role="group" aria-label="Speed">
-			<button type="button" class={`${btn} text-[0.85em] tracking-[-0.15em] text-tx-3 hover:text-tx`} data-speed aria-label="Speed"></button>
+			<button
+				type="button"
+				class={`group ${toggle}`}
+				data-speed
+				data-level={speedLevel}
+				aria-label="Speed"
+			>
+				<Icon name="lucide:turtle" width={iconSize} height={iconSize} class="hidden group-data-[level=0]:block" aria-hidden="true" />
+				<Icon name="lucide:play" width={iconSize} height={iconSize} class="hidden group-data-[level=1]:block" aria-hidden="true" />
+				<Icon name="lucide:rabbit" width={iconSize} height={iconSize} class="hidden group-data-[level=2]:block" aria-hidden="true" />
+			</button>
 		</span>
 
 		<span class={divider} aria-hidden="true"></span>
@@ -103,10 +129,11 @@ const divider = 'h-[0.95em] w-px flex-none bg-ui-3';
 		<span class={group} role="group" aria-label="Invert">
 			<button
 				type="button"
-				class={`${btn} inline-flex items-center gap-[3px] align-middle text-tx-2 hover:text-tx before:box-border before:h-[9px] before:w-[9px] before:rounded-full before:border before:border-current before:bg-current before:content-[''] after:box-border after:h-[9px] after:w-[9px] after:rounded-full after:border after:border-current after:content-[''] aria-pressed:before:bg-transparent aria-pressed:after:bg-current`}
+				class={`${btn} inline-flex items-center gap-[3px] align-middle text-tx-3 hover:text-tx before:box-border before:h-[9px] before:w-[9px] before:rounded-full before:border before:border-current before:bg-current before:content-[''] after:box-border after:h-[9px] after:w-[9px] after:rounded-full after:border after:border-current after:content-[''] aria-pressed:before:bg-transparent aria-pressed:after:bg-current`}
 				data-invert
 				aria-pressed="false"
-				aria-label="Invert"></button>
+				aria-label="Invert light and dark"
+			></button>
 		</span>
 	</div>
 </div>
