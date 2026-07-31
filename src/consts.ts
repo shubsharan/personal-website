@@ -1,29 +1,30 @@
 // Place any global data in this file.
 // You can import this data from anywhere in your site by using the `import` keyword.
 
-export const SITE_TITLE = 'shub.gg';
+export const SITE_TITLE = "shub.gg";
 export const SITE_DESCRIPTION =
-	'Shubhankar Sharan — founder and builder. Projects, essays, and notes on what I’m reading.';
-export const AUTHOR = 'Shubhankar Sharan';
+  "Shubhankar Sharan — founder and builder. Projects, essays, and notes on what I’m reading.";
+export const AUTHOR = "Shubhankar Sharan";
 
 export const NAV = [
-	{ href: '/projects', label: 'Projects' },
-	{ href: '/writing', label: 'Writing' },
+  { href: "/projects", label: "Projects" },
+  { href: "/writing", label: "Writing" },
+  { href: "/art", label: "Art" },
 ] as const;
 
 export const SOCIALS = {
-	github: 'https://github.com/shubsharan',
+  github: "https://github.com/shubsharan",
 } as const;
 
 // The status ledger. `dot` picks how the mark next to a project is drawn.
 export const PROJECT_STATUS = {
-	active: { label: 'Active', dot: 'live' },
-	shipped: { label: 'Shipped', dot: 'solid' },
-	ended: { label: 'Ended', dot: 'hollow' },
+  active: { label: "Active", dot: "live" },
+  shipped: { label: "Shipped", dot: "solid" },
+  ended: { label: "Ended", dot: "hollow" },
 } as const;
 
 export const WRITING_KIND = {
-	essay: 'Essay',
-	review: 'Review',
-	note: 'Note',
+  essay: "Essay",
+  review: "Review",
+  note: "Note",
 } as const;

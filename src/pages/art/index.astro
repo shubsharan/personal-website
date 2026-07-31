@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import EntryRow from '../../components/EntryRow.astro';
+import { PROJECT_STATUS, SITE_TITLE } from '../../consts';
+import Base from '../../layouts/Base.astro';
+import { span } from '../../utils/dates';
+
+// Most recently touched first: anything still active has no end date, so it
+// sorts to the top on its own.
+const art = (await getCollection('art')).sort(
+	(a, b) =>
+		(b.data.createdDate ?? new Date()).valueOf() -
+		(a.data.createdDate ?? new Date()).valueOf(),
+);
+
+const description = 'Art I’ve made.';
+---
+
+<Base title={`Art · ${SITE_TITLE}`} description={description}>
+	<div class="shell">
+		<header class="pt-6 pb-10 max-md:pt-2 max-md:pb-8">
+			<h1 class="font-serif text-[2.1rem] leading-[1.15] max-md:text-[1.75rem]">
+				Art
+			</h1>
+			<p class="mt-3 text-tx-2">{description}</p>
+			{
+				art.length > 0 && (
+					<p class="label mt-5 text-tx-3">
+						{art.length} total
+					</p>
+				)
+			}
+		</header>
+
+		{
+			art.length > 0 ? (
+				<ul>
+					{art.map((art) => (
+						<EntryRow
+							href={`/art/${art.id}/`}
+							rail={span(art.data.createdDate)}
+							label="Art"
+							title={art.data.title}
+							description={art.data.description}
+						/>
+					))}
+				</ul>
+			) : (
+				<p class="border-t border-ui py-7 text-tx-2">
+					Nothing here yet. The first art goes in{' '}
+					<code>src/content/art/</code>.
+				</p>
+			)
+		}
+	</div>
+</Base>
