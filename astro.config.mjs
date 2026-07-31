@@ -32,6 +32,15 @@ export default defineConfig({
       subsets: ['latin'],
       fallbacks: ['sans-serif'],
     },
+    {
+      provider: fontProviders.google(),
+      name: 'Mr Dafoe',
+      cssVariable: '--font-mr-dafoe',
+      weights: [400],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['cursive'],
+    },
   ],
 
   vite: {

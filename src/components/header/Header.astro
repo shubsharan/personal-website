@@ -8,7 +8,7 @@ import ThemeToggle from './ThemeToggle.astro';
 	<nav class="font-sans container max-w-3xl flex items-center justify-between gap-8 py-4">
 		<a
 			href="/"
-			class="flex items-center gap-2.5 text-[1.15rem] leading-none text-tx no-underline"
+			class="flex flex-row items-center gap-2.5 text-[1.15rem] leading-none text-tx no-underline"
 		>
 			<img
 				src="/logo.svg"
@@ -17,6 +17,7 @@ import ThemeToggle from './ThemeToggle.astro';
 				height="24"
 				class="h-6 w-auto"
 			/>
+			<span class="font-logo text-3xl text-tx mt-0.5">shub</span>
 		</a>
 		<div class="flex items-center gap-6">
 			{NAV.map((item) => <HeaderLink href={item.href}>{item.label}</HeaderLink>)}
