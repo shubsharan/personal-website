@@ -1,5 +1,4 @@
 ---
-
 import { Icon } from 'astro-icon/components';
 
 const iconSize = 14;
@@ -58,10 +57,7 @@ const optionClass =
 </div>
 
 <script>
-	const root = document.querySelector<HTMLElement>('[data-theme-toggle]');
-	const options = root
-		? Array.from(root.querySelectorAll<HTMLButtonElement>('[data-theme-option]'))
-		: [];
+	const roots = Array.from(document.querySelectorAll<HTMLElement>('[data-theme-toggle]'));
 	const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
 
 	function isDark() {
@@ -75,8 +71,9 @@ const optionClass =
 		return isDark() ? 'dark' : 'light';
 	}
 
-	function sync() {
+	function syncRoot(root: HTMLElement) {
 		const theme = currentTheme();
+		const options = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-theme-option]'));
 		for (const opt of options) {
 			const on = opt.dataset.themeOption === theme;
 			opt.setAttribute('aria-checked', String(on));
@@ -84,28 +81,34 @@ const optionClass =
 		}
 	}
 
+	function syncAll() {
+		for (const root of roots) syncRoot(root);
+	}
+
 	function setTheme(theme: 'light' | 'dark') {
 		document.documentElement.setAttribute('data-theme', theme);
 		localStorage.setItem('theme', theme);
-		sync();
+		syncAll();
 	}
 
-	sync();
-	systemDark.addEventListener('change', sync);
+	syncAll();
+	systemDark.addEventListener('change', syncAll);
 
-	root?.addEventListener('click', (e) => {
-		const btn = (e.target as Element | null)?.closest<HTMLButtonElement>('[data-theme-option]');
-		if (!btn || !root.contains(btn)) return;
-		const theme = btn.dataset.themeOption;
-		if (theme === 'light' || theme === 'dark') setTheme(theme);
-	});
+	for (const root of roots) {
+		root.addEventListener('click', (e) => {
+			const btn = (e.target as Element | null)?.closest<HTMLButtonElement>('[data-theme-option]');
+			if (!btn || !root.contains(btn)) return;
+			const theme = btn.dataset.themeOption;
+			if (theme === 'light' || theme === 'dark') setTheme(theme);
+		});
 
-	root?.addEventListener('keydown', (e) => {
-		const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
-		if (!keys.includes(e.key)) return;
-		e.preventDefault();
-		const next = currentTheme() === 'light' ? 'dark' : 'light';
-		setTheme(next);
-		options.find((o) => o.dataset.themeOption === next)?.focus();
-	});
+		root.addEventListener('keydown', (e) => {
+			const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+			if (!keys.includes(e.key)) return;
+			e.preventDefault();
+			const next = currentTheme() === 'light' ? 'dark' : 'light';
+			setTheme(next);
+			root.querySelector<HTMLButtonElement>(`[data-theme-option="${next}"]`)?.focus();
+		});
+	}
 </script>
