@@ -14,7 +14,7 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 	aria-current={isActive ? 'page' : undefined}
 	class:list={[
 		className,
-		'label link-ui',
+		'label link-header',
 		isActive ? 'text-tx' : 'text-tx-2',
 	]}
 	{...props}

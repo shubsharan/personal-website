@@ -35,8 +35,8 @@ const displayUrl = url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
 ---
 
 <Base title={title} description={description} canonicalURL={canonicalURL}>
-	<article class="container max-w-3xl">
-		<header class="pt-7">
+	<article class="container max-w-3xl prose">
+		<header class="pt-6">
 			<div class="label flex items-center justify-between gap-4 text-tx-3">
 				<span class="flex items-center gap-2">
 					{status && <StatusMark status={status} />}

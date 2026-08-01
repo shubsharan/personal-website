@@ -412,11 +412,9 @@
 	/* Inter, small and tracked: nav, status labels, dates, footer. */
 	.label {
 		font-family: var(--font-sans);
-		font-size: 0.75rem;
+		font-size: 1rem;
 		font-weight: 500;
-		line-height: 1.4;
-		letter-spacing: 0.25rem;
-		text-transform: uppercase;
+		line-height: 1.5;
 		font-variant-numeric: tabular-nums;
 	}
 
@@ -424,6 +422,9 @@
 	/* Pair with .label and a tone utility (text-tx-2 / text-tx-3 / text-tx). */
 	.link-ui {
 		@apply no-underline transition-colors duration-150 hover:text-tx;
+	}
+	.link-header {
+		@apply text-[1rem] no-underline transition-colors duration-150 hover:text-tx;
 	}
 
 	/* —— Page scaffolding —— */
@@ -484,15 +485,15 @@
 		margin-top: 1rem;
 	}
 	.prose h1 {
-		font-size: 2.5rem;
+		font-size: 4rem;
 	}
 	.prose h2 {
-		margin-top: 2.25rem;
+		margin-top: 2.5rem;
 		margin-bottom: 0.5rem;
-		font-size: 1.5rem;
+		font-size: 2rem;
 	}
 	.prose h3 {
-		margin-top: 2.25rem;
+		margin-top: 2rem;
 		margin-bottom: 0.5rem;
 		font-size: 1.25rem;
 	}
