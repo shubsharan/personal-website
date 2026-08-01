@@ -1,9 +1,4 @@
 ---
-/*
- * The reading page, shared by projects and writing. The masthead carries the
- * same ledger line the index rows do — mark, label, rail — so arriving from an
- * index feels like following one row down into itself.
- */
 import StatusMark from '../components/StatusMark.astro';
 import type { PROJECT_STATUS } from '../consts';
 import Base from './Base.astro';
@@ -11,20 +6,14 @@ import Base from './Base.astro';
 interface Props {
 	title: string;
 	description: string;
-	/** Small uppercase label: a project status or a writing kind. */
 	label: string;
-	/** Right-hand metadata: a span for projects, a date for writing. */
 	rail: string;
 	status?: keyof typeof PROJECT_STATUS;
-	/** Optional second line under the title — a role, or a book being reviewed. */
 	subtitle?: string;
-	/** Where the thing itself lives, for projects that are online. */
 	url?: string;
-	/** "Updated March 2026", when it has been. */
 	updatedNote?: string;
 	backHref: string;
 	backLabel: string;
-	/** Overrides the default self-referencing canonical, e.g. for posts cross-posted from Substack. */
 	canonicalURL?: string;
 }
 
@@ -42,7 +31,6 @@ const {
 	canonicalURL,
 } = Astro.props;
 
-// Strip the scheme so the link reads as a destination, not a URL.
 const displayUrl = url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
 ---
 
@@ -57,7 +45,7 @@ const displayUrl = url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
 				<span>{rail}</span>
 			</div>
 
-			<h1 class="mt-5 font-serif text-[2.1rem] leading-[1.15] max-md:text-[1.75rem]">
+			<h1 class="page-title mt-5">
 				{title}
 			</h1>
 
@@ -70,7 +58,7 @@ const displayUrl = url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
 							href={url}
 							target="_blank"
 							rel="noopener"
-							class="label text-tx-2 no-underline transition-colors duration-150 hover:text-tx"
+							class="label link-ui text-tx-2"
 						>
 							{displayUrl} ↗
 						</a>
@@ -86,7 +74,7 @@ const displayUrl = url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
 		<footer class="mt-14 flex items-center justify-between gap-4 border-t border-ui pt-6">
 			<a
 				href={backHref}
-				class="label text-tx-3 no-underline transition-colors duration-150 hover:text-tx"
+				class="label link-ui text-tx-3"
 			>
 				← {backLabel}
 			</a>

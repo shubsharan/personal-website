@@ -1,6 +1,4 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
 import { SITE_TITLE } from '../consts';
@@ -10,7 +8,6 @@ interface Props {
 	title: string;
 	description: string;
 	image?: ImageMetadata;
-	/** Overrides the default self-referencing canonical, e.g. for posts cross-posted from Substack. */
 	canonicalURL?: string;
 }
 
@@ -34,9 +31,7 @@ const resolvedCanonicalURL = canonicalURL ?? new URL(Astro.url.pathname, Astro.s
 <meta name="generator" content={Astro.generator} />
 
 <script is:inline>
-	// Blocking (no defer/async) so the theme is set before first paint —
-	// avoids a flash of the wrong theme. Mirrors the toggle's own logic in
-	// ThemeToggle.astro; keep the two in sync.
+	// Blocking so the theme is set before first paint
 	(function () {
 		var stored = localStorage.getItem('theme');
 		if (stored === 'light' || stored === 'dark') {

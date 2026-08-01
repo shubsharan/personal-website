@@ -14,8 +14,8 @@ const description = 'Essays, notes, and reviews of what I’m reading.';
 
 <Base title={`Writing · ${SITE_TITLE}`} description={description}>
 	<div class="container max-w-3xl">
-		<header class="py-6 max-md:pt-2 max-md:pb-8">
-			<h1 class="font-serif text-[2.1rem] leading-[1.15] max-md:text-[1.75rem]">
+		<header class="page-head">
+			<h1 class="page-title">
 				Writing
 			</h1>
 		</header>
@@ -34,7 +34,7 @@ const description = 'Essays, notes, and reviews of what I’m reading.';
 					))}
 				</ul>
 			) : (
-				<p class="border-t border-ui py-7 text-tx-2">
+				<p class="empty-state">
 					Nothing published yet. The first piece goes in{' '}
 					<code>src/content/writing/</code>.
 				</p>

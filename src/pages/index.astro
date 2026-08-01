@@ -7,11 +7,6 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import Base from '../layouts/Base.astro';
 import { monthYear } from '../utils/dates';
 
-/*
- * The hero is a sentence, not a grid: project names are the navigation. It
- * reads from the collection so the claim stays true as the ledger changes —
- * add a project, and the paragraph rewrites itself.
- */
 const projects = (await getCollection('projects', (p) => !p.data.draft)).sort(
 	(a, b) => b.data.startDate.valueOf() - a.data.startDate.valueOf(),
 );
@@ -34,14 +29,11 @@ function joiner(index: number, total: number): string {
 	<AsciiFrame />
 
 	<div class="container max-w-3xl pt-10 max-md:pt-4">
-		<p class="rise text-[1.45rem] leading-[1.5] max-md:text-[1.25rem]">
+		<p class="rise text-2xl">
 			I’m Shub. I make things.
 		</p>
 
-		<p
-			class="rise mt-6 text-[1.45rem] leading-[1.5] text-tx-2 max-md:text-[1.25rem]"
-			style="animation-delay: 120ms"
-		>
+		<p class="rise mt-6 text-tx-2 [animation-delay:120ms]">
 			{
 				active.length > 0 ? (
 					<Fragment>
@@ -49,11 +41,14 @@ function joiner(index: number, total: number): string {
 						{active.map((project, i) => (
 							<Fragment>
 								{joiner(i, active.length)}
-								<a href={`/projects/${project.id}/`} class="mention">
+								<a
+									href={`/projects/${project.id}/`}
+									class="group text-tx no-underline whitespace-nowrap"
+								>
 									<StatusMark
 										status={project.data.status}
 										class="mr-[0.35em]"
-									/><span class="mention-name">{project.data.title}</span>
+									/><span class="link-underline">{project.data.title}</span>
 								</a>
 							</Fragment>
 						))}
@@ -70,11 +65,14 @@ function joiner(index: number, total: number): string {
 						{past.map((project, i) => (
 							<Fragment>
 								{joiner(i, past.length)}
-								<a href={`/projects/${project.id}/`} class="mention">
+								<a
+									href={`/projects/${project.id}/`}
+									class="group text-tx no-underline whitespace-nowrap"
+								>
 									<StatusMark
 										status={project.data.status}
 										class="mr-[0.35em]"
-									/><span class="mention-name">{project.data.title}</span>
+									/><span class="link-underline">{project.data.title}</span>
 								</a>
 							</Fragment>
 						))}
@@ -84,11 +82,9 @@ function joiner(index: number, total: number): string {
 			}
 		</p>
 
-		<p
-			class="rise mt-6 text-[1.45rem] leading-[1.5] text-tx-2 max-md:text-[1.25rem]"
-			style="animation-delay: 240ms"
-		>
-			In between I write — <a href="/writing/" class="mention">essays</a>, and
+		<p class="rise mt-6 text-tx-2 [animation-delay:240ms]">
+			In between I write —{' '}
+			<a href="/writing/" class="link-underline text-tx whitespace-nowrap">essays</a>, and
 			notes on whatever I’m reading — and I paint.
 		</p>
 	</div>
@@ -110,7 +106,7 @@ function joiner(index: number, total: number): string {
 				</ul>
 				<a
 					href="/writing/"
-					class="label mt-6 inline-block text-tx-3 no-underline transition-colors duration-150 hover:text-tx"
+					class="label link-ui mt-6 inline-block text-tx-3"
 				>
 					All writing →
 				</a>
@@ -118,29 +114,3 @@ function joiner(index: number, total: number): string {
 		)
 	}
 </Base>
-
-<style>
-	/*
-	 * Inline project links. Underlined only faintly, so the sentence still reads
-	 * as a sentence and the status marks stay the loudest thing in it. The rule
-	 * sits on the name alone — running it under the mark and its space would
-	 * leave a stray tick floating ahead of the word.
-	 */
-	.mention {
-		color: var(--tx);
-		text-decoration: none;
-		white-space: nowrap;
-	}
-
-	.mention-name {
-		text-decoration: underline;
-		text-decoration-color: var(--ui-3);
-		text-underline-offset: 0.18em;
-		text-decoration-thickness: 1px;
-		transition: text-decoration-color 0.15s ease;
-	}
-
-	.mention:hover .mention-name {
-		text-decoration-color: var(--accent);
-	}
-</style>

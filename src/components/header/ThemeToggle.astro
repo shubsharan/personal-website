@@ -1,12 +1,4 @@
 ---
-/*
- * Segmented Light/Dark theme switch. Sizing is driven by the icon: options are
- * flex + padding around the SVG, and the track/pill follow that intrinsic size.
- * Pill position and active icon color are Tailwind utilities keyed off data-theme
- * and the system preference — the site follows the system by default (see
- * global.css). The click/keyboard handlers set data-theme on <html> and persist
- * it; BaseHead re-applies a stored choice before first paint.
- */
 
 import { Icon } from 'astro-icon/components';
 
