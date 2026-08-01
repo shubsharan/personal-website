@@ -10,10 +10,15 @@ import {
 	indexOfKey,
 } from './config.mjs';
 
-const iconSize = 12;
 const detailLevel = indexOfKey(RESOLUTIONS, 'key', DEFAULTS.res);
 const contrastLevel = indexOfKey(CONTRASTS, 'value', DEFAULTS.contrast);
 const speedLevel = indexOfKey(SPEEDS, 'fps', DEFAULTS.fps);
+
+// Icon per option, in the same order as RESOLUTIONS / SPEEDS — reused both by the
+// desktop cycle button (one icon, swapped by level) and the mobile row's buttons
+// (all options shown at once, so all three icons appear side by side).
+const DETAIL_ICONS = ['lucide:grid-2x2', 'lucide:grid-3x2', 'lucide:grid-3x3'];
+const SPEED_ICONS = ['lucide:turtle', 'lucide:play', 'lucide:rabbit'];
 ---
 
 <div
@@ -25,102 +30,184 @@ const speedLevel = indexOfKey(SPEEDS, 'fps', DEFAULTS.fps);
 		target="_blank"
 		rel="noreferrer">[src]</a>
 
-	<div
-		class="flex flex-wrap items-center gap-x-[0.8rem] gap-y-[0.3rem]"
-		data-ascii-controls
-		hidden
-	>
-		<span class="ascii-group" role="group" aria-label="Detail">
-			<button
-				type="button"
-				class="group ascii-toggle"
-				data-detail
-				data-level={detailLevel}
-				aria-label="Detail"
-			>
-				<Icon name="lucide:grid-2x2" width={iconSize} height={iconSize} class="hidden group-data-[level=0]:block" aria-hidden="true" />
-				<Icon name="lucide:grid-3x2" width={iconSize} height={iconSize} class="hidden group-data-[level=1]:block" aria-hidden="true" />
-				<Icon name="lucide:grid-3x3" width={iconSize} height={iconSize} class="hidden group-data-[level=2]:block" aria-hidden="true" />
-			</button>
-		</span>
+	<details data-ascii-controls-wrap class="relative md:static" hidden>
+		<summary
+			class="ascii-btn [&::marker]:hidden [&::-webkit-details-marker]:hidden list-none md:hidden inline-flex h-6 w-6 items-center justify-center rounded text-tx-3 hover:text-tx"
+			aria-label="Controls"
+		>
+			<Icon name="lucide:ellipsis" width={20} height={20} aria-hidden="true" />
+		</summary>
 
-		<span class="ascii-divider" aria-hidden="true"></span>
-
-		<span class="ascii-group" role="group" aria-label="Color">
-			{
-				COLORS.map((c) => (
-					<button
-						type="button"
-						class={`ascii-swatch ${c.dot}`}
-						data-color={c.key}
-						aria-pressed={c.key === DEFAULTS.color}
-						aria-label={c.label}
-					/>
-				))
-			}
-		</span>
-
-		<span class="ascii-divider" aria-hidden="true"></span>
-
-		<span class="inline-flex items-center gap-[0.5rem]" role="group" aria-label="Style">
-			{
-				RAMP_ORDER.map((r) => (
-					<button type="button" class="ascii-ramp" data-ramp={r.key} aria-pressed={r.key === DEFAULTS.ramp} aria-label={r.label}>{r.sample}</button>
-				))
-			}
-		</span>
-
-		<span class="ascii-divider" aria-hidden="true"></span>
-
-		<span class="ascii-group" role="group" aria-label="Contrast">
-			<button
-				type="button"
-				class="group ascii-toggle gap-1"
-				data-contrast-cycle
-				data-level={contrastLevel}
-				aria-label="Contrast"
-			>
-				<Icon name="lucide:contrast" width={iconSize} height={iconSize} aria-hidden="true" />
-				<span class="inline-flex items-center gap-0.5" aria-hidden="true">
-					<span
-						class="h-2.5 w-[3px] rounded-sm bg-current opacity-30 group-data-[level=0]:opacity-100 group-data-[level=1]:opacity-100 group-data-[level=2]:opacity-100"
-					></span>
-					<span
-						class="h-2.5 w-[3px] rounded-sm bg-current opacity-30 group-data-[level=1]:opacity-100 group-data-[level=2]:opacity-100"
-					></span>
-					<span
-						class="h-2.5 w-[3px] rounded-sm bg-current opacity-30 group-data-[level=2]:opacity-100"
-					></span>
+		<div
+			class="grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-3 absolute right-0 top-full z-20 rounded-md border border-ui bg-bg-2 p-3 shadow-lg md:static md:z-auto md:flex md:flex-row md:flex-wrap md:items-center md:gap-x-[0.8rem] md:gap-y-[0.3rem] md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none"
+			data-ascii-controls
+			hidden
+		>
+			<span class="contents md:inline-flex md:items-center md:gap-[0.4rem]" role="group" aria-label="Detail">
+				<span class="md:hidden">Detail</span>
+				<button
+					type="button"
+					class="group ascii-toggle hidden justify-self-end md:inline-flex md:justify-self-auto"
+					data-detail
+					data-level={detailLevel}
+					aria-label="Detail"
+				>
+					<Icon name="lucide:grid-2x2" size={14} class="hidden group-data-[level=0]:block" aria-hidden="true" />
+					<Icon name="lucide:grid-3x2" size={14} class="hidden group-data-[level=1]:block" aria-hidden="true" />
+					<Icon name="lucide:grid-3x3" size={14} class="hidden group-data-[level=2]:block" aria-hidden="true" />
+				</button>
+				<span class="ascii-group justify-self-end md:hidden">
+					{
+						RESOLUTIONS.map((r, i) => (
+							<button
+								type="button"
+								class="ascii-toggle"
+								data-detail-option={r.key}
+								aria-pressed={r.key === DEFAULTS.res}
+								aria-label={`Detail: ${r.label}`}
+							>
+								<Icon name={DETAIL_ICONS[i]} size={14} aria-hidden="true" />
+							</button>
+						))
+					}
 				</span>
-			</button>
-		</span>
+			</span>
 
-		<span class="ascii-divider" aria-hidden="true"></span>
+			<span class="ascii-divider hidden md:block" aria-hidden="true"></span>
 
-		<span class="ascii-group" role="group" aria-label="Speed">
-			<button
-				type="button"
-				class="group ascii-toggle"
-				data-speed
-				data-level={speedLevel}
-				aria-label="Speed"
-			>
-				<Icon name="lucide:turtle" width={iconSize} height={iconSize} class="hidden group-data-[level=0]:block" aria-hidden="true" />
-				<Icon name="lucide:play" width={iconSize} height={iconSize} class="hidden group-data-[level=1]:block" aria-hidden="true" />
-				<Icon name="lucide:rabbit" width={iconSize} height={iconSize} class="hidden group-data-[level=2]:block" aria-hidden="true" />
-			</button>
-		</span>
+			<span class="contents md:inline-flex md:items-center md:gap-[0.4rem]" role="group" aria-label="Color">
+				<span class="md:hidden">Color</span>
+				<span class="ascii-group justify-self-end md:justify-self-auto">
+					{
+						COLORS.map((c) => (
+							<button
+								type="button"
+								class={`ascii-swatch ${c.dot}`}
+								data-color={c.key}
+								aria-pressed={c.key === DEFAULTS.color}
+								aria-label={c.label}
+							/>
+						))
+					}
+				</span>
+			</span>
 
-		<span class="ascii-divider" aria-hidden="true"></span>
+			<span class="ascii-divider hidden md:block" aria-hidden="true"></span>
 
-		<span class="ascii-group" role="group" aria-label="Invert">
-			<button
-				type="button"
-				class="ascii-invert"
-				data-invert
-				aria-pressed="false"
-				aria-label="Invert light and dark"
-			></button>
-		</span>
-	</div>
+			<span class="contents md:inline-flex md:items-center md:gap-[0.4rem]" role="group" aria-label="Style">
+				<span class="md:hidden">Style</span>
+				<span class="inline-flex items-center gap-[0.5rem] justify-self-end md:justify-self-auto">
+					{
+						RAMP_ORDER.map((r) => (
+							<button type="button" class="ascii-ramp" data-ramp={r.key} aria-pressed={r.key === DEFAULTS.ramp} aria-label={r.label}>{r.sample}</button>
+						))
+					}
+				</span>
+			</span>
+
+			<span class="ascii-divider hidden md:block" aria-hidden="true"></span>
+
+			<span class="contents md:inline-flex md:items-center md:gap-[0.4rem]" role="group" aria-label="Contrast">
+				<span class="md:hidden">Contrast</span>
+				<button
+					type="button"
+					class="group ascii-toggle gap-1 hidden justify-self-end md:inline-flex md:justify-self-auto"
+					data-contrast-cycle
+					data-level={contrastLevel}
+					aria-label="Contrast"
+				>
+					<Icon name="lucide:contrast" size={14} aria-hidden="true" />
+					<span class="inline-flex items-center gap-0.5" aria-hidden="true">
+						<span
+							class="h-3 w-1 rounded-sm bg-tx-3 group-data-[level=0]:bg-tx group-data-[level=1]:bg-tx group-data-[level=2]:bg-tx"
+						></span>
+						<span
+							class="h-3 w-1 rounded-sm bg-tx-3 group-data-[level=1]:bg-tx group-data-[level=2]:bg-tx"
+						></span>
+						<span
+							class="h-3 w-1 rounded-sm bg-tx-3 group-data-[level=2]:bg-tx"
+						></span>
+					</span>
+				</button>
+				<button
+					type="button"
+					class="group ascii-toggle justify-self-end md:hidden"
+					data-contrast-cycle-mobile
+					data-level={contrastLevel}
+					aria-label="Contrast"
+				>
+					<span class="inline-flex items-center gap-0.5" aria-hidden="true">
+						<span
+							class="h-3 w-1 rounded-sm bg-tx-3 group-data-[level=0]:bg-tx group-data-[level=1]:bg-tx group-data-[level=2]:bg-tx"
+						></span>
+						<span
+							class="h-3 w-1 rounded-sm bg-tx-3 group-data-[level=1]:bg-tx group-data-[level=2]:bg-tx"
+						></span>
+						<span
+							class="h-3 w-1 rounded-sm bg-tx-3 group-data-[level=2]:bg-tx"
+						></span>
+					</span>
+				</button>
+			</span>
+
+			<span class="ascii-divider hidden md:block" aria-hidden="true"></span>
+
+			<span class="contents md:inline-flex md:items-center md:gap-[0.4rem]" role="group" aria-label="Speed">
+				<span class="md:hidden">Speed</span>
+				<button
+					type="button"
+					class="group ascii-toggle hidden justify-self-end md:inline-flex md:justify-self-auto"
+					data-speed
+					data-level={speedLevel}
+					aria-label="Speed"
+				>
+					<Icon name="lucide:turtle" size={14} class="hidden group-data-[level=0]:block" aria-hidden="true" />
+					<Icon name="lucide:play" size={14} class="hidden group-data-[level=1]:block" aria-hidden="true" />
+					<Icon name="lucide:rabbit" size={14} class="hidden group-data-[level=2]:block" aria-hidden="true" />
+				</button>
+				<span class="ascii-group justify-self-end md:hidden">
+					{
+						SPEEDS.map((s, i) => (
+							<button
+								type="button"
+								class="ascii-toggle"
+								data-speed-option={s.fps}
+								aria-pressed={s.fps === DEFAULTS.fps}
+								aria-label={`Speed: ${s.name}`}
+							>
+								<Icon name={SPEED_ICONS[i]} size={14} aria-hidden="true" />
+							</button>
+						))
+					}
+				</span>
+			</span>
+
+			<span class="ascii-divider hidden md:block" aria-hidden="true"></span>
+
+			<span class="contents md:inline-flex md:items-center md:gap-[0.4rem]" role="group" aria-label="Invert">
+				<span class="md:hidden">Invert</span>
+				<button
+					type="button"
+					class="ascii-invert justify-self-end md:justify-self-auto"
+					data-invert
+					aria-pressed="false"
+					aria-label="Invert light and dark"
+				></button>
+			</span>
+		</div>
+	</details>
 </div>
+
+<script>
+	// `<details>` collapses its content box to 0x0 when closed, even if CSS forces
+	// the child's display back on — so desktop can't just override the closed
+	// state visually, it needs the element to actually be open. Mirrors the
+	// mobile-nav dialog's own matchMedia sync in Header.astro.
+	const wrap = document.querySelector<HTMLDetailsElement>('[data-ascii-controls-wrap]');
+	const desktop = window.matchMedia('(min-width: 768px)');
+	const syncOpen = (matches: boolean) => {
+		if (wrap) wrap.open = matches;
+	};
+	syncOpen(desktop.matches);
+	desktop.addEventListener('change', (e) => syncOpen(e.matches));
+</script>

@@ -47,9 +47,13 @@ export type CycleOptions<T> = {
  * One button that cycles through `items` on click (detail, contrast, speed). If
  * `onChange` returns a promise (e.g. detail loads a new frameset), further clicks
  * are ignored until it settles, so the index and the loaded data can't desync.
+ *
+ * Returns a `set()` handle so a sibling control over the same items (e.g. the
+ * mobile row's one-button-per-option group) can keep this button's icon in sync
+ * when IT is the one that changed the selection, without re-firing `onChange`.
  */
 export function cycleControl<T>(btn: HTMLButtonElement | null, opts: CycleOptions<T>) {
-	if (!btn) return;
+	if (!btn) return null;
 	let index = opts.initialIndex;
 	let busy = false;
 
@@ -69,6 +73,13 @@ export function cycleControl<T>(btn: HTMLButtonElement | null, opts: CycleOption
 	});
 
 	paint();
+
+	return {
+		set(next: number) {
+			index = next;
+			paint();
+		},
+	};
 }
 
 /**

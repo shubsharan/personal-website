@@ -168,21 +168,35 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	window.addEventListener('pagehide', () => cancelAnimationFrame(physHandle), { once: true });
 
 	// ---- Controls ---------------------------------------------------------
-	cycleControl(controls.querySelector<HTMLButtonElement>('[data-detail]'), {
+	// Detail, Contrast, and Speed each have two representations of the same
+	// selection: a desktop button that cycles through the options on click, and
+	// a mobile row that shows every option as its own button (data-*-option).
+	// Both drive the same state, so whichever one is used needs to repaint the
+	// other — the `apply*` functions own that state change + the cross-sync via
+	// the cycle control's `set()` handle (skipped when the cycle itself is the
+	// source, since it already repaints on its own).
+	let detailCycle: ReturnType<typeof cycleControl<(typeof RESOLUTIONS)[number]>>;
+	const applyDetail = async (res: (typeof RESOLUTIONS)[number], idx: number, fromCycle = false) => {
+		active = await variants[res.key]();
+		state.res = res.key;
+		index = index % active.frames.length;
+		readPalette();
+		rebuildMask();
+		repaintIfPaused();
+		if (!fromCycle) detailCycle?.set(idx);
+	};
+	detailCycle = cycleControl(controls.querySelector<HTMLButtonElement>('[data-detail]'), {
 		items: RESOLUTIONS,
 		initialIndex: indexOfKey(RESOLUTIONS, 'key', state.res),
 		render: (res, idx, btn) => {
 			btn.dataset.level = String(idx);
 			setLabel(btn, `Detail: ${res.label}`);
 		},
-		onChange: async (res) => {
-			active = await variants[res.key]();
-			state.res = res.key;
-			index = index % active.frames.length;
-			readPalette();
-			rebuildMask();
-			repaintIfPaused();
-		},
+		onChange: (res, idx) => applyDetail(res, idx, true),
+	});
+	groupControl(controls.querySelectorAll<HTMLButtonElement>('[data-detail-option]'), (btn) => {
+		const idx = indexOfKey(RESOLUTIONS, 'key', btn.dataset.detailOption);
+		applyDetail(RESOLUTIONS[idx], idx);
 	});
 
 	groupControl(controls.querySelectorAll<HTMLButtonElement>('[data-color]'), (btn) => {
@@ -195,29 +209,54 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 		repaintIfPaused();
 	});
 
-	cycleControl(controls.querySelector<HTMLButtonElement>('[data-contrast-cycle]'), {
+	// Contrast has two buttons showing the SAME cycling control (desktop's icon +
+	// bars, mobile's bars-only) — tapping either steps through the levels, so each
+	// needs to repaint the other via `set()` when it's the one that changed.
+	let contrastCycleDesktop: ReturnType<typeof cycleControl<(typeof CONTRASTS)[number]>>;
+	let contrastCycleMobile: ReturnType<typeof cycleControl<(typeof CONTRASTS)[number]>>;
+	const applyContrast = (c: (typeof CONTRASTS)[number], idx: number, source?: 'desktop' | 'mobile') => {
+		state.contrast = c.value;
+		repaintIfPaused();
+		if (source !== 'desktop') contrastCycleDesktop?.set(idx);
+		if (source !== 'mobile') contrastCycleMobile?.set(idx);
+	};
+	const contrastInitialIndex = indexOfKey(CONTRASTS, 'value', state.contrast);
+	contrastCycleDesktop = cycleControl(controls.querySelector<HTMLButtonElement>('[data-contrast-cycle]'), {
 		items: CONTRASTS,
-		initialIndex: indexOfKey(CONTRASTS, 'value', state.contrast),
+		initialIndex: contrastInitialIndex,
 		render: (c, idx, btn) => {
 			btn.dataset.level = String(idx);
 			setLabel(btn, `Contrast: ${c.name}`);
 		},
-		onChange: (c) => {
-			state.contrast = c.value;
-			repaintIfPaused();
+		onChange: (c, idx) => applyContrast(c, idx, 'desktop'),
+	});
+	contrastCycleMobile = cycleControl(controls.querySelector<HTMLButtonElement>('[data-contrast-cycle-mobile]'), {
+		items: CONTRASTS,
+		initialIndex: contrastInitialIndex,
+		render: (c, idx, btn) => {
+			btn.dataset.level = String(idx);
+			setLabel(btn, `Contrast: ${c.name}`);
 		},
+		onChange: (c, idx) => applyContrast(c, idx, 'mobile'),
 	});
 
-	cycleControl(controls.querySelector<HTMLButtonElement>('[data-speed]'), {
+	let speedCycle: ReturnType<typeof cycleControl<(typeof SPEEDS)[number]>>;
+	const applySpeed = (s: (typeof SPEEDS)[number], idx: number, fromCycle = false) => {
+		state.fps = s.fps;
+		if (!fromCycle) speedCycle?.set(idx);
+	};
+	speedCycle = cycleControl(controls.querySelector<HTMLButtonElement>('[data-speed]'), {
 		items: SPEEDS,
 		initialIndex: indexOfKey(SPEEDS, 'fps', state.fps),
 		render: (s, idx, btn) => {
 			btn.dataset.level = String(idx);
 			setLabel(btn, `Speed: ${s.name}`);
 		},
-		onChange: (s) => {
-			state.fps = s.fps;
-		},
+		onChange: (s, idx) => applySpeed(s, idx, true),
+	});
+	groupControl(controls.querySelectorAll<HTMLButtonElement>('[data-speed-option]'), (btn) => {
+		const idx = indexOfKey(SPEEDS, 'fps', Number(btn.dataset.speedOption));
+		applySpeed(SPEEDS[idx], idx);
 	});
 
 	toggleControl(
@@ -255,6 +294,7 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	readPalette();
 	rebuildMask();
 	controls.hidden = false;
+	controls.closest('details')?.removeAttribute('hidden');
 	paint(densestFrame(active.frames, lut));
 	if (!reducedMotion.matches) animator.play();
 
