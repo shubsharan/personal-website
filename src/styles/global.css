@@ -337,7 +337,7 @@
 		word-wrap: break-word;
 		overflow-wrap: break-word;
 		color: var(--tx);
-		font-size: 20px;
+		font-size: 1.25rem;
 		line-height: 1.65;
 		min-height: 100vh;
 		display: flex;
@@ -412,10 +412,10 @@
 	/* Inter, small and tracked: nav, status labels, dates, footer. */
 	.label {
 		font-family: var(--font-sans);
-		font-size: 0.6875rem;
+		font-size: 0.75rem;
 		font-weight: 500;
 		line-height: 1.4;
-		letter-spacing: 0.14em;
+		letter-spacing: 0.25rem;
 		text-transform: uppercase;
 		font-variant-numeric: tabular-nums;
 	}
@@ -432,7 +432,7 @@
 	}
 
 	.page-title {
-		@apply font-serif text-[2.1rem] leading-[1.15] max-md:text-[1.75rem];
+		@apply font-serif text-4xl leading-tight max-md:text-3xl;
 	}
 
 	.empty-state {
@@ -442,10 +442,10 @@
 	/* —— Status marks —— */
 	.mark {
 		display: inline-block;
-		width: 0.42em;
-		height: 0.42em;
+		width: 0.5rem;
+		height: 0.5rem;
 		border-radius: 50%;
-		vertical-align: 0.12em;
+		vertical-align: 0.25rem;
 		flex: none;
 	}
 
@@ -462,18 +462,16 @@
 	}
 
 	/* —— Soft underline —— */
-	.link-underline,
-	.prose a {
+	.link-underline {
 		text-decoration: underline;
 		text-decoration-color: var(--ui-3);
-		text-underline-offset: 0.2em;
+		text-underline-offset: 0.25rem;
 		text-decoration-thickness: 1px;
 		transition: text-decoration-color 0.15s ease;
 	}
 
 	.link-underline:hover,
-	.group:hover .link-underline,
-	.prose a:hover {
+	.group:hover .link-underline {
 		text-decoration-color: var(--accent);
 	}
 
@@ -483,35 +481,41 @@
 		color: var(--tx);
 	}
 	.prose > * + * {
-		margin-top: 1.1em;
+		margin-top: 1rem;
 	}
-	.prose h2,
-	.prose h3 {
-		margin-top: 2.2em;
-		margin-bottom: 0.6em;
+	.prose h1 {
+		font-size: 2.5rem;
 	}
 	.prose h2 {
+		margin-top: 2.25rem;
+		margin-bottom: 0.5rem;
 		font-size: 1.5rem;
 	}
 	.prose h3 {
+		margin-top: 2.25rem;
+		margin-bottom: 0.5rem;
 		font-size: 1.25rem;
-		font-style: italic;
 	}
 	.prose a {
 		color: var(--tx);
+		text-decoration: underline;
+		text-decoration-color: var(--ui-3);
+		text-underline-offset: 0.25rem;
+		text-decoration-thickness: 1px;
+		transition: text-decoration-color 0.15s ease;
+	}
+	.prose a:hover {
+		text-decoration-color: var(--accent);
 	}
 	.prose blockquote {
-		margin: 2em 0;
-		padding-left: 1.4em;
+		margin: 2rem 0;
+		padding-left: 1.5rem;
 		border-left: 1px solid var(--ui-2);
 		font-style: italic;
 		color: var(--tx-2);
 	}
-	.prose ul,
-	.prose ol {
-		padding-left: 1.3em;
-	}
 	.prose ul {
+		padding-left: 1.25rem;
 		list-style: none;
 	}
 	.prose ul > li {
@@ -520,20 +524,21 @@
 	.prose ul > li::before {
 		content: '—';
 		position: absolute;
-		margin-left: -1.3em;
+		margin-left: -1.25rem;
 		color: var(--tx-3);
 	}
 	.prose ol {
+		padding-left: 1.25rem;
 		list-style: decimal;
 	}
 	.prose li + li {
-		margin-top: 0.4em;
+		margin-top: 0.5rem;
 	}
 	.prose hr {
-		margin: 2.6em 0;
+		margin: 2.5rem 0;
 	}
 	.prose figure {
-		margin: 2.4em 0;
+		margin: 2.5rem 0;
 	}
 	.prose figure > img {
 		margin: 0;
@@ -541,8 +546,8 @@
 		width: 100%;
 	}
 	.prose figcaption {
-		margin-top: 0.65em;
-		font-size: 0.9em;
+		margin-top: 0.75rem;
+		font-size: 1rem;
 		font-style: italic;
 		color: var(--tx-2);
 		text-align: center;
@@ -550,21 +555,21 @@
 	}
 	/* Bare markdown images that haven't been wrapped in a figure yet. */
 	.prose > img {
-		margin: 2.4em 0;
+		margin: 2.5rem 0;
 	}
 	/* Monospace runs large next to Garamond, so it is set down a size. */
 	.prose code {
-		font-size: 0.8em;
-		padding: 0.1em 0.3em;
+		font-size: 0.75rem;
+		padding: 0.25rem;
 		background-color: var(--bg-2);
 		border-radius: 3px;
 	}
 	.prose pre {
-		margin: 2em 0;
-		padding: 1.25em 1.4em;
+		margin: 2rem 0;
+		padding: 1.25rem 1.5rem;
 		border: 1px solid var(--ui);
 		border-radius: 4px;
-		font-size: 0.85rem;
+		font-size: 0.75rem;
 		line-height: 1.6;
 		overflow-x: auto;
 	}
@@ -574,11 +579,11 @@
 	.prose table {
 		width: 100%;
 		border-collapse: collapse;
-		font-size: 0.9em;
+		font-size: 1rem;
 	}
 	.prose th,
 	.prose td {
-		padding: 0.5em 0.8em 0.5em 0;
+		padding: 0.5rem 0.75rem 0.5rem 0;
 		border-bottom: 1px solid var(--ui);
 		text-align: left;
 	}
@@ -593,23 +598,24 @@
 	}
 
 	.ascii-ramp {
-		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors inline-flex items-center text-tx-3 hover:text-tx aria-pressed:text-tx font-mono text-[0.85em] leading-none normal-case tracking-[0.05em];
+		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors inline-flex items-center text-tx-3 hover:text-tx aria-pressed:text-tx font-mono text-sm leading-none normal-case tracking-wider;
 	}
 
 	.ascii-swatch {
-		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors leading-[0] before:block before:h-2.5 before:w-2.5 before:rounded-full before:opacity-65 before:content-[''] before:[transition:opacity_0.15s_ease,box-shadow_0.15s_ease] hover:before:opacity-100 aria-pressed:before:opacity-100 aria-pressed:before:shadow-[0_0_0_1px_var(--bg),0_0_0_2px_var(--tx)];
+		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors before:block before:size-2.5 before:rounded-full before:opacity-65 before:content-[''] before:transition before:duration-150 hover:before:opacity-100 aria-pressed:before:opacity-100 aria-pressed:before:ring-1 aria-pressed:before:ring-tx aria-pressed:before:ring-offset-1 aria-pressed:before:ring-offset-bg;
+		line-height: 0;
 	}
 
 	.ascii-group {
-		@apply inline-flex items-center gap-[0.4rem];
+		@apply inline-flex items-center gap-1.5;
 	}
 
 	.ascii-divider {
-		@apply h-[0.95em] w-px flex-none bg-ui-3;
+		@apply h-3.5 w-px flex-none bg-ui-3;
 	}
 
 	.ascii-invert {
-		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors inline-flex items-center gap-[3px] align-middle text-tx-3 hover:text-tx before:box-border before:h-2.5 before:w-2.5 before:rounded-full before:border before:border-current before:bg-tx before:content-[''] after:box-border after:h-2.5 after:w-2.5 after:rounded-full after:border after:border-current after:content-[''] aria-pressed:before:bg-transparent aria-pressed:after:bg-tx;
+		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors inline-flex items-center gap-0.5 align-middle text-tx-3 hover:text-tx before:box-border before:size-2.5 before:rounded-full before:border before:border-current before:bg-tx before:content-[''] after:box-border after:size-2.5 after:rounded-full after:border after:border-current after:content-[''] aria-pressed:before:bg-transparent aria-pressed:after:bg-tx;
 	}
 
 	/* —— Motion —— */
