@@ -1,8 +1,9 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
+import EntryRow from '../../components/EntryRow.astro';
 import { PROJECT_STATUS } from '../../consts';
 import Entry from '../../layouts/Entry.astro';
-import { span } from '../../utils/dates';
+import { monthYear, span } from '../../utils/dates';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects', (p) => !p.data.draft);
@@ -17,6 +18,14 @@ const project = Astro.props;
 const { Content } = await render(project);
 const { title, description, status, startDate, endDate, role, url } =
 	project.data;
+
+// Writing that points at this project, newest first.
+const related = (
+	await getCollection(
+		'writing',
+		(p) => !p.data.draft && p.data.project === project.id,
+	)
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <Entry
@@ -31,4 +40,23 @@ const { title, description, status, startDate, endDate, role, url } =
 	backLabel="All projects"
 >
 	<Content />
+
+	{
+		related.length > 0 && (
+			<section slot="related" class="mt-16">
+				<h2 class="label text-tx-3">Related writing</h2>
+				<ul class="mt-4">
+					{related.map((post) => (
+						<EntryRow
+							href={`/writing/${post.id}/`}
+							rail={monthYear(post.data.pubDate)}
+							label={post.data.publication}
+							title={post.data.title}
+							description={post.data.description}
+						/>
+					))}
+				</ul>
+			</section>
+		)
+	}
 </Entry>

@@ -31,6 +31,9 @@ const writing = defineCollection({
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     canonicalURL: z.url().optional(),
+    // Attach this post to a project (its slug/id, e.g. "plotpoint"). The project
+    // case-study page collects everything pointing at it into "Related writing".
+    project: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });

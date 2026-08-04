@@ -1,0 +1,233 @@
+---
+// Impact Labs scored every program 1–5 on four axes and refused to average them.
+// Pick a program; the four bars and the reasoning behind each axis update. The
+// programs here are representative composites, not real organizations.
+---
+
+<div class="ip font-sans text-tx" data-impact>
+	<p class="label text-tx-3">Climate Resilience Fund · program profile</p>
+
+	<div class="ip-tabs mt-3" data-tabs role="tablist" aria-label="Programs"></div>
+
+	<div class="ip-axes mt-6" data-axes></div>
+
+	<p class="ip-foot mt-6 text-sm text-tx-3">
+		No overall score. Four programs, four different shapes — averaging them
+		into one number would throw away the only thing worth knowing.
+	</p>
+</div>
+
+<style is:global>
+	/* Global (nested under .ip) so styles reach the tabs and axis rows the client
+	   script creates — Astro's scoped styles only attach to template elements. */
+	.ip {
+		max-width: 100%;
+	}
+	.ip .ip-tabs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.ip .ip-tab {
+		font-family: var(--font-sans);
+		font-size: 0.8125rem;
+		font-weight: 500;
+		padding: 0.375rem 0.75rem;
+		color: var(--tx-2);
+		background: var(--bg);
+		border: 1px solid var(--ui-2);
+		border-radius: 999px;
+		cursor: pointer;
+		transition:
+			color 0.15s ease,
+			border-color 0.15s ease,
+			background 0.15s ease;
+	}
+	.ip .ip-tab:hover {
+		color: var(--tx);
+		border-color: var(--ui-3);
+	}
+	.ip .ip-tab[aria-selected='true'] {
+		color: var(--bg);
+		background: var(--tx);
+		border-color: var(--tx);
+	}
+	.ip .ip-axis + .ip-axis {
+		margin-top: 1.25rem;
+	}
+	.ip .ip-axis-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+	.ip .ip-axis-name {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--tx);
+	}
+	.ip .ip-axis-score {
+		font-size: 0.75rem;
+		color: var(--tx-3);
+		font-variant-numeric: tabular-nums;
+	}
+	.ip .ip-pips {
+		display: flex;
+		gap: 0.375rem;
+		margin-top: 0.5rem;
+	}
+	.ip .ip-pip {
+		flex: 1;
+		height: 0.5rem;
+		border-radius: 3px;
+		background: var(--ui-2);
+		transition: background 0.35s ease;
+	}
+	.ip .ip-pip[data-on='true'] {
+		background: var(--accent);
+	}
+	.ip .ip-why {
+		margin-top: 0.5rem;
+		font-size: 0.8125rem;
+		line-height: 1.5;
+		color: var(--tx-2);
+	}
+</style>
+
+<script>
+	type Axis = { score: number; why: string };
+	type Program = {
+		name: string;
+		axes: Record<'Depth' | 'Breadth' | 'Evidence' | 'Timeline', Axis>;
+	};
+
+	const AXIS_ORDER = ['Depth', 'Breadth', 'Evidence', 'Timeline'] as const;
+
+	const PROGRAMS: Program[] = [
+		{
+			name: 'Wildfire Rapid Response',
+			axes: {
+				Depth: {
+					score: 5,
+					why: 'Direct relief to displaced households — among the deepest per-person impact in the fund.',
+				},
+				Breadth: {
+					score: 2,
+					why: 'Reaches one region at a time. Intentionally narrow while a crisis is active.',
+				},
+				Evidence: {
+					score: 3,
+					why: 'Strong operational data, but long-term outcomes are hard to measure in the chaos of a disaster.',
+				},
+				Timeline: {
+					score: 5,
+					why: 'Dollars turn into aid within days. This is the fastest lever we fund.',
+				},
+			},
+		},
+		{
+			name: 'Grid Decarbonization Advocacy',
+			axes: {
+				Depth: {
+					score: 3,
+					why: 'Diffuse per person, but the ceiling is enormous if the policy lands.',
+				},
+				Breadth: {
+					score: 5,
+					why: 'A single ruling can shift emissions for millions. The widest reach in the fund.',
+				},
+				Evidence: {
+					score: 2,
+					why: 'Policy causation is genuinely hard to attribute. We score honestly, not generously.',
+				},
+				Timeline: {
+					score: 1,
+					why: 'Years to decades. You are planting a tree you will not sit under.',
+				},
+			},
+		},
+		{
+			name: 'Reforestation Corps',
+			axes: {
+				Depth: {
+					score: 3,
+					why: 'Meaningful ecological restoration, though carbon-per-dollar is moderate.',
+				},
+				Breadth: {
+					score: 4,
+					why: 'Operates across several watersheds with a repeatable playbook.',
+				},
+				Evidence: {
+					score: 4,
+					why: 'Satellite and soil data give unusually clean measurement for this cause.',
+				},
+				Timeline: {
+					score: 2,
+					why: 'Canopy and carbon benefits accrue over 5–15 years.',
+				},
+			},
+		},
+	];
+
+	function initImpact(root: HTMLElement) {
+		const tabsEl = root.querySelector<HTMLElement>('[data-tabs]')!;
+		const axesEl = root.querySelector<HTMLElement>('[data-axes]')!;
+		let active = 0;
+
+		// Tabs
+		PROGRAMS.forEach((p, i) => {
+			const btn = document.createElement('button');
+			btn.type = 'button';
+			btn.className = 'ip-tab';
+			btn.textContent = p.name;
+			btn.setAttribute('role', 'tab');
+			btn.setAttribute('aria-selected', String(i === active));
+			btn.addEventListener('click', () => {
+				active = i;
+				update();
+			});
+			tabsEl.appendChild(btn);
+		});
+
+		// Axis rows (built once, updated on select)
+		const rows = AXIS_ORDER.map((name) => {
+			const axis = document.createElement('div');
+			axis.className = 'ip-axis';
+			axis.innerHTML = `
+				<div class="ip-axis-head">
+					<span class="ip-axis-name">${name}</span>
+					<span class="ip-axis-score" data-score></span>
+				</div>
+				<div class="ip-pips" data-pips>${'<span class="ip-pip"></span>'.repeat(5)}</div>
+				<p class="ip-why" data-why></p>`;
+			axesEl.appendChild(axis);
+			return {
+				name,
+				score: axis.querySelector<HTMLElement>('[data-score]')!,
+				pips: Array.from(axis.querySelectorAll<HTMLElement>('.ip-pip')),
+				why: axis.querySelector<HTMLElement>('[data-why]')!,
+			};
+		});
+
+		function update() {
+			const prog = PROGRAMS[active];
+			tabsEl
+				.querySelectorAll<HTMLElement>('.ip-tab')
+				.forEach((t, i) =>
+					t.setAttribute('aria-selected', String(i === active)),
+				);
+			rows.forEach((row) => {
+				const a = prog.axes[row.name as (typeof AXIS_ORDER)[number]];
+				row.score.textContent = `${a.score} / 5`;
+				row.pips.forEach((pip, i) =>
+					pip.setAttribute('data-on', String(i < a.score)),
+				);
+				row.why.textContent = a.why;
+			});
+		}
+
+		update();
+	}
+
+	document.querySelectorAll<HTMLElement>('[data-impact]').forEach(initImpact);
+</script>

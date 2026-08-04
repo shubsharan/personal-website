@@ -1,0 +1,21 @@
+---
+// Wraps an embedded demo/image with an optional small label and a caption.
+// The `Fig. —` treatment: label sits above (uppercase, tracked), caption below
+// (muted, italic via the shared figcaption styling). Both are optional.
+interface Props {
+	label?: string;
+	caption?: string;
+}
+
+const { label, caption } = Astro.props;
+---
+
+<figure class="cs-figure">
+	{label && <p class="label text-tx-3 mb-3 text-center">{label}</p>}
+	<slot />
+	{
+		caption && (
+			<figcaption class="cs-figcaption text-tx-2 italic">{caption}</figcaption>
+		)
+	}
+</figure>

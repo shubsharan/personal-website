@@ -1,0 +1,15 @@
+---
+// Optional presentation shell around an embedded demo. `variant` is chosen per
+// component, not globally — see `.frame-*` in global.css.
+interface Props {
+	variant?: 'card' | 'float' | 'well' | 'phone';
+	class?: string;
+}
+
+const { variant = 'card', class: className } = Astro.props;
+const classes = [`frame-${variant}`, className].filter(Boolean).join(' ');
+---
+
+<div class={classes}>
+	<slot />
+</div>

@@ -3,6 +3,7 @@ title: 'What do we do now?'
 description: 'Trying to find a balance between what I want to do and what I should do'
 publication: 'Failing Loudly'
 pubDate: '2025-09-12'
+project: 'plotpoint'
 canonicalURL: 'https://failingloudly.substack.com/p/what-do-we-do-now'
 ---
 

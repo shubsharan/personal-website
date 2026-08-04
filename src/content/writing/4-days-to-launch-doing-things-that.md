@@ -3,6 +3,7 @@ title: '4 days to launch – Doing things that don''t scale'
 description: 'Or: How I went outside and touched grass'
 publication: 'Failing Loudly'
 pubDate: '2025-08-04'
+project: 'plotpoint'
 canonicalURL: 'https://failingloudly.substack.com/p/4-days-to-launch-doing-things-that'
 ---
 

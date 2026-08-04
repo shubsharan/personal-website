@@ -1,0 +1,97 @@
+---
+title: 'Impact Labs'
+description: 'An index fund for philanthropy — curated baskets of nonprofit programs, scored by a research-backed impact model.'
+status: 'ended'
+startDate: '2022-01-01'
+endDate: '2025-01-01'
+role: 'Co-founder, Head of Product'
+---
+
+import Breakout from '../../components/case-study/Breakout.astro';
+import Figure from '../../components/case-study/Figure.astro';
+import Frame from '../../components/case-study/Frame.astro';
+import FundShape from '../../components/case-study/impact-labs/FundShape.astro';
+
+Impact Labs was a platform for helping donors make smarter philanthropic
+decisions. I started it over the pandemic with my friend Sreekar, and we worked
+on it from 2022 to 2025.
+
+The idea, in one line: an index fund for philanthropy. We worked closely with
+nonprofits to gather real data on their impact, translated that impact into a
+score, and organized the highest-performing programs into cause-based *funds*
+that donors could subscribe to. A fund was a curated basket of programs
+attacking one cause — climate, refugee relief, homelessness — from multiple
+angles. You subscribed, and each month you got a report on exactly where your
+money went and who it helped. As the real-world context of a cause shifted, we
+rebalanced the basket, so you were always funding the most effective mix.
+
+Three convictions shaped everything we built.
+
+## Nuance over a single number
+
+Everyone wants a star rating. We refused to give one.
+
+We scored each program from 1 to 5 on four separate axes — the **depth** of its
+impact, the **breadth** of it, the **evidence** behind it, and the **timeline**
+to see it. Those scores came from a weighted model built out of academic papers,
+industry analyst review, and interviews with nonprofit leaders in the space. We'd
+define an impact model that identified all of a program's *outputs*, then weight
+those outputs by what the research said actually mattered.
+
+We never collapsed the four axes into one headline number, and that was the whole
+point. Donors already care about a cause — what they lacked was a way to have a
+more nuanced conversation about it. What *kind* of impact? Over what horizon?
+Backed by how much evidence? For whom, specifically? Roll those four axes up
+across a whole fund and you get its *shape* — the average of every program in the
+basket, still never crushed into one headline number. Switch funds to see how the
+shape changes:
+
+<Breakout>
+	<Figure
+		label="Impact Labs · Fund impact shape"
+		caption="The silhouette is the fund's character; evidence is the fill. Faint dots are the individual programs, so you see the spread, not just the average — four axes, still never collapsed into one number."
+	>
+		<Frame variant="float">
+			<FundShape />
+		</Frame>
+	</Figure>
+</Breakout>
+
+## Outcomes, not overhead
+
+The second conviction was a stake in the ground about how you're allowed to judge
+a nonprofit.
+
+People love to force a poverty mindset onto the sector: that a good nonprofit
+should run on fumes, that spending on salaries or equipment or leadership is a
+betrayal of the mission. That's not realistic, and it's not how impact works.
+Organizations need good talent and good tools to do good work. So we ignored
+overhead entirely. We parsed 990 forms, impact reports, and worked directly with
+organizations to understand their outputs — then mapped their *total revenue* to
+their *total outcomes*. The only question that mattered was how much good came out
+the other end, not how the sausage was made.
+
+## Funds that adapt to the world
+
+The third conviction is why funds beat one-off donations.
+
+Because the model was built on weighted outputs, it could evolve as a cause
+evolved. A climate fund could tilt toward short-term programs to support a region
+in the middle of a wildfire. A refugee-relief fund could re-target as the
+political reality and the affected populations changed. We were always investing
+in the most effective basket of programs, per cause, per region — and the basket
+moved when the world did.
+
+## The reporting was the relationship
+
+Holding it all together was the monthly report. It told donors which programs
+their money reached, the real-world outcomes it was predicted to generate, and
+how our previous forecasts had actually held up. To keep it honest and current,
+we ingested a stream of content from every nonprofit in a fund — RSS, email
+newsletters, social posts, annual reports — and used LLMs to parse, summarize,
+and analyze all of it through the lens of the fund it belonged to. That's how we
+told a donor what each organization was working on this month, and how it fit the
+larger thesis they'd bought into.
+
+Impact Labs didn't make it. That's a longer story, and one I'm still figuring out
+how to tell. But the convictions still hold up, and I'd build on them again.

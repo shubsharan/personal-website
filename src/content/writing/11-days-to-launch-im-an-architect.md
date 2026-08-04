@@ -3,6 +3,7 @@ title: '11 Days to Launch – I''m an architect now, actually.'
 description: 'IT''S ALIVE! IT''S. A. LIIIIIIIIIVE!'
 publication: 'Failing Loudly'
 pubDate: '2025-07-28'
+project: 'plotpoint'
 canonicalURL: 'https://failingloudly.substack.com/p/11-days-to-launch-im-an-architect'
 ---
 

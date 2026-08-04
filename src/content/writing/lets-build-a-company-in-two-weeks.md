@@ -3,6 +3,7 @@ title: 'Let''s Build a Company in Two Weeks'
 description: 'Or: How I Learned to Stop Worrying and Love the Launch'
 publication: 'Failing Loudly'
 pubDate: '2025-07-22'
+project: 'plotpoint'
 canonicalURL: 'https://failingloudly.substack.com/p/lets-build-a-company-in-two-weeks'
 ---
 

@@ -3,6 +3,7 @@ title: '14 Days to Launch – What the hell are we doing here?'
 description: 'There''s a picture of my cat halfway through and if you don''t comment hi, it''s bad luck.'
 publication: 'Failing Loudly'
 pubDate: '2025-07-24'
+project: 'plotpoint'
 canonicalURL: 'https://failingloudly.substack.com/p/14-days-to-launch-what-the-hell-are'
 ---
 
