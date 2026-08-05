@@ -12,7 +12,7 @@ Add an `/about` page that does two jobs at once:
 
 These pull in different directions: A wants scannable, dated, conventional; B wants prose, voice-consistent. The design resolves this by pairing a short prose lede (B) with a scannable reverse-chronological timeline (A) on one page.
 
-Out of scope: a downloadable/printable PDF. The deliverable is an on-site page only. (If a PDF is ever wanted, it's a later, separate piece of work.)
+Out of scope: a downloadable/printable PDF (the deliverable is an on-site page only); an **Education** section (decided out — ten years into the career, the degree adds little); and a **Skills/Tools** section (decided out — projects and writing demonstrate the skills instead of listing them). Each can be added later if wanted.
 
 ## Background / constraints
 
@@ -84,11 +84,46 @@ A **denser variant of the existing `EntryRow`** — not `EntryRow` itself. The p
 
 Add an "About" link to the header nav (`src/components/header/Header.astro`), placed consistently with the existing links, and present in both the `md`+ inline nav and the below-`md` full-screen menu dialog.
 
-## Content Shub must supply (after spec approval)
+## Content (final — supplied)
 
-- The prose lede (2–4 sentences).
-- The employed job history for `experience.yaml`: for each — title, org, start/end dates, one line, optional url.
-- The page-head description line.
+Source: Shub's résumé (`Resume - Product Manager-2.pdf`).
+
+### Prose lede
+
+> I've spent about a decade in product, mostly at the messy 0-to-1 end — turning tangled operational processes into software people actually use. Most recently I co-founded Impact Labs, an AI platform for philanthropic giving; before that I built enterprise products at Regalix for companies like Twilio and SAP Ariba. I'm happiest early, when a problem is still vague: talking to users, mapping the workflow, and building the first version myself.
+
+### `experience.yaml` entries (employed jobs)
+
+Org stays "Regalix" with the embedded client named in the line, matching how the work actually read. Résumé gives years only for these roles, so dates default to January; refine to real months if provided.
+
+```yaml
+- title: Senior Product Manager, Enterprise
+  org: Regalix
+  startDate: 2020-01-01
+  endDate: 2022-01-01
+  description: Built a forward-deployed product practice around a Twilio partnership, from zero to seven-figure revenue.
+
+- title: Product Manager, Enterprise
+  org: Regalix
+  startDate: 2018-01-01
+  endDate: 2020-01-01
+  description: Product lead embedded in SAP Ariba's supply-chain org on a multi-million-dollar lifecycle initiative.
+
+- title: Product Designer
+  org: Regalix
+  startDate: 2016-01-01
+  endDate: 2018-01-01
+  description: First design hire for Nytro.ai, an AI-first sales enablement platform; grew into product management.
+```
+
+### Auto-pulled venture rows (from `projects`)
+
+- **Impact Labs** — Co-founder, Head of Product. Note: the résumé says Apr 2022 – Jan 2026; the project file currently says 2022-01-01 → 2025-01-01 (`status: ended`). The timeline uses the project file as source of truth, so correct the project frontmatter if the résumé dates are authoritative — not required for the page to work.
+- **Plotpoint** — Founder, 2025.
+
+### Page-head description line
+
+To be finalized during implementation; a short in-voice line, e.g. "A decade of product work, and how I got here." (Adjust to taste.)
 
 ## Testing / verification
 
