@@ -10,9 +10,11 @@ interface Props {
 const { rail, title, org, description, href } = Astro.props;
 const Tag = href ? 'a' : 'div';
 // Linked rows carry the site's persistent soft underline (brightens to accent
-// on row hover via `.group:hover .link-underline`); static rows get nothing, so
-// link vs. static reads at a glance without hovering.
-const titleLink = href ? 'link-underline' : '';
+// on row hover via `.group:hover .link-underline`) so link vs. static reads at a
+// glance without hovering. It marks the name the row links into — the org/venture
+// label when there is one, otherwise the title.
+const orgLink = href && org ? 'link-underline' : '';
+const titleLink = href && !org ? 'link-underline' : '';
 ---
 
 <li class="border-t border-ui">
@@ -26,7 +28,7 @@ const titleLink = href ? 'link-underline' : '';
 				<span class={`text-lg font-serif text-tx ${titleLink}`}>
 					{title}
 				</span>
-				{org && <span class="label text-tx-3">{org}</span>}
+				{org && <span class={`label text-tx-3 ${orgLink}`}>{org}</span>}
 				<span class="label text-tx-3 md:hidden">· {rail}</span>
 			</span>
 			<p class="mt-1 text-tx-2">{description}</p>

@@ -31,13 +31,13 @@ const jobRows: Row[] = experience.map((e) => ({
 	href: e.data.url,
 }));
 
-// For ventures the project name is the title and the role is the secondary
-// label; the row links to the case study.
+// Role leads (like the job rows); the venture name is the secondary label and
+// carries the case-study link. If a project has no role, the name leads instead.
 const ventureRows: Row[] = projects.map((p) => ({
 	sortKey: (p.data.endDate ?? new Date()).valueOf(),
 	rail: span(p.data.startDate, p.data.endDate),
-	title: p.data.title,
-	org: p.data.role,
+	title: p.data.role ?? p.data.title,
+	org: p.data.role ? p.data.title : undefined,
 	description: p.data.description,
 	href: `/projects/${p.id}/`,
 }));
