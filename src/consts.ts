@@ -8,6 +8,7 @@ export const AUTHOR = "Shubhankar Sharan";
 export const AUTHOR_EMAIL = "shubhankarsharan@gmail.com";
 
 export const NAV = [
+  { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
   { href: "/writing", label: "Writing" },
   { href: "/art", label: "Art" },
