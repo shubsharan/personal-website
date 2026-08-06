@@ -32,3 +32,5 @@ pnpm-debug.log*
 .cursor/hooks/*
 # Brainstorming visual companion
 .superpowers/*
+# Superpowers plans/specs
+docs/superpowers/
