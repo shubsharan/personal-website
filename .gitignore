@@ -31,4 +31,4 @@ pnpm-debug.log*
 .cursorrules
 .cursor/hooks/*
 # Brainstorming visual companion
-.superpowers/
+.superpowers/*
