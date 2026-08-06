@@ -3,7 +3,6 @@ title: 'Let''s talk about the launch'
 description: 'We did it, Joe'
 publication: 'Failing Loudly'
 pubDate: '2025-08-14'
-project: 'plotpoint'
 canonicalURL: 'https://failingloudly.substack.com/p/lets-talk-about-the-launch'
 ---
 

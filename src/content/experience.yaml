@@ -1,3 +1,17 @@
+- id: plotpoint
+  title: Founder
+  org: Plotpoint
+  startDate: 2025-07-20
+  endDate: 2025-08-31
+  description: A location-based storytelling game that used your phone to get you off your phone.
+
+- id: impact-labs
+  title: Co-founder, Head of Product
+  org: Impact Labs
+  startDate: 2022-01-01
+  endDate: 2025-01-01
+  description: An index fund for philanthropy — curated baskets of nonprofit programs, scored by a research-backed impact model.
+
 - id: regalix-senior-pm
   title: Senior Product Manager, Enterprise
   org: Regalix

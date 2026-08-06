@@ -7,9 +7,8 @@ import { span } from '../utils/dates';
 
 const description = 'A decade of building products, and how I got here.';
 
-// Normalize both sources into one row shape, then sort newest-first. Anything
-// still going has no end date, so `new Date()` floats it to the top — the same
-// convention the projects index uses.
+// Normalize each entry into one row shape, then sort newest-first. Anything
+// still going has no end date, so `new Date()` floats it to the top.
 type Row = {
 	sortKey: number;
 	rail: string;
@@ -20,29 +19,17 @@ type Row = {
 };
 
 const experience = await getCollection('experience');
-const projects = await getCollection('projects', (p) => !p.data.draft);
 
-const jobRows: Row[] = experience.map((e) => ({
-	sortKey: (e.data.endDate ?? new Date()).valueOf(),
-	rail: span(e.data.startDate, e.data.endDate),
-	title: e.data.title,
-	org: e.data.org,
-	description: e.data.description,
-	href: e.data.url,
-}));
-
-// Role leads (like the job rows); the venture name is the secondary label and
-// carries the case-study link. If a project has no role, the name leads instead.
-const ventureRows: Row[] = projects.map((p) => ({
-	sortKey: (p.data.endDate ?? new Date()).valueOf(),
-	rail: span(p.data.startDate, p.data.endDate),
-	title: p.data.role ?? p.data.title,
-	org: p.data.role ? p.data.title : undefined,
-	description: p.data.description,
-	href: `/projects/${p.id}/`,
-}));
-
-const rows = [...jobRows, ...ventureRows].sort((a, b) => b.sortKey - a.sortKey);
+const rows: Row[] = experience
+	.map((e) => ({
+		sortKey: (e.data.endDate ?? new Date()).valueOf(),
+		rail: span(e.data.startDate, e.data.endDate),
+		title: e.data.title,
+		org: e.data.org,
+		description: e.data.description,
+		href: e.data.url,
+	}))
+	.sort((a, b) => b.sortKey - a.sortKey);
 ---
 
 <Base title={`About · ${SITE_TITLE}`} description={description}>
@@ -54,10 +41,8 @@ const rows = [...jobRows, ...ventureRows].sort((a, b) => b.sortKey - a.sortKey);
 		<p class="mt-6 text-lg text-tx-2">
 			I’ve spent about a decade in product, mostly at the messy 0-to-1 end —
 			turning tangled operational processes into software people actually use.
-			Most recently I co-founded <a
-				href="/projects/impact-labs/"
-				class="link-underline text-tx">Impact Labs</a
-			>, an AI platform for philanthropic giving; before that I built enterprise
+			Most recently I co-founded Impact Labs, an AI platform for philanthropic
+			giving; before that I built enterprise
 			products at Regalix for companies like Twilio and SAP Ariba. I’m happiest
 			early, when a problem is still vague: talking to users, mapping the
 			workflow, and building the first version myself.

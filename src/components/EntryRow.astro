@@ -1,17 +1,13 @@
 ---
-import type { PROJECT_STATUS } from '../consts';
-import StatusMark from './StatusMark.astro';
-
 interface Props {
 	href: string;
 	rail: string;
 	label: string;
 	title: string;
 	description: string;
-	status?: keyof typeof PROJECT_STATUS;
 }
 
-const { href, rail, label, title, description, status } = Astro.props;
+const { href, rail, label, title, description } = Astro.props;
 ---
 
 <li class="border-t border-ui">
@@ -22,7 +18,6 @@ const { href, rail, label, title, description, status } = Astro.props;
 		<span class="label text-tx-3 max-md:hidden">{rail}</span>
 		<span class="block">
 			<span class="label flex items-center gap-2 text-tx-3">
-				{status && <StatusMark status={status} />}
 				{label}
 				<span class="md:hidden">· {rail}</span>
 			</span>

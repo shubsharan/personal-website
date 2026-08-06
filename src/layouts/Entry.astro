@@ -1,6 +1,4 @@
 ---
-import StatusMark from '../components/StatusMark.astro';
-import type { PROJECT_STATUS } from '../consts';
 import Base from './Base.astro';
 
 interface Props {
@@ -8,7 +6,6 @@ interface Props {
 	description: string;
 	label: string;
 	rail: string;
-	status?: keyof typeof PROJECT_STATUS;
 	subtitle?: string;
 	url?: string;
 	updatedNote?: string;
@@ -22,7 +19,6 @@ const {
 	description,
 	label,
 	rail,
-	status,
 	subtitle,
 	url,
 	updatedNote,
@@ -43,7 +39,6 @@ const displayUrl = url?.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
 			<div class="label mt-4 flex items-center justify-between gap-4 text-tx-3">
 				<span class="flex items-center gap-2">
-					{status && <StatusMark status={status} />}
 					{label}
 				</span>
 				<span>{rail}</span>

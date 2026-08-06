@@ -2,27 +2,13 @@
 import { getCollection } from 'astro:content';
 import AsciiFrame from '../components/ascii/AsciiFrame.astro';
 import EntryRow from '../components/EntryRow.astro';
-import StatusMark from '../components/StatusMark.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import Base from '../layouts/Base.astro';
 import { monthYear } from '../utils/dates';
 
-const projects = (await getCollection('projects', (p) => !p.data.draft)).sort(
-	(a, b) => b.data.startDate.valueOf() - a.data.startDate.valueOf(),
-);
-const active = projects.filter((p) => p.data.status === 'active');
-const past = projects.filter((p) => p.data.status !== 'active').slice(0, 3);
-
 const posts = (await getCollection('writing', (p) => !p.data.draft))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 	.slice(0, 3);
-
-/** Serial commas for a spoken list: "a", "a and b", "a, b, and c". */
-function joiner(index: number, total: number): string {
-	if (index === 0) return '';
-	if (index === total - 1) return total === 2 ? ' and ' : ', and ';
-	return ', ';
-}
 ---
 
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -34,58 +20,16 @@ function joiner(index: number, total: number): string {
 		</p>
 
 		<p class="rise mt-6 text-tx-2 [animation-delay:120ms]">
-			{
-				active.length > 0 ? (
-					<Fragment>
-						Right now that’s{' '}
-						{active.map((project, i) => (
-							<Fragment>
-								{joiner(i, active.length)}
-								<a
-									href={`/projects/${project.id}/`}
-									class="group text-tx no-underline whitespace-nowrap"
-								>
-									<StatusMark
-										status={project.data.status}
-										class="mr-[0.35em]"
-									/><span class="link-underline">{project.data.title}</span>
-								</a>
-							</Fragment>
-						))}
-						.{' '}
-					</Fragment>
-				) : (
-					<Fragment>Between projects at the moment. </Fragment>
-				)
-			}
-			{
-				past.length > 0 && (
-					<Fragment>
-						Before that,{' '}
-						{past.map((project, i) => (
-							<Fragment>
-								{joiner(i, past.length)}
-								<a
-									href={`/projects/${project.id}/`}
-									class="group text-tx no-underline whitespace-nowrap"
-								>
-									<StatusMark
-										status={project.data.status}
-										class="mr-[0.35em]"
-									/><span class="link-underline">{project.data.title}</span>
-								</a>
-							</Fragment>
-						))}
-						.
-					</Fragment>
-				)
-			}
+			I’ve spent about a decade building products at the messy 0-to-1 end —
+			talking to users, mapping the workflow, and building the first version
+			myself.
 		</p>
 
 		<p class="rise mt-6 text-tx-2 [animation-delay:240ms]">
 			In between I write —{' '}
 			<a href="/writing/" class="link-underline text-tx whitespace-nowrap">essays</a>, and
-			notes on whatever I’m reading — and I paint.
+			notes on whatever I’m reading — and I{' '}
+			<a href="/art/" class="link-underline text-tx">paint</a>.
 		</p>
 	</div>
 

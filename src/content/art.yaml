@@ -1,0 +1,40 @@
+# Photo grid for the Art page (Instagram-style). Newest first.
+# Replace these placeholders: drop images in `public/art/` and point `src` at them.
+# `caption` (optional) shows in the lightbox; `createdDate` (optional) sets order.
+- id: placeholder-01
+  src: /art/placeholder-01.svg
+  alt: Placeholder artwork 1
+  caption: Replace me — drop a real image in public/art/ and update this row.
+  createdDate: 2026-08-01
+- id: placeholder-02
+  src: /art/placeholder-02.svg
+  alt: Placeholder artwork 2
+  createdDate: 2026-07-01
+- id: placeholder-03
+  src: /art/placeholder-03.svg
+  alt: Placeholder artwork 3
+  createdDate: 2026-06-01
+- id: placeholder-04
+  src: /art/placeholder-04.svg
+  alt: Placeholder artwork 4
+  createdDate: 2026-05-01
+- id: placeholder-05
+  src: /art/placeholder-05.svg
+  alt: Placeholder artwork 5
+  createdDate: 2026-04-01
+- id: placeholder-06
+  src: /art/placeholder-06.svg
+  alt: Placeholder artwork 6
+  createdDate: 2026-03-01
+- id: placeholder-07
+  src: /art/placeholder-07.svg
+  alt: Placeholder artwork 7
+  createdDate: 2026-02-01
+- id: placeholder-08
+  src: /art/placeholder-08.svg
+  alt: Placeholder artwork 8
+  createdDate: 2026-01-01
+- id: placeholder-09
+  src: /art/placeholder-09.svg
+  alt: Placeholder artwork 9
+  createdDate: 2025-12-01

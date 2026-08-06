@@ -2,24 +2,6 @@ import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-const projects = defineCollection({
-  loader: glob({ base: "./src/content/projects", pattern: "**/*.{md,mdx}" }),
-  schema: z.object({
-    title: z.string(),
-    // One line. Shown on the projects index, under the title.
-    description: z.string(),
-    status: z.enum(["active", "shipped", "ended"]),
-    startDate: z.coerce.date(),
-    // Leave this off while the project is still going.
-    endDate: z.coerce.date().optional(),
-    // What I did on it, e.g. "Founder", "Founder & engineer".
-    role: z.string().optional(),
-    // Where to see the thing itself.
-    url: z.string().url().optional(),
-    draft: z.boolean().default(false),
-  }),
-});
-
 const writing = defineCollection({
   loader: glob({ base: "./src/content/writing", pattern: "**/*.{md,mdx}" }),
   schema: z.object({
@@ -31,19 +13,22 @@ const writing = defineCollection({
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     canonicalURL: z.url().optional(),
-    // Attach this post to a project (its slug/id, e.g. "plotpoint"). The project
-    // case-study page collects everything pointing at it into "Related writing".
-    project: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
 
+// A flat photo grid, Instagram-style. Each row points at an image in
+// `public/art/` and carries alt text plus an optional caption/date.
 const art = defineCollection({
-  loader: glob({ base: "./src/content/art", pattern: "**/*.{md,mdx}" }),
+  loader: file("src/content/art.yaml"),
   schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    createdDate: z.coerce.date(),
+    // Path under `public/`, e.g. "/art/piece-01.jpg".
+    src: z.string(),
+    // Alt text for the grid image and lightbox.
+    alt: z.string(),
+    // Optional line shown in the lightbox.
+    caption: z.string().optional(),
+    createdDate: z.coerce.date().optional(),
   }),
 });
 
@@ -64,4 +49,4 @@ const experience = defineCollection({
   }),
 });
 
-export const collections = { projects, writing, art, experience };
+export const collections = { writing, art, experience };
