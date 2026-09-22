@@ -10,42 +10,46 @@ draft: false
 sync:
   source: failing-loudly
   id: 'https://failingloudly.substack.com/p/riddle-me-this-clanker'
-  hash: 4aaec51e3a4ac5181a937a378baafed2fe3691d6b49dc0cb23e70364e2501bb8
+  hash: dd4381e87431b4cf78d91648037a9901f63beebf777bd5b9ca42bc3f3f178592
 ---
-<figure><a href="https://substackcdn.com/image/fetch/$s_!KySs!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1d1d18e8-27f9-40cb-9fbe-14bb1f10dd54_682x400.jpeg"><div><img src="https://substackcdn.com/image/fetch/$s_!KySs!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1d1d18e8-27f9-40cb-9fbe-14bb1f10dd54_682x400.jpeg" width="682" height="400" alt="Guess who's back. So it's been ages since my last blog… | by ..." title="Guess who's back. So it's been ages since my last blog… | by ..." /><div><div></div></div></div></a><figcaption>wazzap</figcaption></figure>
+import ImportedImage from '../../../components/content/ImportedImage.astro';
+import ImportedMedia from '../../../components/content/ImportedMedia.astro';
+import SafeHtml from '../../../components/content/SafeHtml.astro';
+import Tweet from '../../../components/content/Tweet.astro';
+
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!KySs!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1d1d18e8-27f9-40cb-9fbe-14bb1f10dd54_682x400.jpeg"} alt={"Guess who's back. So it's been ages since my last blog… | by ..."} title={"Guess who's back. So it's been ages since my last blog… | by ..."} width={682} height={400} href={"https://substackcdn.com/image/fetch/$s_!KySs!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1d1d18e8-27f9-40cb-9fbe-14bb1f10dd54_682x400.jpeg"} captionHtml={"wazzap"} />
 
 Hey friends, long time no talk.
 
 The Japanese have a concept called _tsundoku_. The term first emerged during the Meiji era and combines _tsunde-oku_ (to stack things for later use) and _doku_ (to read). The general idea is that you shouldn’t think about your piles of unread books as something to be guilty about; you should view yourself as curating a vast library of potential wisdom. I quite like this concept because I have very many piles of unread books in every corner of my home and it makes me feel better about my wasteful habits. I love books. I find the objects comforting, even if the wisdom is pending.
 
-This may have been why I was extra disturbed to learn about [Project Panama](https://www.theguardian.com/commentisfree/2026/aug/05/anthropic-ai-destroying-books), a secret initiative by Anthropic to destructively scan all the books in the world in order to better train their large language models. How do we know this? In January, Exhibit 21<a id="footnote-anchor-1" href="#footnote-1">1</a> was filed in the Californian district court case, Barz v. Anthropic PBC.
+This may have been why I was extra disturbed to learn about [Project Panama](https://www.theguardian.com/commentisfree/2026/aug/05/anthropic-ai-destroying-books), a secret initiative by Anthropic to destructively scan all the books in the world in order to better train their large language models. How do we know this? In January, Exhibit 21<SafeHtml html={"<a id=\"footnote-anchor-1\" href=\"#footnote-1\">1</a>"} /> was filed in the Californian district court case, Barz v. Anthropic PBC.
 
 How do we know it was a secret? In their own words:
 
-<figure><a href="https://substackcdn.com/image/fetch/$s_!7Kop!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0b48f7ce-0daa-4759-a52e-9ab60d77f887_1288x488.png"><div><img src="https://substackcdn.com/image/fetch/$s_!7Kop!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0b48f7ce-0daa-4759-a52e-9ab60d77f887_1288x488.png" width="1288" height="488" alt="" /><div><div></div></div></div></a><figcaption>at least Tom seems aware he’s the bad guy here</figcaption></figure>
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!7Kop!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0b48f7ce-0daa-4759-a52e-9ab60d77f887_1288x488.png"} title={null} width={1288} height={488} href={"https://substackcdn.com/image/fetch/$s_!7Kop!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0b48f7ce-0daa-4759-a52e-9ab60d77f887_1288x488.png"} captionHtml={"at least Tom seems aware he’s the bad guy here"} />
 
-Yikes. That really sucks. Like many of you, I’ve been using a lot of AI recently, mostly for software development. I have a love-hate relationship with these tools. I love that they empower more people to build their ideas without needing years of technical training or deep investment. I hate that they’re stealing our jobs<a id="footnote-anchor-2" href="#footnote-2">2</a>, melting our brains<a id="footnote-anchor-3" href="#footnote-3">3</a>, and poisoning our water supplies<a id="footnote-anchor-4" href="#footnote-4">4</a>.
+Yikes. That really sucks. Like many of you, I’ve been using a lot of AI recently, mostly for software development. I have a love-hate relationship with these tools. I love that they empower more people to build their ideas without needing years of technical training or deep investment. I hate that they’re stealing our jobs<SafeHtml html={"<a id=\"footnote-anchor-2\" href=\"#footnote-2\">2</a>"} />, melting our brains<SafeHtml html={"<a id=\"footnote-anchor-3\" href=\"#footnote-3\">3</a>"} />, and poisoning our water supplies<SafeHtml html={"<a id=\"footnote-anchor-4\" href=\"#footnote-4\">4</a>"} />.
 
-<figure><a href="https://substackcdn.com/image/fetch/$s_!6eKD!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc2c6e4e0-477e-4d21-ac48-94ed8a7b816f_500x356.webp"><div><img src="https://substackcdn.com/image/fetch/$s_!6eKD!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc2c6e4e0-477e-4d21-ac48-94ed8a7b816f_500x356.webp" width="500" height="356" alt="" /><div><div></div></div></div></a></figure>
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!6eKD!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc2c6e4e0-477e-4d21-ac48-94ed8a7b816f_500x356.webp"} title={null} width={500} height={356} href={"https://substackcdn.com/image/fetch/$s_!6eKD!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc2c6e4e0-477e-4d21-ac48-94ed8a7b816f_500x356.webp"} />
 
 Project Panama was interesting to me because it made me wonder: if we’re destroying these books to build better AI, does AI understand the books it’s reading? Does AI understand literature at all? Almost certainly not, right?
 
-By this point, we should all have a rudimentary understanding of how LLMs work as next word predictors<a id="footnote-anchor-5" href="#footnote-5">5</a>, but they really do sound like they know how to reason. When I ask Claude to debug a state management issue in my code, it really sounds like it knows what it’s talking about. It even pushes back sometimes and tells me I’m not applying certain concepts properly. How does a next word predictor do that? Does it understand what it’s talking about?
+By this point, we should all have a rudimentary understanding of how LLMs work as next word predictors<SafeHtml html={"<a id=\"footnote-anchor-5\" href=\"#footnote-5\">5</a>"} />, but they really do sound like they know how to reason. When I ask Claude to debug a state management issue in my code, it really sounds like it knows what it’s talking about. It even pushes back sometimes and tells me I’m not applying certain concepts properly. How does a next word predictor do that? Does it understand what it’s talking about?
 
 These questions have sent me on a side quest spiral (my life is more side quests than main quest at this point) to understand our AI overlords better. What are they good at? What are they bad at?
 
 My research into frontier models has taught me two things:
 
-1.  LLMs struggle with collaboration<a id="footnote-anchor-6" href="#footnote-6">6</a> (same) and coordination<a id="footnote-anchor-7" href="#footnote-7">7</a> (same)
-    
-2.  LLMs struggle with revising prior beliefs<a id="footnote-anchor-8" href="#footnote-8">8</a> (also same)
-    
+1.  LLMs struggle with collaboration<SafeHtml html={"<a id=\"footnote-anchor-6\" href=\"#footnote-6\">6</a>"} /> (same) and coordination<SafeHtml html={"<a id=\"footnote-anchor-7\" href=\"#footnote-7\">7</a>"} /> (same)
 
-I wanted to test these ideas out and, naturally, my first instinct was to turn to puzzles. Puzzles are excitingly elegant ways to study how people think, and the “aha!” moment, when it arrives (if ever), and how it was produced can tell us a lot about the solver and the way they think. Humans have been solving puzzles for millennia<a id="footnote-anchor-9" href="#footnote-9">9</a>, but how do you design a puzzle for something you aren’t even sure can think in the first place?
+2.  LLMs struggle with revising prior beliefs<SafeHtml html={"<a id=\"footnote-anchor-8\" href=\"#footnote-8\">8</a>"} /> (also same)
 
-* * *
+
+I wanted to test these ideas out and, naturally, my first instinct was to turn to puzzles. Puzzles are excitingly elegant ways to study how people think, and the “aha!” moment, when it arrives (if ever), and how it was produced can tell us a lot about the solver and the way they think. Humans have been solving puzzles for millennia<SafeHtml html={"<a id=\"footnote-anchor-9\" href=\"#footnote-9\">9</a>"} />, but how do you design a puzzle for something you aren’t even sure can think in the first place?
 
 * * *
+
 
 # Palimpsest
 
@@ -54,13 +58,13 @@ Palimpsest is a collaborative word-substitution cipher for AI agents. The word r
 Here’s how it works:
 
 1.  I take a book from Project Gutenberg and scramble its text. Every word type is replaced by another word type under a hidden bijection. Punctuation, capitalization patterns, digits, and paragraph structure remain visible. The result resembles English at the token level, but the vocabulary has been systematically reassigned. This type of cipher is hard to brute-force with math and usually requires actual semantic understanding of the text to unscramble.
-    
+
 2.  I spin up 3 agents and give each of them an isolated container to do work in. Each one gets access to a shared git repo, a chat channel, and one-third of the scrambled text. They receive instructions to work together to unscramble the book by writing code that can be run against the source text to confirm its accuracy.
-    
+
 3.  The agents are given new sections of text to solve at scheduled intervals (stages). Also, at set stages in the puzzle, we re-scramble certain sections of the text to see if the agents realize that their previously-accepted rules are no longer valid and go back to re-think them.
-    
+
 4.  We light a bunch of tokens on fire and see what happens
-    
+
 
 If you want to check it out, [here’s the repo](https://github.com/shubsharan/palimpsest). I’m still making tweaks and edits. If you have any ideas or want to help out, go for it. I’m not a professional developer, so the code is probably shit. I did my best, so don’t yell at me, it’s just a quick little experiment.
 
@@ -72,7 +76,7 @@ Stuff like that.
 
 I’m not going to claim that my findings are scientifically valid. I didn’t run enough experiments to create a large enough sample size because I’m incredibly broke and couldn’t afford the tokens.
 
-<figure><a href="https://substackcdn.com/image/fetch/$s_!q86l!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa26d1e1b-7c64-4e0a-853c-4c8befb1329c_400x400.webp"><div><img src="https://substackcdn.com/image/fetch/$s_!q86l!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa26d1e1b-7c64-4e0a-853c-4c8befb1329c_400x400.webp" width="400" height="400" alt="PLEASE SIR - MAY I HAVE SOME MORE TOKENS | Meme Creator" title="PLEASE SIR - MAY I HAVE SOME MORE TOKENS | Meme Creator" /><div><div></div></div></div></a></figure>
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!q86l!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa26d1e1b-7c64-4e0a-853c-4c8befb1329c_400x400.webp"} alt={"PLEASE SIR - MAY I HAVE SOME MORE TOKENS | Meme Creator"} title={"PLEASE SIR - MAY I HAVE SOME MORE TOKENS | Meme Creator"} width={400} height={400} href={"https://substackcdn.com/image/fetch/$s_!q86l!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa26d1e1b-7c64-4e0a-853c-4c8befb1329c_400x400.webp"} />
 
 Regardless, the results were interesting. Here are some takeaways:
 
@@ -83,13 +87,13 @@ All teams quickly discovered that their private excerpts differed. They responde
 They also assigned themselves roles without being told to:
 
 -   evidence collection
-    
+
 -   linguistic analysis
-    
+
 -   solver integration
-    
+
 -   publication and testing
-    
+
 
 Communication seemed genuinely productive. Agents would cite exact sentence frames, occurrence counts, 1:1 constraints, and counterexamples. They often wrote “wrong,” “retract,” and “pause,” and seemed to accept well-supported corrections to their work by others.
 
@@ -100,24 +104,24 @@ It looks like agents can recognize complementary evidence and construct useful s
 The rekey function changes 15 plaintext word types:
 
 -   six high-frequency sentinels such as `the`, `of`, `a`, `to`, `and`, and `he`
-    
--   nine lower-frequency words distributed across each of the agents
-    
 
-Every team recognized non-stationarity<a id="footnote-anchor-10" href="#footnote-10">10</a> and adapted their solver, but the solutions concentrated overwhelmingly on the six sentinels words. Several agents incorrectly concluded that everything else was unchanged, even though the nine specialist mappings had also moved.
+-   nine lower-frequency words distributed across each of the agents
+
+
+Every team recognized non-stationarity<SafeHtml html={"<a id=\"footnote-anchor-10\" href=\"#footnote-10\">10</a>"} /> and adapted their solver, but the solutions concentrated overwhelmingly on the six sentinels words. Several agents incorrectly concluded that everything else was unchanged, even though the nine specialist mappings had also moved.
 
 This is an interesting partial-credit solution:
 
 -   Agents were sensitive to high-mass statistical drift.
-    
--   They formed the correct qualitative explanation: there were new keys
-    
--   They failed to fully integrate sparse, distributed counter-evidence related to the lower-frequency word changes.
-    
--   Contradictions in those words were sometimes misdiagnosed as mistakes, private-agent keys, or additional profiles.
-    
 
-<figure><a href="https://substackcdn.com/image/fetch/$s_!GA1s!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F27add50f-643c-4a1e-8420-68e750596731_1080x610.png"><div><img src="https://substackcdn.com/image/fetch/$s_!GA1s!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F27add50f-643c-4a1e-8420-68e750596731_1080x610.png" width="1080" height="610" alt="" /><div><div></div></div></div></a><figcaption>I separately scored the final reconstructions on stages 1–3 vs stages 4–6</figcaption></figure>
+-   They formed the correct qualitative explanation: there were new keys
+
+-   They failed to fully integrate sparse, distributed counter-evidence related to the lower-frequency word changes.
+
+-   Contradictions in those words were sometimes misdiagnosed as mistakes, private-agent keys, or additional profiles.
+
+
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!GA1s!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F27add50f-643c-4a1e-8420-68e750596731_1080x610.png"} title={null} width={1080} height={610} href={"https://substackcdn.com/image/fetch/$s_!GA1s!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F27add50f-643c-4a1e-8420-68e750596731_1080x610.png"} captionHtml={"I separately scored the final reconstructions on stages 1–3 vs stages 4–6"} />
 
 I used different source texts across some segments, so these aren’t causal comparisons. Still, they seem to prove the re-key couldn’t completely defeat the agents. Final performance generally survived the sabotage, and the Sol teams actually decoded more of the re-keyed segment.
 
@@ -128,11 +132,11 @@ This was interesting.
 Since the cipher is ordinary English words, it invites semantic interpretation even though its meaning is a decoy. Three Sol teams formed coherent but false literary identifications:
 
 -   Checker Run 1 identified _Captain Blood_. The agent tested the corresponding names, saw the score decline, and explicitly retracted the theory. That’s great falsification.
-    
+
 -   Checker Run 2 became highly confident that the source was _The Man of Property_ or the _Forsyte Saga_. The entire name batch gained only one checker match, yet the theory was rationalized and several false names survived into the final solver.
-    
+
 -   The No-Checker Run identified _The Egoist_ after six minutes and never abandoned it. The final solver still contains source-specific names and phrase triggers.
-    
+
 
 The actual source was [Rafael Sabatini’s](https://www.gutenberg.org/ebooks/65939) _[Fortune’s Fool](https://www.gutenberg.org/ebooks/65939)_.
 
@@ -145,30 +149,30 @@ The Opus teams were more restrained. They inferred a broadly correct Restoration
 The checker returned only aggregate correctness, but that was enough for agents to perform word-level A/B tests. They would:
 
 1.  Change one mapping.
-    
+
 2.  Push a commit.
-    
+
 3.  Check the aggregate delta.
-    
+
 4.  Accept or revert it.
-    
+
 
 The Opus checker team used this sparingly (12 calls) and caught a genuine integration regression. A local checkpoint reached 46.83%, later edits dropped to 42.31%, and the team repaired it. Unfortunately, subsequent pushes again overwrote proven mappings, and the final solve rate on that run was 45.67%.
 
 The Sol teams used 118 and 133 checks. This created much more hill climbing, repeated plateaus, Git races, and baseline confusion. Moreover, each agent’s check covered different private evidence, so the same commit could produce contradictory deltas. The agents eventually figured this out, but only after spending a lot of time reconciling incompatible “oracle” reports.
 
-<figure><a href="https://substackcdn.com/image/fetch/$s_!qGyc!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe3f75622-79a2-486e-9808-ea204f2784b9_394x588.png"><div><img src="https://substackcdn.com/image/fetch/$s_!qGyc!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe3f75622-79a2-486e-9808-ea204f2784b9_394x588.png" width="394" height="588" alt="" /><div><div></div></div></div></a><figcaption>clankers love oracles</figcaption></figure>
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!qGyc!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe3f75622-79a2-486e-9808-ea204f2784b9_394x588.png"} title={null} width={394} height={588} href={"https://substackcdn.com/image/fetch/$s_!qGyc!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe3f75622-79a2-486e-9808-ea204f2784b9_394x588.png"} captionHtml={"clankers love oracles"} />
 
 It’s clear that checker access changed the character of work:
 
 -   It supported falsification and regression detection
-    
+
 -   It encouraged narrow ablations and score chasing
-    
+
 -   It amplified coordination problems when multiple agents modified the shared baseline.
-    
+
 -   It did not provide a global truth signal.
-    
+
 
 The highest result within both model groups happened to be no-checker runs, but the conditions are too confounded to conclude that the checker definitely hurt them.
 
@@ -177,15 +181,15 @@ The highest result within both model groups happened to be no-checker runs, but 
 All six teams published successfully, so git didn’t prevent completion, but git coordination did gum up their works via:
 
 -   rejected pushes and rebases
-    
+
 -   duplicate target mappings
-    
+
 -   final commits that were not the best tested checkpoints
-    
+
 -   one agent freezing against a stale workspace while another continued integrating
-    
+
 -   etc.
-    
+
 
 Teams eventually invented sensible controls like add-only policies, probe locks, branch-based experiments, designated integrators, but usually late in the game.
 
@@ -204,51 +208,50 @@ Opus communication was more sparse and proof-dense. Sol communication contained 
 ## Interesting moments in each run
 
 -   **Opus Checker:** Detected the re-key about four minutes after stage 4. Used the checker to identify a severe overwrite regression and instituted an add-only rule, but later commits still lost some of the repaired state. All three agents voluntarily stopped around 54 minutes despite a 90-minute allowance! Lazy bums.
-    
+
 -   **Opus Blind 1:** Produced the best overall score. A George Monck title-list crib unlocked many mappings. One agent built a more sophisticated paragraph-adaptive solver, but the canonical result used a simpler flat dictionary and scored better. Complexity did not equal quality.
-    
+
 -   **Opus Blind 2:** Recognized the vocabulary-permutation structure in four minutes and published a regime-aware solver. An unresolved `urging=well` vs. `urging=if` dispute was settled by the final publisher overwriting the value, not by shared evidential agreement. It was a benevolent dictatorship.
-    
+
 -   **Sol Checker 1:** Retracted _Captain Blood_ cleanly after checker disconfirmation. Recognized both the re-key and that aggregate deltas had become confounded. Git probe races forced the team to invent a lock. The final disputed change landed 16 seconds before cutoff. Close call.
-    
+
 -   **Sol Checker 2:** Developed the false Forsyte theory despite weak checker support. A catastrophic score collapse made the second key regime undeniable. One agent noticed a known marker-light paragraph that could defeat the final regime detector, but the team froze before fixing it. Message volume was highly asymmetric, while commit authority was concentrated in a different agent, clearly demonstrating emergent specialization.
-    
+
 -   **Sol Blind:** Retained the false _Egoist_ theory but developed the most sophisticated structural model: default and alternate profiles, signature-gated selection, phrase overrides, and conservative trigger handling. The final team exchange rejected an overly broad detector because it could corrupt ordinary text, which seemed like a good safety decision.
-    
+
 
 # Conclusions
 
-<figure><a href="https://substackcdn.com/image/fetch/$s_!dxZu!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0d36257a-0dcf-469c-90b2-1a29afd448ae_1472x1580.png"><div><img src="https://substackcdn.com/image/fetch/$s_!dxZu!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0d36257a-0dcf-469c-90b2-1a29afd448ae_1472x1580.png" width="1456" height="1563" alt="" /><div><div></div></div></div></a><figcaption>some solve rates</figcaption></figure>
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!dxZu!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0d36257a-0dcf-469c-90b2-1a29afd448ae_1472x1580.png"} title={null} width={1456} height={1563} href={"https://substackcdn.com/image/fetch/$s_!dxZu!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0d36257a-0dcf-469c-90b2-1a29afd448ae_1472x1580.png"} captionHtml={"some solve rates"} />
 
 The agents behaved like capable but imperfect research collaborators:
 
 -   They self-organized, pooled evidence, tested ideas, and revised publicly
-    
+
 -   They reliably produced runnable artifacts
-    
+
 -   They recognized the hidden re-key intervention and adapted
-    
+
 -   They were vulnerable to semantic anchoring
-    
+
 -   They over-weighted conspicuous high-frequency evidence and under-integrated sparse specialist evidence
-    
+
 -   Their biggest practical weakness was preserving the best joint result amid concurrent publication
-    
+
 
 Collaboration created genuine informational value, but the bottleneck moved from individual discovery to authority, versioning, and integration. The agents usually found important ideas. They did not always keep them.
 
 Did the agents understand the book? Eh. Meh.
 
 -   They clearly had semantic understanding at the phrase/sentence level
-    
+
 -   They really struggled with global understanding, and weren’t able to infer anything about the overall narrative that could help them
-    
+
 -   They fell back to a hybrid linguistic-statistical method
-    
+
 
 * * *
 
-* * *
 
 Oops.
 
@@ -256,24 +259,24 @@ Substack is yelling at me and saying my post is too long. Uhh… I’ll be back 
 
 If you have any questions about this project:
 
-[View embedded media](<https://www.youtube-nocookie.com/embed/s8muxst31cw?rel=0&autoplay=0&showinfo=0&enablejsapi=0>)
+<ImportedMedia kind={"youtube"} src={"https://www.youtube-nocookie.com/embed/s8muxst31cw?rel=0&autoplay=0&showinfo=0&enablejsapi=0"} title={"Embedded media"} />
 
-<div><a id="footnote-1" href="#footnote-anchor-1">1</a><div><p>https://www.courtlistener.com/docket/69058235/554/21/bartz-v-anthropic-pbc</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-1\" href=\"#footnote-anchor-1\">1</a><div><p>https://www.courtlistener.com/docket/69058235/554/21/bartz-v-anthropic-pbc</p></div></div>"} />
 
-<div><a id="footnote-2" href="#footnote-anchor-2">2</a><div><p>https://www.morningstar.com/news/marketwatch/2026080418/ai-displacement-in-the-workplace-is-increasing-and-affecting-young-people-most</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-2\" href=\"#footnote-anchor-2\">2</a><div><p>https://www.morningstar.com/news/marketwatch/2026080418/ai-displacement-in-the-workplace-is-increasing-and-affecting-young-people-most</p></div></div>"} />
 
-<div><a id="footnote-3" href="#footnote-anchor-3">3</a><div><p>https://osf.io/preprints/psyarxiv/cmy7n_v5</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-3\" href=\"#footnote-anchor-3\">3</a><div><p>https://osf.io/preprints/psyarxiv/cmy7n_v5</p></div></div>"} />
 
-<div><a id="footnote-4" href="#footnote-anchor-4">4</a><div><p>https://www.techspot.com/news/113041-cheyenne-suspends-datacenter-wastewater-after-rare-bacterium-traced.html</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-4\" href=\"#footnote-anchor-4\">4</a><div><p>https://www.techspot.com/news/113041-cheyenne-suspends-datacenter-wastewater-after-rare-bacterium-traced.html</p></div></div>"} />
 
-<div><a id="footnote-5" href="#footnote-anchor-5">5</a><div><p>https://cset.georgetown.edu/article/the-surprising-power-of-next-word-prediction-large-language-models-explained-part-1/</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-5\" href=\"#footnote-anchor-5\">5</a><div><p>https://cset.georgetown.edu/article/the-surprising-power-of-next-word-prediction-large-language-models-explained-part-1/</p></div></div>"} />
 
-<div><a id="footnote-6" href="#footnote-anchor-6">6</a><div><p>https://arxiv.org/abs/2604.07821</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-6\" href=\"#footnote-anchor-6\">6</a><div><p>https://arxiv.org/abs/2604.07821</p></div></div>"} />
 
-<div><a id="footnote-7" href="#footnote-anchor-7">7</a><div><p>https://arxiv.org/abs/2603.01045?</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-7\" href=\"#footnote-anchor-7\">7</a><div><p>https://arxiv.org/abs/2603.01045?</p></div></div>"} />
 
-<div><a id="footnote-8" href="#footnote-anchor-8">8</a><div><p>https://arxiv.org/abs/2605.06527</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-8\" href=\"#footnote-anchor-8\">8</a><div><p>https://arxiv.org/abs/2605.06527</p></div></div>"} />
 
-<div><a id="footnote-9" href="#footnote-anchor-9">9</a><div><p>https://en.wikipedia.org/wiki/Ostomachion</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-9\" href=\"#footnote-anchor-9\">9</a><div><p>https://en.wikipedia.org/wiki/Ostomachion</p></div></div>"} />
 
-<div><a id="footnote-10" href="#footnote-anchor-10">10</a><div><p>https://en.wikipedia.org/wiki/Stationary_process</p></div></div>
+<SafeHtml html={"<div><a id=\"footnote-10\" href=\"#footnote-anchor-10\">10</a><div><p>https://en.wikipedia.org/wiki/Stationary_process</p></div></div>"} />
