@@ -1,10 +1,13 @@
 ---
-title: 'Coming soon'
-description: 'This is Failing Loudly.'
-publication: 'Failing Loudly'
-pubDate: '2025-07-20'
+title: Coming soon
+description: This is Failing Loudly.
+publication: Failing Loudly
+pubDate: '2025-07-20T19:39:57.000Z'
 canonicalURL: 'https://failingloudly.substack.com/p/coming-soon'
-draft: true
+draft: false
+sync:
+  source: failing-loudly
+  id: 'https://failingloudly.substack.com/p/coming-soon'
+  hash: 158747b910b5ad10722fe3de4ab24a64d2fbad32675b6aa7db2eecf5ba7000bb
 ---
-
 This is Failing Loudly.

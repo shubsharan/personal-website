@@ -1,24 +1,26 @@
 ---
-title: '4 days to launch – Doing things that don''t scale'
+title: 4 days to launch – Doing things that don't scale
 description: 'Or: How I went outside and touched grass'
-publication: 'Failing Loudly'
-pubDate: '2025-08-04'
+publication: Failing Loudly
+pubDate: '2025-08-04T16:56:43.000Z'
 canonicalURL: 'https://failingloudly.substack.com/p/4-days-to-launch-doing-things-that'
+draft: false
+sync:
+  source: failing-loudly
+  id: 'https://failingloudly.substack.com/p/4-days-to-launch-doing-things-that'
+  hash: 1cce16ef37df51ebbb92369fc0916c5b2eb512b8732565dd2136849be50dfd93
 ---
-
 Hello, friends! Welcome to **Failing Loudly #4**. I’m your host, Shub. We are now **4 days away** from launching Plotpoint at Outside Lands 2025. Plotpoint is an **interactive, location-based storytelling experience** that gives you a reason to go outside, explore your city, and have an adventure with your friends.
 
 So today, let’s talk about… going outside.
 
-<figure>
-  <img src="https://substackcdn.com/image/fetch/$s_!8Nzz!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F03c363fe-1834-49bf-b58e-93890a27d001_1200x675.jpeg" alt="Steam Community :: Guide :: How to start touching grass?" />
-</figure>
+<figure><a href="https://substackcdn.com/image/fetch/$s_!8Nzz!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F03c363fe-1834-49bf-b58e-93890a27d001_1200x675.jpeg"><div><img src="https://substackcdn.com/image/fetch/$s_!8Nzz!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F03c363fe-1834-49bf-b58e-93890a27d001_1200x675.jpeg" width="1200" height="675" alt="Steam Community :: Guide :: How to start touching grass?" title="Steam Community :: Guide :: How to start touching grass?" /><div><div></div></div></div></a></figure>
 
-## The real world exists
+# The real world exists
 
 It’s true, I’ve been.
 
-If you’ve been following this newsletter since the beginning — **checks notes** — a whopping 13 days ago, you’ll know most of my marketing efforts have been online. Makes sense, right? I’m building a web app. You’re reading this on a website. All of this is happening online.
+If you’ve been following this newsletter since the beginning — \*_checks notes\*_ — a whopping 13 days ago, you’ll know most of my marketing efforts have been online. Makes sense, right? I’m building a web app. You’re reading this on a website. All of this is happening online.
 
 But Plotpoint isn’t an online experience. It’s a real-world adventure. The app is just a content delivery mechanism. Somewhere around my tenth LinkedIn post, I realized I was trying to avoid the thing I actually needed to do:
 
@@ -28,19 +30,21 @@ So I did.
 
 I woke up, [made a Partiful event](https://partiful.com/e/MvIM7cC7YqfBVG9uksgY), designed a flyer in 30 seconds, then went to UPS and printed out 100 copies on highlighter green paper. Then I hit the streets of San Francisco, flyering in neighborhoods with high foot traffic:
 
-- Valencia Street in the Mission
-
-- Hayes Street in Hayes Valley
-
-- Divisadero Street by Alamo Square
+-   Valencia Street in the Mission
+    
+-   Hayes Street in Hayes Valley
+    
+-   Divisadero Street by Alamo Square
+    
 
 I put up around 80 of my flyers before I ran out of tape and went home. Here are my key takeaways:
 
-1. Touching 80+ street poles and dumpsters was disgusting and I scrubbed my hands for maybe fifteen minutes when I got home.
-
-2. I hated it and next time, I will do it early in the morning or late at night because I felt incredibly shy and self-conscious 🥺.
-
-3. It worked.
+1.  Touching 80+ street poles and dumpsters was disgusting and I scrubbed my hands for maybe fifteen minutes when I got home.
+    
+2.  I hated it and next time, I will do it early in the morning or late at night because I felt incredibly shy and self-conscious 🥺.
+    
+3.  It worked.
+    
 
 In the past 20 hours, I have received 86 RSVPs (72 from strangers). Someone even took a picture and shared it in a Discord for another much larger scavenger hunt group. RSVPs are still trickling in, and I’ll be flyering more neighborhoods this week, but it looks like we’re on track to hit our original goal of 100 users at launch.
 
@@ -50,16 +54,13 @@ These people are strangers!
 
 For weeks, I’ve been stuck in my network bubble. Most of you reading this are friends and family (hi, I love you). But for Plotpoint to succeed, we need to expand beyond that. This was our first real step.
 
-<figure>
-  <img src="https://substackcdn.com/image/fetch/$s_!hYD6!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7d65ec32-b9ce-4246-b08b-332c15203d40_1290x2796.png" alt="" />
-  <figcaption>I really need to charge my phone</figcaption>
-</figure>
+<figure><a href="https://substackcdn.com/image/fetch/$s_!hYD6!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7d65ec32-b9ce-4246-b08b-332c15203d40_1290x2796.png"><div><img src="https://substackcdn.com/image/fetch/$s_!hYD6!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7d65ec32-b9ce-4246-b08b-332c15203d40_1290x2796.png" width="1290" height="2796" alt="" /><div><div></div></div></div></a><figcaption>I really need to charge my phone</figcaption></figure>
 
 * * *
 
-<figure>
-  <img src="https://substackcdn.com/image/fetch/$s_!TL35!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F96af5429-3452-4359-b197-154e53024216_498x343.gif" alt="" />
-</figure>
+[RSVP to the event](https://partiful.com/e/MvIM7cC7YqfBVG9uksgY)
+
+<figure><a href="https://substackcdn.com/image/fetch/$s_!TL35!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F96af5429-3452-4359-b197-154e53024216_498x343.gif"><div><img src="https://substackcdn.com/image/fetch/$s_!TL35!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F96af5429-3452-4359-b197-154e53024216_498x343.gif" width="498" height="343" alt="" /><div><div></div></div></div></a></figure>
 
 * * *
 
@@ -81,20 +82,23 @@ This is about finding a community and providing them with a fun, no-pressure way
 
 * * *
 
-## What now?
+* * *
+
+# What now?
 
 Is flyering scalable? Nope. I’m only one person, and there’s a reason digital platforms exist: you just can’t beat the scale of digital campaigns.
 
 That being said:
 
-> “Do things that don’t scale.”
+> “Do things that don’t scale.”  
 > \- Paul Graham, [Do Things That Don’t Scale, 2013](https://paulgraham.com/ds.html)
 
 I’m now also extending that same philosophy to the product. Instead of creating templates for reusable components that can be mix-and-matched for future stories, I’m making a completely bespoke experience for Outside Lands. It’s a little more (a lot more) work, and I won’t be able to re-use a lot of it later on, but that’s okay. I’d rather do something special and worry about scale later, when it’s an actual problem to solve.
 
 We have four days to go. This is a heads-down sprint to get the story finished and ready. I’ll send out another update on Thursday, just before the festival. Wish me luck!
 
-<figure>
-  <img src="https://substackcdn.com/image/fetch/$s_!1hu6!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fccad7f88-ab6f-4023-bde2-4a405229ad3f_666x500.jpeg" alt="Without a goal, Sprint Plannings are wasted time ? - Matthias Orgler" />
-  <figcaption>of course there’s a facebook page called “Agile Methodology Memes”</figcaption>
-</figure>
+<figure><a href="https://substackcdn.com/image/fetch/$s_!1hu6!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fccad7f88-ab6f-4023-bde2-4a405229ad3f_666x500.jpeg"><div><img src="https://substackcdn.com/image/fetch/$s_!1hu6!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fccad7f88-ab6f-4023-bde2-4a405229ad3f_666x500.jpeg" width="666" height="500" alt="Without a goal, Sprint Plannings are wasted time ? - Matthias Orgler" title="Without a goal, Sprint Plannings are wasted time ? - Matthias Orgler" /><div><div></div></div></div></a><figcaption>of course there’s a facebook page called “Agile Methodology Memes”</figcaption></figure>
+
+* * *
+
+* * *

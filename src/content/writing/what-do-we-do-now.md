@@ -1,18 +1,26 @@
 ---
-title: 'What do we do now?'
-description: 'Trying to find a balance between what I want to do and what I should do'
-publication: 'Failing Loudly'
-pubDate: '2025-09-12'
+title: What do we do now?
+description: Trying to find a balance between what I want to do and what I should do
+publication: Failing Loudly
+pubDate: '2025-09-12T20:58:45.000Z'
 canonicalURL: 'https://failingloudly.substack.com/p/what-do-we-do-now'
+draft: false
+sync:
+  source: failing-loudly
+  id: 'https://failingloudly.substack.com/p/what-do-we-do-now'
+  hash: 516e40bc440c65237137b23cf6797b5e1df48083a517717514c1b332be6eeeec
 ---
-
 Hello, friends! Welcome to Failing Loudly #6. I’m your host, Shub and I’m building Plotpoint, an interactive, location-based storytelling experience that gives you a reason to go outside, explore your city, and have an adventure with your friends. We launched our first story at the Outside Lands music festival in San Francisco from August 8-10, where we had 465 RSVPs, 130 players, and 7 winners.
 
 Now, we need to figure out what we’re going to do next.
 
-*Note: Today’s post is a little more personal than usual. Bear[^1] with me, and we’ll get back to the fun product stuff shortly.*
+_Note: Today’s post is a little more personal than usual. Bear<a id="footnote-anchor-1" href="#footnote-1">1</a> with me, and we’ll get back to the fun product stuff shortly._
 
-## So what’s on my mind?
+* * *
+
+* * *
+
+# So what’s on my mind?
 
 I didn’t intend to go a month without sending up a follow-up, but life and existential doubt have been getting the best of me lately and it took me a couple weeks to build up the motivation to power through it.
 
@@ -36,12 +44,9 @@ So, I’m not a great fit at most big companies, and most smaller companies want
 
 Is that even something I want to do?
 
-I know it’s common sense to just go get any new job, but there’s something inside me that is very resistant to that idea. I think I’m just wired to build stuff, and I don’t know if I’ll be happy working a 9-5. Now, is that a valid reason to continue taking risky career plays? Is it a smarter idea to take the safe route and start earning income again *before* thinking about a new project? I don’t know the answer to that.
+I know it’s common sense to just go get any new job, but there’s something inside me that is very resistant to that idea. I think I’m just wired to build stuff, and I don’t know if I’ll be happy working a 9-5. Now, is that a valid reason to continue taking risky career plays? Is it a smarter idea to take the safe route and start earning income again _before_ thinking about a new project? I don’t know the answer to that.
 
-<figure>
-  <img src="https://substackcdn.com/image/fetch/$s_!TRtx!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fecb52f19-7d24-404c-a9bb-7172f9a3ab77_2202x1170.jpeg" alt="Angel Investor $???: MONEY PLEASE! - The Fireside Wake" />
-  <figcaption>Note: if you are someone on a team that’s willing to pay me money for work, pls disregard the entire previous section</figcaption>
-</figure>
+<figure><a href="https://substackcdn.com/image/fetch/$s_!TRtx!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fecb52f19-7d24-404c-a9bb-7172f9a3ab77_2202x1170.jpeg"><div><img src="https://substackcdn.com/image/fetch/$s_!TRtx!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fecb52f19-7d24-404c-a9bb-7172f9a3ab77_2202x1170.jpeg" width="1456" height="774" alt="Angel Investor $???: MONEY PLEASE! - The Fireside Wake" title="Angel Investor $???: MONEY PLEASE! - The Fireside Wake" /><div><div></div></div></div></a><figcaption>Note: if you are someone on a team that’s willing to pay me money for work, pls disregard the entire previous section</figcaption></figure>
 
 ## What should I do with Plotpoint?
 
@@ -49,13 +54,14 @@ Now that I’ve had some time to marinate on the initial two week sprint into th
 
 This is what makes me happy. I want to do more of this:
 
-1. Encourage people to get outside with their friends and engage with their community in fun new ways.
-
-2. Tell stories that help people see the world around them in a different light. Fiction and nonfiction both.
-
-3. Help platform others who want to tell these kinds of stories.
-
-4. Support local businesses and nonprofits.
+1.  Encourage people to get outside with their friends and engage with their community in fun new ways.
+    
+2.  Tell stories that help people see the world around them in a different light. Fiction and nonfiction both.
+    
+3.  Help platform others who want to tell these kinds of stories.
+    
+4.  Support local businesses and nonprofits.
+    
 
 Originally, I visualized Plotpoint as a media platform with a focus on telling location-based stories. All the puzzles and interactivity was just an add-on to make the stories themselves more interesting. Somewhere deep down, I consider myself to be a writer, and I wanted to build something that would allow me to write stories.
 
@@ -63,9 +69,9 @@ Now, I think a slight adjustment is warranted. People responded really well when
 
 I think it’s actually a gaming platform.
 
-This took me a little while to wrap my head around. I think I was really just being snobby, that I didn’t want to *just* make silly little games, I wanted to author narratives (or some dumb shit like that). The more I’ve thought about it, however, the more I’ve realized that games are a lovely way to tell stories. Some of my favorite video games are narrative-driven.
+This took me a little while to wrap my head around. I think I was really just being snobby, that I didn’t want to \*just\* make silly little games, I wanted to author narratives (or some dumb shit like that). The more I’ve thought about it, however, the more I’ve realized that games are a lovely way to tell stories. Some of my favorite video games are narrative-driven.
 
-## What now?
+# What now?
 
 Try this on for size:
 
@@ -73,18 +79,21 @@ Try this on for size:
 
 How does that sound? I’ll be the first to admit that it isn’t the crispiest pitch, but it kind-of-sort-of feels directionally right. I want to work with others. I don’t want to build one-off scavenger hunts and games. I’d much rather build a platform that lets others build their own games and tell their own stories. That sounds fun to me.
 
-I think it would be cool to build an ecosystem where anyone can build a game and sell it (if they want). A recent study[^2] reported that reading for fun is down 40% over the last 20 years in the US. A lot of writers I know are anxious that the market for stories is drying up. Maybe this could be another way to get people to engage with narrative content in a more interactive manner? I like the idea of giving people another option for earning income from their art.
+I think it would be cool to build an ecosystem where anyone can build a game and sell it (if they want). A recent study<a id="footnote-anchor-2" href="#footnote-2">2</a> reported that reading for fun is down 40% over the last 20 years in the US. A lot of writers I know are anxious that the market for stories is drying up. Maybe this could be another way to get people to engage with narrative content in a more interactive manner? I like the idea of giving people another option for earning income from their art.
 
 I’ve actually already gotten started building something for this. I’m working on a modular game engine that allows us to plug in any number of interactive components (puzzles, minigames, location services, etc) and stitch them together to support branching narratives (goosebumps-style choose your own adventure stories) and multiplayer narratives (murder mystery parties, where every player has a different character).
 
 It’s pretty exciting, actually. I’m trying to do this the right way (no vibe coding, sorry) and actually build a solid engine that makes it easy for me to collaborate with others soon. Maybe we can even open source it and let the community suggest new puzzles and plugins? Who knows. I’ll talk more about that in my next post, though, this one is long enough already.
 
-Talk soon,
+Talk soon,  
 Shub
 
 * * *
 
-***P.S.** Do you like telling stories? Do you want to design a scavenger hunt or any other kind of real-world game? Do you know anyone who might think this is fun? Let me know! Let’s team up and make it happen.*
+* * *
 
-[^1]: https://www.grammarly.com/blog/grammar/bear-with-me/
-[^2]: https://news.ufl.edu/2025/08/reading-for-pleasure-study/
+_**P.S.** Do you like telling stories? Do you want to design a scavenger hunt or any other kind of real-world game? Do you know anyone who might think this is fun? Let me know! Let’s team up and make it happen._
+
+<div><a id="footnote-1" href="#footnote-anchor-1">1</a><div><p>https://www.grammarly.com/blog/grammar/bear-with-me/</p></div></div>
+
+<div><a id="footnote-2" href="#footnote-anchor-2">2</a><div><p>https://news.ufl.edu/2025/08/reading-for-pleasure-study/</p><p></p></div></div>

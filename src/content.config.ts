@@ -7,13 +7,16 @@ const writing = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    publication: z
-      .enum(["Failing Loudly", "Book Reviews", "Essays"])
-      .default("Essays"),
+    publication: z.string().trim().min(1).default("Essays"),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     canonicalURL: z.url().optional(),
     draft: z.boolean().default(false),
+    sync: z.object({
+      source: z.string().min(1),
+      id: z.string().min(1),
+      hash: z.string().regex(/^[a-f0-9]{64}$/),
+    }).optional(),
   }),
 });
 
