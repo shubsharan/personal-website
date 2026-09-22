@@ -1,0 +1,24 @@
+---
+interface Props {
+	url: string;
+}
+---
+
+<div class="flex justify-center" data-tweet>
+	<blockquote class="twitter-tweet">
+		<a href={Astro.props.url}>View post on X</a>
+	</blockquote>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", () => {
+		const theme = document.documentElement.dataset.theme ?? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+		document.querySelectorAll<HTMLElement>("[data-tweet] .twitter-tweet").forEach((tweet) => tweet.dataset.theme = theme);
+		if (document.getElementById("twitter-wjs")) return;
+		const script = document.createElement("script");
+		script.id = "twitter-wjs";
+		script.src = "https://platform.twitter.com/widgets.js";
+		script.async = true;
+		document.head.append(script);
+	});
+</script>

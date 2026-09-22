@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   sync:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +30,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:content
       - id: sync
+        env:
+          CONTENT_FEED_BASE_URL: https://shub.gg/api/feeds
         run: pnpm content:sync
       - if: steps.sync.outputs.changed == 'true'
         run: pnpm build
@@ -42,7 +44,7 @@ jobs:
           import { execFileSync } from 'node:child_process';
           const git = (...args) => execFileSync('git', args, { stdio: 'inherit' });
           const paths = JSON.parse(process.env.SYNC_PATHS);
-          if (!paths.length || paths.some(path => !path.startsWith('src/content/writing/') || path.includes('..') || !path.endsWith('.md'))) {
+          if (!paths.length || paths.some(path => !path.startsWith('src/content/writing/') || path.includes('..') || !/\.mdx?$/.test(path))) {
             throw new Error('Unexpected sync paths');
           }
           git('config', 'user.name', 'github-actions[bot]');

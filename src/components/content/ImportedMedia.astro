@@ -1,0 +1,30 @@
+---
+interface Props {
+	kind: "youtube" | "video" | "audio" | "link";
+	src: string;
+	title: string;
+}
+
+const { kind, src, title } = Astro.props;
+---
+
+{
+	kind === "youtube" ? (
+		<div class="aspect-video overflow-hidden rounded-sm border border-border">
+			<iframe
+				src={src}
+				title={title}
+				class="size-full"
+				loading="lazy"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				allowfullscreen
+			/>
+		</div>
+	) : kind === "video" ? (
+		<video src={src} class="w-full" controls preload="metadata">{title}</video>
+	) : kind === "audio" ? (
+		<audio src={src} class="w-full" controls preload="metadata">{title}</audio>
+	) : (
+		<p><a href={src}>{title}</a></p>
+	)
+}

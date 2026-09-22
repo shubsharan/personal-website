@@ -15,15 +15,17 @@ pnpm content:sync
 pnpm test:content
 ```
 
-The importer matches existing canonical URLs and keeps their filenames. New posts
-go under `src/content/writing/<source-id>/` with stable, collision-resistant
-filenames. Frontmatter records the source, remote ID, and SHA-256 content hash.
+The importer matches existing canonical URLs and preserves their route names,
+migrating imported `.md` files to `.mdx`. New posts go under
+`src/content/writing/<source-id>/` with stable, collision-resistant filenames.
+Frontmatter records the source, remote ID, and SHA-256 content hash.
 Remote text, metadata, and published status replace the imported copy on every
 change. Local edits to imported content are overwritten. Posts without a matching
 remote identity or canonical URL remain locally authored and retain their drafts.
 
-The importer preserves captions, tables, and footnote anchors, sanitizes retained
-HTML, and replaces interactive embeds with links. Images remain hosted remotely.
+The importer preserves captions, tables, and footnote anchors and sanitizes retained
+HTML. MDX components render images, tweets, YouTube, audio, and video; unsupported
+embeds become links to the source. Images remain hosted remotely.
 It never deletes posts absent from a feed. Edits outside the feed's current window
 are not detected. To unpublish an imported post permanently, remove its source
 from configuration before editing or deleting the local copy.
@@ -35,6 +37,14 @@ to `main`. The connected Cloudflare Git integration builds and deploys that comm
 Normal site builds do not fetch feeds. Unchanged sync runs skip build, commit, and
 deployment. Failed runs report errors and leave the published site unchanged;
 the next scheduled run retries. Concurrent pushes fail safely without force-pushes.
+
+Substack challenges direct requests from GitHub-hosted runners. The workflow
+therefore sets `CONTENT_FEED_BASE_URL=https://shub.gg/api/feeds` and fetches through
+a small endpoint on the existing Cloudflare Worker. This endpoint serves only
+the public feeds registered in `content-sources.json`; it cannot fetch arbitrary
+URLs. Deploy source configuration changes before syncing a newly added source.
+Local sync commands fetch feeds directly unless that environment variable is set.
+Upstream errors and non-XML responses fail the sync instead of replacing posts.
 
 The repository currently uses **Cloudflare Workers Builds**, configured by
 `wrangler.jsonc`, rather than Cloudflare Pages. Keep the Git integration connected

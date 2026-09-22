@@ -5,6 +5,8 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import matter from 'gray-matter';
 import { convertHtml, syncContent } from './content-sync.mjs';
+import { GET as getFeed } from '../src/pages/api/feeds/[source].js';
+import { convertDescription } from './content-converter.mjs';
 
 const source = { id: 'one', publication: 'One', feedURL: 'https://one.example/feed' };
 const item = ({ title = 'A post', url = 'https://one.example/p/post', body = '<p>Hello.</p>', guid = url } = {}) => `
@@ -25,6 +27,7 @@ async function fixture(t, sources = [source]) {
 test('migration keeps URLs, publishes imports, preserves local drafts, and converges after edits', async (t) => {
   const root = await fixture(t);
   const old = join(root, 'src/content/writing/original-slug.md');
+  const migrated = join(root, 'src/content/writing/original-slug.mdx');
   const local = join(root, 'src/content/writing/local.md');
   const localText = '---\ntitle: Local\ndraft: true\n---\nLocal text.\n';
   await writeFile(local, localText);
@@ -33,22 +36,23 @@ test('migration keeps URLs, publishes imports, preserves local drafts, and conve
   assert.equal((await syncContent({ root, fetchFeed, dryRun: true })).updated, 1);
   assert.match(await readFile(old, 'utf8'), /Old text/);
   assert.equal((await syncContent({ root, fetchFeed })).updated, 1);
-  const text = await readFile(old, 'utf8');
+  await assert.rejects(readFile(old, 'utf8'), { code: 'ENOENT' });
+  const text = await readFile(migrated, 'utf8');
   assert.equal(matter(text).data.draft, false);
   assert.match(matter(text).data.sync.hash, /^[a-f0-9]{64}$/);
   assert.equal((await syncContent({ root, fetchFeed })).unchanged, 1);
-  await writeFile(old, text.replace('Hello.', 'Local edit.'));
+  await writeFile(migrated, text.replace('Hello.', 'Local edit.'));
   assert.equal((await syncContent({ root, fetchFeed })).updated, 1);
-  assert.equal(await readFile(old, 'utf8'), text);
+  assert.equal(await readFile(migrated, 'utf8'), text);
   const editedFeed = response(feed(item({ title: 'Updated', body: '<p>Remote edit.</p>' })));
   await syncContent({ root, fetchFeed: editedFeed });
-  const edited = await readFile(old, 'utf8');
+  const edited = await readFile(migrated, 'utf8');
   assert.match(edited, /Remote edit/);
   assert.notEqual(matter(edited).data.sync.hash, matter(text).data.sync.hash);
   await syncContent({ root, fetchFeed: response(feed()) });
-  assert.equal(await readFile(old, 'utf8'), edited);
+  assert.equal(await readFile(migrated, 'utf8'), edited);
   assert.equal(await readFile(local, 'utf8'), localText);
-  assert.deepEqual((await readdir(join(root, 'src/content/writing'))).sort(), ['local.md', 'original-slug.md']);
+  assert.deepEqual((await readdir(join(root, 'src/content/writing'))).sort(), ['local.md', 'original-slug.mdx']);
 });
 
 test('source namespaces and remote identity keep same-slug posts distinct and URLs stable', async (t) => {
@@ -96,7 +100,35 @@ test('Atom article content is supported but an Atom summary alone is rejected', 
   assert.equal((await syncContent({ root, fetchFeed: response(atom('<content type="html">&lt;p&gt;Full post&lt;/p&gt;</content>')) })).added, 1);
 });
 
-test('conversion preserves structure and footnotes, removes controls, and makes media links', () => {
+test('hosted sync reads configured feed IDs through the relay', async (t) => {
+  const root = await fixture(t);
+  const result = await syncContent({
+    root, feedBaseURL: 'https://shub.gg/api/feeds/',
+    fetchFeed: async (url) => {
+      assert.equal(url, 'https://shub.gg/api/feeds/one');
+      return new Response(feed(item()));
+    },
+  });
+  assert.equal(result.added, 1);
+});
+
+test('feed endpoint only fetches configured sources and rejects upstream failures', async (t) => {
+  const fetchMock = t.mock.method(globalThis, 'fetch', async (url) => {
+    assert.equal(url, 'https://failingloudly.substack.com/feed');
+    return new Response(feed(item()), { headers: { 'Content-Type': 'application/rss+xml' } });
+  });
+  assert.equal((await getFeed({ params: { source: 'https://unconfigured.example' } })).status, 404);
+  assert.equal(fetchMock.mock.callCount(), 0);
+  const good = await getFeed({ params: { source: 'failing-loudly' } });
+  assert.equal(good.status, 200);
+  assert.match(await good.text(), /<rss/);
+  fetchMock.mock.mockImplementation(async () => new Response('Challenge', { status: 403 }));
+  assert.equal((await getFeed({ params: { source: 'failing-loudly' } })).status, 502);
+  fetchMock.mock.mockImplementation(async () => new Response('<html>Login</html>', { headers: { 'Content-Type': 'text/html' } }));
+  assert.equal((await getFeed({ params: { source: 'failing-loudly' } })).status, 502);
+});
+
+test('conversion preserves MDX structure and footnotes, removes controls, and escapes remote code', () => {
   const md = convertHtml(`
     <h2>A heading</h2><p>Hello <strong>world</strong>.<a id="footnote-anchor-1" href="#footnote-1">1</a></p>
     <ul><li>First</li></ul><pre><code>const n = 1;</code></pre>
@@ -107,12 +139,19 @@ test('conversion preserves structure and footnotes, removes controls, and makes 
     <div class="captioned-button-wrap"><p>Share CTA</p><a href="?action=share">Share</a></div>
     <iframe src="https://www.youtube.com/embed/123"></iframe>
     <div class="native-video-embed" data-attrs='{"mediaUploadId":"123"}'></div>
-    <div class="twitter-embed" data-attrs='{"url":"https://example.com/status/123"}'></div>
+    <div class="twitter-embed" data-attrs='{"url":"https://x.com/example/status/123"}'></div>
     <script>alert(1)</script><a href="javascript:alert(1)">Unsafe link</a>
     <p>&lt;script&gt;alert(2)&lt;/script&gt;</p>
+    <p>{process.exit(1)}</p><p>import fs from 'node:fs'</p>
   `, 'https://one.example/post');
   assert.match(md, /- +First/);
-  for (const value of ['## A heading', '**world**', '```', '<figure>', '<figcaption>A caption.</figcaption>', '<table>', 'id="footnote-1"', 'href="#footnote-1"', 'https://one.example/photo.jpg', 'https://www.youtube.com/embed/123', 'https://example.com/status/123', '[View embedded media](<https://one.example/post>)']) assert.ok(md.includes(value), value);
+  for (const value of ['## A heading', '**world**', '```', '<ImportedImage', 'captionHtml={"A caption."}', '<SafeHtml', '<table>', 'footnote-1', 'https://one.example/photo.jpg', 'https://www.youtube.com/embed/123', '<Tweet url={"https://x.com/i/status/123"}', '<ImportedMedia kind={"link"}', '&#123;process.exit(1)&#125;', '&#105;mport']) assert.ok(md.includes(value), value);
   assert.doesNotMatch(md, /<script|onerror|javascript:|Subscribe CTA|Share CTA|Image control|<iframe|data-attrs/);
   assert.match(md, /&lt;script&gt;/);
+});
+
+test('empty and control-only content terminate, and dividers inside code survive', { timeout: 1000 }, () => {
+  assert.equal(convertDescription('', 'https://one.example'), '');
+  assert.equal(convertHtml('<div data-component-name="SubscribeWidgetToDOM">Subscribe</div>', 'https://one.example'), '');
+  assert.match(convertHtml('<pre><code>* * *\n* * *</code></pre>', 'https://one.example'), /\* \* \*\n\* \* \*/);
 });

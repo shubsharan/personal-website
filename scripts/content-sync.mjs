@@ -1,11 +1,12 @@
 import { createHash } from 'node:crypto';
-import { appendFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
-import { dirname, join, relative, resolve } from 'node:path';
+import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
+import { dirname, extname, join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import matter from 'gray-matter';
 import Parser from 'rss-parser';
-import sanitizeHtml from 'sanitize-html';
-import TurndownService from 'turndown';
+import { convertDescription, convertHtml } from './content-converter.mjs';
+
+export { convertHtml } from './content-converter.mjs';
 
 const hash = (value) => createHash('sha256').update(value).digest('hex');
 
@@ -37,78 +38,6 @@ function date(value) {
   return parsed.toISOString();
 }
 
-export function convertHtml(html, articleURL) {
-  const retained = (value) => sanitizeHtml(value, {
-    allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img'],
-    allowedAttributes: {
-      a: ['href', 'id'], img: ['src', 'alt', 'title', 'width', 'height'],
-      '*': ['id'], th: ['colspan', 'rowspan'], td: ['colspan', 'rowspan'],
-    },
-    allowedSchemes: ['https', 'http', 'mailto'],
-    allowedSchemesByTag: { img: ['https', 'http'] },
-    allowProtocolRelative: false,
-  });
-  const clean = sanitizeHtml(html, {
-    allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img', 'picture', 'iframe', 'video', 'audio', 'source'],
-    allowedAttributes: {
-      '*': ['id', 'class', 'data-component-name', 'data-attrs'],
-      a: ['href', 'title'], img: ['src', 'alt', 'title', 'width', 'height'],
-      iframe: ['src'], video: ['src'], audio: ['src'], source: ['src'],
-      th: ['colspan', 'rowspan'], td: ['colspan', 'rowspan'],
-    },
-    nonTextTags: ['script', 'style', 'textarea', 'option', 'form', 'button', 'svg'],
-    allowedSchemes: ['https', 'http', 'mailto'],
-    allowedSchemesByTag: { img: ['https', 'http'] },
-    allowProtocolRelative: false,
-    transformTags: {
-      '*': (tagName, attribs) => {
-        for (const attr of ['href', 'src']) {
-          if (attribs[attr] && !attribs[attr].startsWith('#')) {
-            attribs[attr] = new URL(attribs[attr], articleURL).href;
-          }
-        }
-        return { tagName, attribs };
-      },
-    },
-  });
-  const isEmbed = (node) => ['IFRAME', 'VIDEO', 'AUDIO'].includes(node.nodeName)
-    || ['twitter-embed', 'native-video-embed'].some((name) => node.classList.contains(name));
-  const mediaLink = (node) => {
-    const data = JSON.parse(node.getAttribute('data-attrs') || '{}');
-    const url = httpURL(data.url || node.getAttribute('src')
-      || node.querySelector('source')?.getAttribute('src') || articleURL, articleURL);
-    return `\n\n[View embedded media](<${url.replaceAll('>', '%3E')}>)\n\n`;
-  };
-  const converter = new TurndownService({
-    headingStyle: 'atx', codeBlockStyle: 'fenced', bulletListMarker: '-',
-    blankReplacement: (_content, node) => isEmbed(node) ? mediaLink(node) : node.isBlock ? '\n\n' : '',
-  });
-  const escape = converter.escape.bind(converter);
-  converter.escape = (text) => escape(text).replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-  converter.addRule('retained-structure', {
-    filter: (node) => ['FIGURE', 'TABLE'].includes(node.nodeName)
-      || (node.nodeName === 'A' && node.hasAttribute('id'))
-      || node.classList.contains('footnote'),
-    replacement: (_content, node) => node.nodeName === 'A'
-      ? retained(node.outerHTML) : `\n\n${retained(node.outerHTML)}\n\n`,
-  });
-  converter.addRule('embedded-media', {
-    filter: isEmbed,
-    replacement: (_content, node) => mediaLink(node),
-  });
-  converter.addRule('substack-controls', {
-    filter: (node) => node.getAttribute('data-component-name') === 'SubscribeWidgetToDOM'
-      || node.classList.contains('subscription-widget-wrap-editor')
-      || (['captioned-button-wrap', 'button-wrapper'].some((name) => node.classList.contains(name))
-        && Array.from(node.querySelectorAll('a')).some((a) => {
-          const url = new URL(a.getAttribute('href') || articleURL, articleURL);
-          return url.searchParams.get('action') === 'share' || url.pathname === '/subscribe';
-        })),
-    replacement: () => '',
-  });
-  return converter.turndown(clean).replace(/^[\t ]+$/gm, '').trim();
-}
-
 async function markdownFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = [];
@@ -120,7 +49,7 @@ async function markdownFiles(directory) {
   return files;
 }
 
-export async function syncContent({ root = process.cwd(), dryRun = false, fetchFeed = fetch } = {}) {
+export async function syncContent({ root = process.cwd(), dryRun = false, fetchFeed = fetch, feedBaseURL } = {}) {
   const sources = JSON.parse(await readFile(join(root, 'content-sources.json'), 'utf8'));
   if (!Array.isArray(sources) || !sources.length) throw new Error('Configure at least one content source');
   const sourceIDs = new Set();
@@ -160,7 +89,8 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
   const errors = [];
   for (const source of sources) {
     try {
-      const response = await fetchFeed(source.feedURL, {
+      const feedURL = feedBaseURL ? httpURL(`${feedBaseURL.replace(/\/$/, '')}/${source.id}`) : source.feedURL;
+      const response = await fetchFeed(feedURL, {
         signal: AbortSignal.timeout(30_000),
         headers: {
           Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml',
@@ -182,8 +112,8 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
           const html = required(item['content:encoded'] || (atom ? item.content : undefined), 'full article content');
           const body = required(convertHtml(html, url), 'converted article content');
           const title = required(item.title, 'title');
-          const description = convertHtml(item.description || item.summary || '', url)
-            || body.replace(/<[^>]*>/g, '').slice(0, 200);
+          const description = convertDescription(item.description || item.summary || '', url)
+            || convertDescription(html, url).slice(0, 200);
           const data = {
             title, description, publication: source.publication,
             pubDate: date(item.pubDate || item.isoDate),
@@ -196,20 +126,30 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
           const existing = identified || linked;
           const slug = new URL(url).pathname.split('/').filter(Boolean).at(-1)
             ?.replace(/[^a-zA-Z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'post';
-          const path = existing || join(directory, source.id, `${slug}-${hash(id).slice(0, 12)}.md`);
+          const originalPath = existing;
+          const path = existing ? existing.slice(0, -extname(existing).length) + '.mdx'
+            : join(directory, source.id, `${slug}-${hash(id).slice(0, 12)}.mdx`);
           if (claimed.has(path) || (!existing && files.has(path))) throw new Error(`File collision: ${path}`);
+          if (originalPath !== path && files.has(path)) throw new Error(`MDX migration collision: ${path}`);
           if (existing && files.get(existing).data.sync && files.get(existing).data.sync.source !== source.id) {
             throw new Error(`Post belongs to another source: ${url}`);
           }
-          if (existing?.endsWith('.mdx')) throw new Error(`Convert imported MDX to Markdown before syncing: ${existing}`);
           claimed.add(path);
           const sync = { source: source.id, id: remoteID, hash: hash(JSON.stringify({ data, body })) };
-          const text = matter.stringify(`${body}\n`, { ...data, sync });
+          const componentDirectory = join(root, 'src/components/content');
+          const componentPath = (name) => {
+            const importPath = relative(dirname(path), join(componentDirectory, `${name}.astro`)).replaceAll('\\', '/');
+            return importPath.startsWith('.') ? importPath : `./${importPath}`;
+          };
+          const imports = ['ImportedImage', 'ImportedMedia', 'SafeHtml', 'Tweet']
+            .map((name) => `import ${name} from '${componentPath(name)}';`).join('\n');
+          const text = matter.stringify(`${imports}\n\n${body}\n`, { ...data, sync });
           if (files.get(path)?.text === text) result.unchanged++;
           else {
             result[existing ? 'updated' : 'added']++;
             result.paths.push(relative(root, path));
-            changes.push({ path, text });
+            if (originalPath && originalPath !== path) result.paths.push(relative(root, originalPath));
+            changes.push({ path, text, oldPath: originalPath !== path ? originalPath : undefined });
           }
         } catch (error) {
           result.failed++;
@@ -227,9 +167,10 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
     throw error;
   }
   if (!dryRun) {
-    for (const { path, text } of changes) {
+    for (const { path, text, oldPath } of changes) {
       await mkdir(dirname(path), { recursive: true });
       await writeFile(path, text);
+      if (oldPath) await unlink(oldPath);
     }
   }
   return result;
@@ -241,7 +182,7 @@ async function main() {
   const dryRun = args.includes('--dry-run');
   let result;
   try {
-    result = await syncContent({ dryRun });
+    result = await syncContent({ dryRun, feedBaseURL: process.env.CONTENT_FEED_BASE_URL });
   } catch (error) {
     result = error.result || { added: 0, updated: 0, unchanged: 0, failed: 1, paths: [] };
     console.error(error.message);
