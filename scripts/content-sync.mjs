@@ -160,7 +160,13 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
   const errors = [];
   for (const source of sources) {
     try {
-      const response = await fetchFeed(source.feedURL, { signal: AbortSignal.timeout(30_000) });
+      const response = await fetchFeed(source.feedURL, {
+        signal: AbortSignal.timeout(30_000),
+        headers: {
+          Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml',
+          'User-Agent': 'shub.gg-content-sync/1.0 (+https://shub.gg)',
+        },
+      });
       if (!response.ok) throw new Error(`Feed returned HTTP ${response.status}`);
       const xml = await response.text();
       const feed = await new Parser({ customFields: { item: [['description', 'description'], ['updated', 'updated']] } }).parseString(xml);
