@@ -1,10 +1,10 @@
 ---
 import { Icon } from 'astro-icon/components';
 import { getCollection } from 'astro:content';
+import Section from '../../components/Section.astro';
 import { SITE_TITLE, SOCIALS } from '../../consts';
 import Base from '../../layouts/Base.astro';
 
-// Newest first. Entries without a date sort to the top.
 const art = (await getCollection('art')).sort(
 	(a, b) =>
 		(b.data.createdDate ?? new Date()).valueOf() -
@@ -16,20 +16,22 @@ const iconSize = 22;
 ---
 
 <Base title={`Art · ${SITE_TITLE}`} description={description}>
-	<div class="container max-w-3xl">
-		<header class="page-head">
-			<h1 class="page-title">Art</h1>
-			<p class="mt-3 text-tx-2">{description}</p>
-			<p class="label mt-5 text-tx-3">
-				<a
-					href={SOCIALS.instagram}
-					target="_blank"
-					rel="noopener"
-					class="link-ui"
-				>
-					@shubadub on Instagram ↗
-				</a>
-			</p>
+	<Section index="01">
+		<header class="flex flex-col gap-4 md:gap-6">
+			<h1>Art</h1>
+			<div class="flex flex-col gap-2">
+				<p>{description}</p>
+				<p class="font-mono text-xs tracking-wide text-tx-3 tabular-nums">
+					<a
+						href={SOCIALS.instagram}
+						target="_blank"
+						rel="noopener"
+						class="text-tx-3 no-underline transition-colors hover:text-tx"
+					>
+						@shubdoesart on Instagram ↗
+					</a>
+				</p>
+			</div>
 		</header>
 
 		{
@@ -51,27 +53,27 @@ const iconSize = 22;
 									src={item.data.src}
 									alt={item.data.alt}
 									loading="lazy"
-									class="h-full w-full object-cover transition-opacity duration-150 group-hover:opacity-90"
+									class="h-full w-full object-cover transition-opacity group-hover:opacity-90"
 								/>
 							</button>
 						</li>
 					))}
 				</ul>
 			) : (
-				<p class="empty-state">
+				<p class="border-t border-ui py-6">
 					Nothing here yet. Add rows to <code>src/content/art.yaml</code> and
 					images to <code>public/art/</code>.
 				</p>
 			)
 		}
-	</div>
+	</Section>
 
 	<dialog
 		class="m-0 h-dvh max-h-none w-full max-w-none border-0 bg-bg p-0 text-tx backdrop:bg-bg open:flex open:flex-col"
 		aria-label="Artwork viewer"
 		data-art-lightbox
 	>
-		<div class="container max-w-3xl flex justify-end py-4">
+		<div class="mx-auto flex max-w-3xl justify-end px-6 py-4">
 			<button
 				type="button"
 				class="inline-flex items-center justify-center rounded-sm text-tx-2 hover:text-tx"
@@ -83,7 +85,7 @@ const iconSize = 22;
 			</button>
 		</div>
 
-		<div class="flex flex-1 items-center justify-center gap-3 px-4 pb-12 md:gap-5">
+		<div class="flex flex-1 items-center justify-center gap-4 px-4 pb-12">
 			<button
 				type="button"
 				class="inline-flex shrink-0 items-center justify-center rounded-sm text-tx-2 hover:text-tx"
@@ -93,13 +95,13 @@ const iconSize = 22;
 				<Icon name="lucide:chevron-left" width={iconSize} height={iconSize} aria-hidden="true" />
 			</button>
 
-			<figure class="flex min-w-0 flex-col items-center">
+			<figure class="flex min-w-0 flex-col items-center gap-4">
 				<img
-					class="max-h-[80dvh] w-auto max-w-full object-contain"
+					class="max-h-screen w-auto max-w-full object-contain"
 					alt=""
 					data-art-image
 				/>
-				<figcaption class="mt-3 max-w-prose text-center text-sm text-tx-2" hidden data-art-caption></figcaption>
+				<figcaption class="max-w-prose text-center text-sm" hidden data-art-caption></figcaption>
 			</figure>
 
 			<button
@@ -151,7 +153,6 @@ const iconSize = 22;
 		if (target.closest('[data-art-close]')) return dialog.close();
 		if (target.closest('[data-art-prev]')) return show(current - 1);
 		if (target.closest('[data-art-next]')) return show(current + 1);
-		// A click on the backdrop area resolves to the dialog element itself.
 		if (target === dialog) dialog.close();
 	});
 

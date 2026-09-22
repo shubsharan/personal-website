@@ -1,33 +1,4 @@
 #!/usr/bin/env node
-/*
- * Offline: convert a video clip into the ASCII frame JSON the homepage plays.
- *
- * Runs on your machine, once per re-encode. It is NOT part of `astro build`
- * and the site never touches ffmpeg or the video at runtime — only the JSON it
- * produces is committed and shipped.
- *
- * ffmpeg does the heavy lifting: it samples the clip at the target fps and
- * scales each frame straight down to cols x rows single-channel grayscale
- * ("rawvideo gray"), so every frame is exactly cols*rows bytes. We stream those
- * bytes, split them into frames, and map each byte to a ramp character.
- *
- * Usage:
- *   node scripts/ascii-encode.mjs <input.mp4> [options]
- *
- * Options:
- *   --out <path>   output JSON        (default src/assets/apollo-ascii.json)
- *   --cols <n>     grid width         (default 64)
- *   --rows <n>     grid height        (default 36)
- *   --fps <n>      frames per second  (default 12)
- *   --no-invert    bright source -> dense char (default: dark -> dense)
- *   --ss <t>       ffmpeg start time  (e.g. 0:38) — trim without pre-cutting
- *   --to <t>       ffmpeg end time    (e.g. 1:05)
- *   --crop <spec>  ffmpeg crop applied before scaling, to drop letterbox bars.
- *                  ffmpeg's `w:h:x:y` (e.g. 640:262:0:10). Find a clip's bars
- *                  with `ffmpeg -i in.mp4 -vf cropdetect -f null -`.
- *
- * Requires ffmpeg on PATH.
- */
 import { spawn } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
@@ -44,13 +15,11 @@ import {
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '..');
 
-/** Prefer the bundled static binary; fall back to ffmpeg on PATH. */
 async function resolveFfmpeg() {
 	try {
 		const mod = await import('ffmpeg-static');
 		if (mod.default) return mod.default;
 	} catch {
-		// package not installed — fall through to PATH.
 	}
 	return 'ffmpeg';
 }
@@ -87,16 +56,12 @@ function parseArgs(argv) {
 	return opts;
 }
 
-/** Collect ffmpeg's raw pixel stdout into one Buffer (gray, or rgb24 in color). */
 function runFfmpeg(bin, opts) {
 	const pixel = opts.color ? 'rgb24' : 'gray';
-	// -ss before -i seeks fast; -to is relative to that start.
 	const args = [];
 	if (opts.ss) args.push('-ss', opts.ss);
 	args.push('-i', opts.input);
 	if (opts.to) args.push('-to', opts.to);
-	// Crop (to drop letterbox bars) must run before the scale that squashes the
-	// frame to the ASCII grid, or the bars would be baked into the grid.
 	const filters = [`fps=${opts.fps}`];
 	if (opts.crop) filters.push(`crop=${opts.crop}`);
 	filters.push(`scale=${opts.cols}:${opts.rows}:flags=area`, `format=${pixel}`);

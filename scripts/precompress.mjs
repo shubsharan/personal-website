@@ -1,23 +1,10 @@
-/*
- * Post-build: write brotli (`.br`) and gzip (`.gz`) siblings for every
- * compressible asset in `dist/`, so a static host can serve them with
- * `Content-Encoding` instead of compressing large files on the fly (which for
- * multi-MB assets like the ASCII frame JSON is usually a lower quality than
- * this q11 pass). The uncompressed original stays as the fallback for clients
- * that don't send `Accept-Encoding: br` / `gzip`.
- *
- * No dependencies — Node's built-in zlib does both. Run after `astro build`.
- * Hosts that serve pre-compressed files: Netlify, Cloudflare Pages, and nginx
- * with `brotli_static on;` / `gzip_static on;`. (Vercel compresses on the fly
- * and ignores these; harmless there.)
- */
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { gzipSync, brotliCompressSync, constants } from 'node:zlib';
 
 const DIST = 'dist';
 const EXT = new Set(['.html', '.js', '.mjs', '.css', '.json', '.svg', '.xml', '.txt', '.map']);
-const MIN_BYTES = 1024; // below this, compression overhead isn't worth a second request
+const MIN_BYTES = 1024;
 
 async function* walk(dir) {
 	for (const entry of await readdir(dir, { withFileTypes: true })) {

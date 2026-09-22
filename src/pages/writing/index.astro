@@ -1,9 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import EntryRow from '../../components/EntryRow.astro';
+import Section from '../../components/Section.astro';
 import { SITE_TITLE } from '../../consts';
 import Base from '../../layouts/Base.astro';
-import { monthYear } from '../../utils/dates';
+import { shortDate } from '../../utils/dates';
 
 const posts = (await getCollection('writing', (p) => !p.data.draft)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -13,20 +14,16 @@ const description = 'Essays, notes, and reviews of what I’m reading.';
 ---
 
 <Base title={`Writing · ${SITE_TITLE}`} description={description}>
-	<div class="container max-w-3xl">
-		<header class="page-head">
-			<h1 class="page-title">
-				Writing
-			</h1>
-		</header>
+	<Section index="01">
+		<h1>Writing</h1>
 
 		{
 			posts.length > 0 ? (
-				<ul>
+				<ul class="divide-y divide-ui border-t border-ui">
 					{posts.map((post) => (
 						<EntryRow
 							href={`/writing/${post.id}/`}
-							rail={monthYear(post.data.pubDate)}
+							rail={shortDate(post.data.pubDate)}
 							label={post.data.publication}
 							title={post.data.title}
 							description={post.data.description}
@@ -34,11 +31,11 @@ const description = 'Essays, notes, and reviews of what I’m reading.';
 					))}
 				</ul>
 			) : (
-				<p class="empty-state">
+				<p class="border-t border-ui py-6">
 					Nothing published yet. The first piece goes in{' '}
 					<code>src/content/writing/</code>.
 				</p>
 			)
 		}
-	</div>
+	</Section>
 </Base>

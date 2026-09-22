@@ -1,10 +1,3 @@
-/*
- * Composes the ASCII band for one `[data-ascii-frame]` root: owns the live state
- * and current frame index, wires the factories together (palette, title carver,
- * renderer, animator) and the settings-bar controls, and handles boot, resize,
- * theme, reduced-motion, and webfont settling. Everything DOM- or state-bound
- * lives here; the pure math is in ./{config,frames,carve}.mjs.
- */
 import {
 	CONTRASTS,
 	DEFAULTS,
@@ -44,31 +37,21 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	const ctx = canvas?.getContext('2d');
 	if (!canvas || !fallback || !controls || !ctx) return;
 
-	// The frames are fetched (not bundled), so the poster covers first paint until
-	// the default frameset lands; everything below needs a frameset to work from.
 	const defaultData = await loadDefault();
 
 	const title = root.querySelector<HTMLElement>('[data-ascii-title]');
 
 	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-	// The band is pinned to the dark palette (data-theme="dark" on its container),
-	// so it always renders as light glyphs on black — no invert, no light-mode
-	// emboldening — regardless of the site theme. The Invert control can still flip
-	// it by hand; it just no longer follows the site.
 	const state: SceneState = { ...DEFAULTS, invert: false };
 
 	let active: Frameset = defaultData;
-	// The pack alphabet is identical across resolution variants, so one LUT serves.
 	const lut = buildLut(defaultData.pack);
 	let index = 0;
 	let masks: TitleMasks = NO_MASKS;
 	let snapshot: PaletteSnapshot = NO_PALETTE;
 
-	// The pointer `halo` lives in CSS px and drives the magenta tint + field shove.
 	const halo = { x: 0, y: 0, radius: 0, on: false };
-	// Eased 0..1 intensity of the pointer effect (glow + field scatter), so it
-	// fades in on enter and flows back out on leave rather than snapping.
 	let warp = 0;
 	let currentFrame = defaultData.frames[0] ?? '';
 
@@ -91,7 +74,6 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 			state,
 			lut,
 			masks,
-			// Position persists through the ease-out; `warp` gates the effect on.
 			halo,
 			fieldWarp: warp,
 			boldField: false,
@@ -107,18 +89,10 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 			index = (index + 1) % active.frames.length;
 		},
 	});
-	// When the band is running, the loop repaints on its own; only nudge a repaint
-	// when it's frozen (reduced motion) and a control changed the look.
 	const repaintIfPaused = () => {
 		if (!animator.playing) repaint();
 	};
 
-	// ---- Pointer effect ---------------------------------------------------
-	// A single eased `warp` scalar drives the magenta glow and the field scatter
-	// (the actual displacement is analytic, in the renderer). This loop just eases
-	// `warp` toward on/off and repaints on its own rAF at display rate — smoother
-	// than the field's slower playback fps — until the cursor leaves and it lands
-	// back at zero, when painting is handed back to the field's own loop.
 	let physHandle = 0;
 	let physRunning = false;
 	let lastT = 0;
@@ -127,14 +101,11 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 		physHandle = requestAnimationFrame(stepPhysics);
 		const dt = lastT ? Math.min((t - lastT) / 1000, 1 / 30) : 1 / 60;
 		lastT = t;
-		// Ease the warp toward on/off (faster in than out).
 		const target = halo.on ? 1 : 0;
 		const rate = target > warp ? FIELD_SCATTER.ease.in : FIELD_SCATTER.ease.out;
 		warp += (target - warp) * Math.min(1, dt * rate);
 		if (Math.abs(target - warp) < 0.001) warp = target;
 		paint(currentFrame);
-		// Once the cursor is gone and the warp has settled, stop and let the field's
-		// own loop take over.
 		if (!halo.on && warp === 0) {
 			physRunning = false;
 			cancelAnimationFrame(physHandle);
@@ -159,7 +130,7 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	};
 	const clearHalo = () => {
 		halo.on = false;
-		startPhysics(); // let the effect ease back out
+		startPhysics();
 	};
 	canvas.addEventListener('pointerenter', setHalo);
 	canvas.addEventListener('pointermove', setHalo);
@@ -167,14 +138,6 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	canvas.addEventListener('pointercancel', clearHalo);
 	window.addEventListener('pagehide', () => cancelAnimationFrame(physHandle), { once: true });
 
-	// ---- Controls ---------------------------------------------------------
-	// Detail, Contrast, and Speed each have two representations of the same
-	// selection: a desktop button that cycles through the options on click, and
-	// a mobile row that shows every option as its own button (data-*-option).
-	// Both drive the same state, so whichever one is used needs to repaint the
-	// other — the `apply*` functions own that state change + the cross-sync via
-	// the cycle control's `set()` handle (skipped when the cycle itself is the
-	// source, since it already repaints on its own).
 	let detailCycle: ReturnType<typeof cycleControl<(typeof RESOLUTIONS)[number]>>;
 	const applyDetail = async (res: (typeof RESOLUTIONS)[number], idx: number, fromCycle = false) => {
 		active = await variants[res.key]();
@@ -209,9 +172,6 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 		repaintIfPaused();
 	});
 
-	// Contrast has two buttons showing the SAME cycling control (desktop's icon +
-	// bars, mobile's bars-only) — tapping either steps through the levels, so each
-	// needs to repaint the other via `set()` when it's the one that changed.
 	let contrastCycleDesktop: ReturnType<typeof cycleControl<(typeof CONTRASTS)[number]>>;
 	let contrastCycleMobile: ReturnType<typeof cycleControl<(typeof CONTRASTS)[number]>>;
 	const applyContrast = (c: (typeof CONTRASTS)[number], idx: number, source?: 'desktop' | 'mobile') => {
@@ -268,25 +228,19 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 		},
 	);
 
-	// ---- Reactivity -------------------------------------------------------
-	// The band's palette is pinned dark via CSS, so it doesn't react to the site
-	// theme at all — no theme listener here. It only re-measures on resize.
 	new ResizeObserver(() => {
 		rebuildMask();
 		repaintIfPaused();
 	}).observe(root);
 	reducedMotion.addEventListener('change', (e) => {
 		if (e.matches) {
-			halo.on = false; // drop the pointer effect; physics settles on its own
+			halo.on = false;
 			animator.pause();
 		} else {
 			animator.play();
 		}
 	});
 
-	// ---- Boot -------------------------------------------------------------
-	// Give the static-label buttons (color / style / invert) a hover tooltip too;
-	// the cycling ones already set title in their render functions.
 	controls
 		.querySelectorAll<HTMLButtonElement>('button[aria-label]:not([title])')
 		.forEach((b) => b.setAttribute('title', b.getAttribute('aria-label') ?? ''));
@@ -298,8 +252,6 @@ export async function createAsciiScene(root: HTMLElement, { loadDefault, variant
 	paint(densestFrame(active.frames, lut));
 	if (!reducedMotion.matches) animator.play();
 
-	// Webfonts (EB Garamond) load async; remeasure once they settle or the carve
-	// would sit offset from the painted glyphs on first paint.
 	document.fonts?.ready.then(() => {
 		rebuildMask();
 		repaintIfPaused();

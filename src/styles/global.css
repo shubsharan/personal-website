@@ -1,155 +1,89 @@
 @import "tailwindcss";
 
 @theme {
-	/* Flexoki palette: https://github.com/kepano/flexoki */
-	--color-black: #100f0f;
-	--color-paper: #fffcf0;
+	--color-ink: #121212;
+	--color-paper: #f7f6f3;
+	--color-paper-2: #efeee9;
+	--color-line: #e4e2dc;
+	--color-line-2: #d6d3cc;
+	--color-line-3: #bdb9b0;
+	--color-mute: #5e5d59;
+	--color-faint: #9a9891;
 
-	--color-base-50: #f2f0e5;
-	--color-base-100: #e6e4d9;
-	--color-base-150: #dad8ce;
-	--color-base-200: #cecdc3;
-	--color-base-300: #b7b5ac;
-	--color-base-400: #9f9d96;
-	--color-base-500: #878580;
-	--color-base-600: #6f6e69;
-	--color-base-700: #575653;
-	--color-base-800: #403e3c;
-	--color-base-850: #343331;
-	--color-base-900: #282726;
-	--color-base-950: #1c1b1a;
+	--color-ink-dark: #121211;
+	--color-paper-dark: #1a1a18;
+	--color-line-dark: #262522;
+	--color-line-2-dark: #33322e;
+	--color-line-3-dark: #4a4843;
+	--color-tx-dark: #ebe9e4;
+	--color-mute-dark: #9d9b95;
+	--color-faint-dark: #65635e;
 
-	--color-red-50: #ffe1d5;
-	--color-red-100: #ffcabb;
-	--color-red-150: #fdb2a2;
-	--color-red-200: #f89a8a;
-	--color-red-300: #e8705f;
-	--color-red-400: #d14d41;
-	--color-red-500: #c03e35;
-	--color-red-600: #af3029;
-	--color-red-700: #942822;
-	--color-red-800: #6c201c;
-	--color-red-850: #551b18;
-	--color-red-900: #3e1715;
-	--color-red-950: #261312;
+	--color-accent-light: #4a3aff;
+	--color-accent-dark: #9d93ff;
 
-	--color-orange-50: #ffe7ce;
-	--color-orange-100: #fed3af;
-	--color-orange-150: #fcc192;
-	--color-orange-200: #f9ae77;
-	--color-orange-300: #ec8b49;
-	--color-orange-400: #da702c;
-	--color-orange-500: #cb6120;
-	--color-orange-600: #bc5215;
-	--color-orange-700: #9d4310;
-	--color-orange-800: #71320d;
-	--color-orange-850: #59290d;
-	--color-orange-900: #40200d;
-	--color-orange-950: #27180e;
+	--color-re-light: #c43c3c;
+	--color-or-light: #c46a1a;
+	--color-ye-light: #a88400;
+	--color-gr-light: #3d7a2e;
+	--color-cy-light: #1a7a7a;
+	--color-bl-light: #2a5fbf;
+	--color-pu-light: #5a3abf;
+	--color-ma-light: #b03a7a;
 
-	--color-yellow-50: #faeec6;
-	--color-yellow-100: #f6e2a0;
-	--color-yellow-150: #f1d67e;
-	--color-yellow-200: #eccb60;
-	--color-yellow-300: #dfb431;
-	--color-yellow-400: #d0a215;
-	--color-yellow-500: #be9207;
-	--color-yellow-600: #ad8301;
-	--color-yellow-700: #8e6b01;
-	--color-yellow-800: #664d01;
-	--color-yellow-850: #503d02;
-	--color-yellow-900: #3a2d04;
-	--color-yellow-950: #241e08;
+	--color-re-dark: #f07178;
+	--color-or-dark: #f5a15f;
+	--color-ye-dark: #f0c56a;
+	--color-gr-dark: #9bd07a;
+	--color-cy-dark: #6fcfcf;
+	--color-bl-dark: #7aa9f0;
+	--color-pu-dark: #b692f0;
+	--color-ma-dark: #e98ac2;
 
-	--color-green-50: #edeecf;
-	--color-green-100: #dde2b2;
-	--color-green-150: #cdd597;
-	--color-green-200: #bec97e;
-	--color-green-300: #a0af54;
-	--color-green-400: #879a39;
-	--color-green-500: #768d21;
-	--color-green-600: #66800b;
-	--color-green-700: #536907;
-	--color-green-800: #3d4c07;
-	--color-green-850: #313d07;
-	--color-green-900: #252d09;
-	--color-green-950: #1a1e0c;
+	--color-re-mid: #e8705f;
+	--color-or-mid: #ec8b49;
+	--color-ye-mid: #dfb431;
+	--color-gr-mid: #879a39;
+	--color-cy-mid: #3aa99f;
+	--color-bl-mid: #4385be;
+	--color-pu-mid: #8b7ec8;
+	--color-ma-mid: #ce5d97;
 
-	--color-cyan-50: #ddf1e4;
-	--color-cyan-100: #bfe8d9;
-	--color-cyan-150: #a2dece;
-	--color-cyan-200: #87d3c3;
-	--color-cyan-300: #5abdac;
-	--color-cyan-400: #3aa99f;
-	--color-cyan-500: #2f968d;
-	--color-cyan-600: #24837b;
-	--color-cyan-700: #1c6c66;
-	--color-cyan-800: #164f4a;
-	--color-cyan-850: #143f3c;
-	--color-cyan-900: #122f2c;
-	--color-cyan-950: #101f1d;
+	--font-serif: var(--font-ibm-plex-serif);
+	--font-sans: var(--font-ibm-plex-sans);
+	--font-mono: var(--font-ibm-plex-mono);
 
-	--color-blue-50: #e1eceb;
-	--color-blue-100: #c6dde8;
-	--color-blue-150: #abcfe2;
-	--color-blue-200: #92bfdb;
-	--color-blue-300: #66a0c8;
-	--color-blue-400: #4385be;
-	--color-blue-500: #3171b2;
-	--color-blue-600: #205ea6;
-	--color-blue-700: #1a4f8c;
-	--color-blue-800: #163b66;
-	--color-blue-850: #133051;
-	--color-blue-900: #12253b;
-	--color-blue-950: #101a24;
+	--text-body: 0.9375rem;
+	--text-body--line-height: 1.5;
+	--text-nav: 0.9375rem;
+	--text-nav--line-height: 1.3;
+	--text-title-sm: 1.125rem;
+	--text-title-sm--line-height: 1.3;
+	--text-title-sm--letter-spacing: -0.01em;
+	--text-title: 1.25rem;
+	--text-title--line-height: 1.3;
+	--text-title--letter-spacing: -0.01em;
+	--text-display-sm: 1.5rem;
+	--text-display-sm--line-height: 1.2;
+	--text-display-sm--letter-spacing: -0.02em;
+	--text-display: 2.25rem;
+	--text-display--line-height: 1.1;
+	--text-display--letter-spacing: -0.02em;
 
-	--color-purple-50: #f0eaec;
-	--color-purple-100: #e2d9e9;
-	--color-purple-150: #d3cae6;
-	--color-purple-200: #c4b9e0;
-	--color-purple-300: #a699d0;
-	--color-purple-400: #8b7ec8;
-	--color-purple-500: #735eb5;
-	--color-purple-600: #5e409d;
-	--color-purple-700: #4f3685;
-	--color-purple-800: #3c2a62;
-	--color-purple-850: #31234e;
-	--color-purple-900: #261c39;
-	--color-purple-950: #1a1623;
-
-	--color-magenta-50: #fee4e5;
-	--color-magenta-100: #fccfda;
-	--color-magenta-150: #f9b9cf;
-	--color-magenta-200: #f4a4c2;
-	--color-magenta-300: #e47da8;
-	--color-magenta-400: #ce5d97;
-	--color-magenta-500: #b74583;
-	--color-magenta-600: #a02f6f;
-	--color-magenta-700: #87285e;
-	--color-magenta-800: #641f46;
-	--color-magenta-850: #4f1b39;
-	--color-magenta-900: #39172b;
-	--color-magenta-950: #24131d;
-
-	--font-serif: var(--font-eb-garamond);
-	--font-sans: var(--font-inter);
-	--font-logo: var(--font-mr-dafoe);
+	--animate-rise: rise 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
 }
 
-/*
- * Flexoki semantic tokens. These are the only colors the site should reference:
- * the palette above is the raw ink, this is what each ink is *for*.
- *
- *   bg / bg-2      primary and secondary backgrounds
- *   ui / ui-2 / ui-3   borders: resting, hovered, active
- *   tx / tx-2 / tx-3   text: primary, muted, faint
- *   re or ye gr cy bl pu ma   accents (-2 is the secondary variant)
- *
- * Each token flips between the light and dark values from the Flexoki spec, so
- * they are declared on `:root` and mapped `inline` — that keeps utilities
- * pointing at the switchable variable instead of freezing the light value.
- * Use `text-tx-2` etc. in markup and `var(--tx-2)` in hand-written CSS.
- */
+@keyframes rise {
+	from {
+		opacity: 0;
+		transform: translateY(0.5rem);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
 @theme inline {
 	--color-bg: var(--bg);
 	--color-bg-2: var(--bg-2);
@@ -181,342 +115,207 @@
 :root {
 	color-scheme: light dark;
 
-	/* The site follows the system by default (the media query below flips to
-	   dark), and the header toggle pins an explicit choice via data-theme on
-	   <html> (persisted to localStorage, applied pre-paint by BaseHead). Light
-	   is the base so a no-JS / no-preference render still has a sane theme. */
 	--bg: var(--color-paper);
-	--bg-2: var(--color-base-50);
-	--ui: var(--color-base-100);
-	--ui-2: var(--color-base-150);
-	--ui-3: var(--color-base-200);
-	--tx: var(--color-black);
-	--tx-2: var(--color-base-600);
-	--tx-3: var(--color-base-300);
+	--bg-2: var(--color-paper-2);
+	--ui: var(--color-line);
+	--ui-2: var(--color-line-2);
+	--ui-3: var(--color-line-3);
+	--tx: var(--color-ink);
+	--tx-2: var(--color-mute);
+	--tx-3: var(--color-faint);
 
-	--re: var(--color-red-600);
-	--or: var(--color-orange-600);
-	--ye: var(--color-yellow-600);
-	--gr: var(--color-green-600);
-	--cy: var(--color-cyan-600);
-	--bl: var(--color-blue-600);
-	--pu: var(--color-purple-600);
-	--ma: var(--color-magenta-600);
-	--re-2: var(--color-red-400);
-	--or-2: var(--color-orange-400);
-	--ye-2: var(--color-yellow-400);
-	--gr-2: var(--color-green-400);
-	--cy-2: var(--color-cyan-400);
-	--bl-2: var(--color-blue-400);
-	--pu-2: var(--color-purple-400);
-	--ma-2: var(--color-magenta-400);
+	--re: var(--color-re-light);
+	--or: var(--color-or-light);
+	--ye: var(--color-ye-light);
+	--gr: var(--color-gr-light);
+	--cy: var(--color-cy-light);
+	--bl: var(--color-bl-light);
+	--pu: var(--color-pu-light);
+	--ma: var(--color-ma-light);
+	--re-2: var(--color-re-mid);
+	--or-2: var(--color-or-mid);
+	--ye-2: var(--color-ye-mid);
+	--gr-2: var(--color-gr-mid);
+	--cy-2: var(--color-cy-mid);
+	--bl-2: var(--color-bl-mid);
+	--pu-2: var(--color-pu-mid);
+	--ma-2: var(--color-ma-mid);
 
-	/* Flexoki maps links and active states to cy. */
-	--accent: var(--cy);
-
-	--box-shadow:
-		0 2px 6px color-mix(in oklab, var(--color-black) 10%, transparent),
-		0 8px 24px color-mix(in oklab, var(--color-black) 8%, transparent),
-		0 16px 32px color-mix(in oklab, var(--color-black) 8%, transparent);
+	--accent: var(--color-accent-light);
 }
 
-/*
- * System dark — applied only when the visitor hasn't pinned a theme. The
- * `:not([data-theme])` guard lets an explicit toggle choice (either direction)
- * win over the OS preference. Values mirror :root[data-theme='dark'] below.
- */
 @media (prefers-color-scheme: dark) {
 	:root:not([data-theme]) {
 		color-scheme: dark;
-		--bg: var(--color-black);
-		--bg-2: var(--color-base-950);
-		--ui: var(--color-base-900);
-		--ui-2: var(--color-base-850);
-		--ui-3: var(--color-base-800);
-		--tx: var(--color-base-200);
-		--tx-2: var(--color-base-500);
-		--tx-3: var(--color-base-700);
+		--bg: var(--color-ink-dark);
+		--bg-2: var(--color-paper-dark);
+		--ui: var(--color-line-dark);
+		--ui-2: var(--color-line-2-dark);
+		--ui-3: var(--color-line-3-dark);
+		--tx: var(--color-tx-dark);
+		--tx-2: var(--color-mute-dark);
+		--tx-3: var(--color-faint-dark);
 
-		--re: var(--color-red-400);
-		--or: var(--color-orange-400);
-		--ye: var(--color-yellow-400);
-		--gr: var(--color-green-400);
-		--cy: var(--color-cyan-400);
-		--bl: var(--color-blue-400);
-		--pu: var(--color-purple-400);
-		--ma: var(--color-magenta-400);
-		--re-2: var(--color-red-600);
-		--or-2: var(--color-orange-600);
-		--ye-2: var(--color-yellow-600);
-		--gr-2: var(--color-green-600);
-		--cy-2: var(--color-cyan-600);
-		--bl-2: var(--color-blue-600);
-		--pu-2: var(--color-purple-600);
-		--ma-2: var(--color-magenta-600);
+		--re: var(--color-re-dark);
+		--or: var(--color-or-dark);
+		--ye: var(--color-ye-dark);
+		--gr: var(--color-gr-dark);
+		--cy: var(--color-cy-dark);
+		--bl: var(--color-bl-dark);
+		--pu: var(--color-pu-dark);
+		--ma: var(--color-ma-dark);
+		--re-2: var(--color-re-light);
+		--or-2: var(--color-or-light);
+		--ye-2: var(--color-ye-light);
+		--gr-2: var(--color-gr-light);
+		--cy-2: var(--color-cy-light);
+		--bl-2: var(--color-bl-light);
+		--pu-2: var(--color-pu-light);
+		--ma-2: var(--color-ma-light);
+
+		--accent: var(--color-accent-dark);
 	}
 }
 
-/*
- * Manual theme override, set by the header's toggle. A `data-theme` attribute on
- * <html> (written by an inline script in BaseHead) pins the choice and wins over
- * the system preference in either direction. No attribute = follow the system.
- */
 :root[data-theme='light'] {
 	color-scheme: light;
 	--bg: var(--color-paper);
-	--bg-2: var(--color-base-50);
-	--ui: var(--color-base-100);
-	--ui-2: var(--color-base-150);
-	--ui-3: var(--color-base-200);
-	--tx: var(--color-black);
-	--tx-2: var(--color-base-600);
-	--tx-3: var(--color-base-300);
+	--bg-2: var(--color-paper-2);
+	--ui: var(--color-line);
+	--ui-2: var(--color-line-2);
+	--ui-3: var(--color-line-3);
+	--tx: var(--color-ink);
+	--tx-2: var(--color-mute);
+	--tx-3: var(--color-faint);
 
-	--re: var(--color-red-600);
-	--or: var(--color-orange-600);
-	--ye: var(--color-yellow-600);
-	--gr: var(--color-green-600);
-	--cy: var(--color-cyan-600);
-	--bl: var(--color-blue-600);
-	--pu: var(--color-purple-600);
-	--ma: var(--color-magenta-600);
-	--re-2: var(--color-red-400);
-	--or-2: var(--color-orange-400);
-	--ye-2: var(--color-yellow-400);
-	--gr-2: var(--color-green-400);
-	--cy-2: var(--color-cyan-400);
-	--bl-2: var(--color-blue-400);
-	--pu-2: var(--color-purple-400);
-	--ma-2: var(--color-magenta-400);
+	--re: var(--color-re-light);
+	--or: var(--color-or-light);
+	--ye: var(--color-ye-light);
+	--gr: var(--color-gr-light);
+	--cy: var(--color-cy-light);
+	--bl: var(--color-bl-light);
+	--pu: var(--color-pu-light);
+	--ma: var(--color-ma-light);
+	--re-2: var(--color-re-mid);
+	--or-2: var(--color-or-mid);
+	--ye-2: var(--color-ye-mid);
+	--gr-2: var(--color-gr-mid);
+	--cy-2: var(--color-cy-mid);
+	--bl-2: var(--color-bl-mid);
+	--pu-2: var(--color-pu-mid);
+	--ma-2: var(--color-ma-mid);
+
+	--accent: var(--color-accent-light);
 }
 
-/*
- * Not `:root`-scoped: any element carrying data-theme='dark' re-asserts the dark
- * tokens for its subtree. The ASCII band uses this to stay a dark cinematic panel
- * even when the site is toggled to light (light never read well behind the glyphs).
- */
 [data-theme='dark'] {
 	color-scheme: dark;
-	--bg: var(--color-black);
-	--bg-2: var(--color-base-950);
-	--ui: var(--color-base-900);
-	--ui-2: var(--color-base-850);
-	--ui-3: var(--color-base-800);
-	--tx: var(--color-base-200);
-	--tx-2: var(--color-base-500);
-	--tx-3: var(--color-base-700);
+	--bg: var(--color-ink-dark);
+	--bg-2: var(--color-paper-dark);
+	--ui: var(--color-line-dark);
+	--ui-2: var(--color-line-2-dark);
+	--ui-3: var(--color-line-3-dark);
+	--tx: var(--color-tx-dark);
+	--tx-2: var(--color-mute-dark);
+	--tx-3: var(--color-faint-dark);
 
-	--re: var(--color-red-400);
-	--or: var(--color-orange-400);
-	--ye: var(--color-yellow-400);
-	--gr: var(--color-green-400);
-	--cy: var(--color-cyan-400);
-	--bl: var(--color-blue-400);
-	--pu: var(--color-purple-400);
-	--ma: var(--color-magenta-400);
-	--re-2: var(--color-red-600);
-	--or-2: var(--color-orange-600);
-	--ye-2: var(--color-yellow-600);
-	--gr-2: var(--color-green-600);
-	--cy-2: var(--color-cyan-600);
-	--bl-2: var(--color-blue-600);
-	--pu-2: var(--color-purple-600);
-	--ma-2: var(--color-magenta-600);
+	--re: var(--color-re-dark);
+	--or: var(--color-or-dark);
+	--ye: var(--color-ye-dark);
+	--gr: var(--color-gr-dark);
+	--cy: var(--color-cy-dark);
+	--bl: var(--color-bl-dark);
+	--pu: var(--color-pu-dark);
+	--ma: var(--color-ma-dark);
+	--re-2: var(--color-re-light);
+	--or-2: var(--color-or-light);
+	--ye-2: var(--color-ye-light);
+	--gr-2: var(--color-gr-light);
+	--cy-2: var(--color-cy-light);
+	--bl-2: var(--color-bl-light);
+	--pu-2: var(--color-pu-light);
+	--ma-2: var(--color-ma-light);
+
+	--accent: var(--color-accent-dark);
 }
-/*
- * Element styles all live in `@layer base` so that any utility class in markup
- * outranks them. An unlayered `a { color }` would quietly beat `text-tx-2`.
- */
+
 @layer base {
 	body {
-		font-family: var(--font-serif);
-		margin: 0;
-		padding: 0;
-		text-align: left;
-		background-color: var(--bg);
+		@apply m-0 min-h-screen bg-bg text-left font-serif text-body text-tx antialiased;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
-		color: var(--tx);
-		font-size: 1.25rem;
-		line-height: 1.65;
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-		-webkit-font-smoothing: antialiased;
 	}
 
-	main {
-		flex: 1;
+	h1 {
+		@apply m-0 font-sans text-display-sm font-medium text-balance md:text-display;
 	}
 
-	h1,
-	h2,
-	h3,
+	h2 {
+		@apply m-0 font-sans text-title-sm font-medium text-balance md:text-title;
+	}
+
+	h3 {
+		@apply m-0 font-sans text-xl font-medium tracking-tight text-balance;
+	}
+
 	h4,
 	h5,
 	h6 {
-		margin: 0;
-		color: var(--tx);
-		font-weight: 400;
-		line-height: 1.15;
-		text-wrap: balance;
+		@apply m-0 font-sans text-lg font-medium tracking-tight text-balance;
 	}
 
 	strong,
 	b {
-		font-weight: 700;
+		@apply font-bold;
 	}
 
 	a {
-		color: var(--accent);
+		@apply text-accent underline underline-offset-4;
 	}
 
 	:focus-visible {
-		outline: 2px solid var(--accent);
-		outline-offset: 3px;
-		border-radius: 1px;
+		@apply rounded-sm outline outline-2 outline-offset-2 outline-accent;
 	}
 
 	img {
-		max-width: 100%;
-		height: auto;
+		@apply h-auto max-w-full;
 	}
 
 	hr {
-		border: none;
-		border-top: 1px solid var(--ui);
+		@apply border-0 border-t border-ui;
 	}
 
 	::selection {
-		background-color: var(--ui-2);
+		background-color: color-mix(in oklab, var(--accent) 22%, transparent);
+	}
+
+	code {
+		@apply font-mono;
 	}
 }
 
-@media (width < 48rem) {
-	body {
-		font-size: 1rem;
-	}
-}
-
-/*
- * Site content width. Extends Tailwind's built-in `container` (breakpoint-stepping
- * max-widths) with centering and a fixed horizontal inset.
- */
-@utility container {
-	margin-inline: auto;
-	padding-inline: 1.5rem;
+/* Date column grows to fit the date, but never narrower than one of seven columns. */
+@utility grid-cols-row {
+	grid-template-columns: minmax(max-content, 1fr) 6fr;
 }
 
 @layer components {
-	/* —— UI type —— */
-	/* Inter, small and tracked: nav, status labels, dates, footer. */
-	.label {
-		font-family: var(--font-sans);
-		font-size: 1rem;
-		font-weight: 500;
-		line-height: 1.5;
-		font-variant-numeric: tabular-nums;
-	}
-
-	/* —— UI links —— */
-	/* Pair with .label and a tone utility (text-tx-2 / text-tx-3 / text-tx). */
-	.link-ui {
-		@apply no-underline transition-colors duration-150 hover:text-tx;
-	}
-	.link-header {
-		@apply text-[1rem] no-underline transition-colors duration-150 hover:text-tx;
-	}
-
-	/* —— Page scaffolding —— */
-	.page-head {
-		@apply pt-6 pb-10 max-md:pt-2 max-md:pb-8;
-	}
-
-	.page-title {
-		@apply font-serif text-4xl leading-tight max-md:text-3xl;
-	}
-
-	.empty-state {
-		@apply border-t border-ui py-7 text-tx-2;
-	}
-
-	/* —— Status marks —— */
-	.mark {
-		display: inline-block;
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: 50%;
-		vertical-align: 0.25rem;
-		flex: none;
-	}
-
-	.mark-live {
-		background-color: var(--gr);
-	}
-
-	.mark-solid {
-		background-color: var(--tx-3);
-	}
-
-	.mark-hollow {
-		box-shadow: inset 0 0 0 1px var(--tx-3);
-	}
-
-	/* —— Soft underline —— */
-	.link-underline {
-		text-decoration: underline;
-		text-decoration-color: var(--ui-3);
-		text-underline-offset: 0.25rem;
-		text-decoration-thickness: 1px;
-		transition: text-decoration-color 0.15s ease;
-	}
-
-	.link-underline:hover,
-	.group:hover .link-underline {
-		text-decoration-color: var(--accent);
-	}
-
-	/* —— Prose —— */
-	/* Long-form body copy: markdown entries and the home page statement. */
 	.prose {
-		color: var(--tx);
-	}
-	.prose > * + * {
-		margin-top: 1rem;
-	}
-	.prose h1 {
-		font-size: 4rem;
-	}
-	.prose h2 {
-		margin-top: 2.5rem;
-		margin-bottom: 0.5rem;
-		font-size: 2rem;
-	}
-	.prose h3 {
-		margin-top: 2rem;
-		margin-bottom: 0.5rem;
-		font-size: 1.25rem;
-	}
-	.prose a {
-		color: var(--tx);
-		text-decoration: underline;
-		text-decoration-color: var(--ui-3);
-		text-underline-offset: 0.25rem;
-		text-decoration-thickness: 1px;
-		transition: text-decoration-color 0.15s ease;
-	}
-	.prose a:hover {
-		text-decoration-color: var(--accent);
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		font-family: var(--font-serif);
 	}
 	.prose blockquote {
-		margin: 2rem 0;
 		padding-left: 1.5rem;
 		border-left: 1px solid var(--ui-2);
 		font-style: italic;
-		color: var(--tx-2);
 	}
 	.prose ul {
-		padding-left: 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding-left: 1.5rem;
 		list-style: none;
 	}
 	.prose ul > li {
@@ -525,57 +324,49 @@
 	.prose ul > li::before {
 		content: '—';
 		position: absolute;
-		margin-left: -1.25rem;
+		margin-left: -1.5rem;
 		color: var(--tx-3);
 	}
 	.prose ol {
-		padding-left: 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding-left: 1.5rem;
 		list-style: decimal;
 	}
-	.prose li + li {
-		margin-top: 0.5rem;
-	}
-	.prose hr {
-		margin: 2.5rem 0;
-	}
 	.prose figure {
-		margin: 2.5rem 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 	.prose figure > img {
-		margin: 0;
 		display: block;
 		width: 100%;
 	}
 	.prose figcaption {
-		margin-top: 0.75rem;
 		font-size: 1rem;
 		font-style: italic;
-		color: var(--tx-2);
 		text-align: center;
 		text-wrap: balance;
 	}
-	/* Bare markdown images that haven't been wrapped in a figure yet. */
-	.prose > img {
-		margin: 2.5rem 0;
-	}
-	/* Monospace runs large next to Garamond, so it is set down a size. */
 	.prose code {
-		font-size: 0.75rem;
-		padding: 0.25rem;
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		padding: 0.125rem 0.375rem;
 		background-color: var(--bg-2);
-		border-radius: 3px;
+		border-radius: 0.125rem;
 	}
 	.prose pre {
-		margin: 2rem 0;
-		padding: 1.25rem 1.5rem;
+		padding: 1rem 1.5rem;
 		border: 1px solid var(--ui);
-		border-radius: 4px;
-		font-size: 0.75rem;
-		line-height: 1.6;
+		border-radius: 0.125rem;
+		font-size: 0.875rem;
+		line-height: 1.5;
 		overflow-x: auto;
 	}
 	.prose pre > code {
 		all: unset;
+		font-family: var(--font-mono);
 	}
 	.prose table {
 		width: 100%;
@@ -584,129 +375,9 @@
 	}
 	.prose th,
 	.prose td {
-		padding: 0.5rem 0.75rem 0.5rem 0;
+		padding: 0.5rem 1rem 0.5rem 0;
 		border-bottom: 1px solid var(--ui);
 		text-align: left;
-	}
-
-	/* —— Case-study breakout ——
-	 * Lets a single block escape the reading column while the prose around it
-	 * stays at its comfortable measure. Centered on the viewport via a negative
-	 * left margin (parent is centered, so 50% is the viewport centre); the `vw`
-	 * caps keep both edges on-screen so nothing ever triggers a horizontal
-	 * scrollbar. `--w` is the target width; wider variants just raise it. */
-	.breakout {
-		--w: min(56rem, 92vw);
-		width: var(--w);
-		margin-left: calc(50% - var(--w) / 2);
-		margin-top: 2.5rem;
-		margin-bottom: 2.5rem;
-	}
-	.breakout-full {
-		--w: min(78rem, 96vw);
-	}
-
-	/* Caption under an embedded figure/demo. */
-	.cs-figure {
-		margin-top: 2.5rem;
-		margin-bottom: 2.5rem;
-	}
-	.cs-figcaption {
-		margin-top: 0.75rem;
-		text-align: center;
-		text-wrap: balance;
-	}
-
-	/* —— Case-study frames ——
-	 * Optional presentation shells for an embedded demo. Chosen per component,
-	 * not globally: `card` (quiet, in-column), `float` (lifts off the page),
-	 * `well` (recessed panel), `phone` (mobile chrome). */
-	.frame-card {
-		border: 1px solid var(--ui-2);
-		background: var(--bg-2);
-		border-radius: 12px;
-		padding: 1.75rem 2rem;
-	}
-	.frame-float {
-		background: var(--bg);
-		border-radius: 14px;
-		padding: 2rem 2.25rem;
-		box-shadow: var(--box-shadow);
-	}
-	.frame-well {
-		background: var(--bg-2);
-		border: 1px solid var(--ui);
-		border-radius: 12px;
-		padding: 2rem;
-		box-shadow: inset 0 1px 3px color-mix(in oklab, var(--tx) 5%, transparent);
-	}
-	.frame-phone {
-		width: min(22rem, 100%);
-		margin-inline: auto;
-		border: 8px solid var(--color-base-950);
-		border-radius: 40px;
-		background: var(--bg);
-		padding: 2rem 1.25rem 1.75rem;
-		box-shadow: var(--box-shadow);
-		position: relative;
-	}
-	.frame-phone::before {
-		content: '';
-		position: absolute;
-		top: 0.9rem;
-		left: 50%;
-		transform: translateX(-50%);
-		width: 5rem;
-		height: 5px;
-		border-radius: 3px;
-		background: var(--color-base-950);
-	}
-
-	/* —— ASCII controls —— */
-	.ascii-btn {
-		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors;
-	}
-
-	.ascii-toggle {
-		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors inline-flex items-center text-tx-3 hover:text-tx aria-pressed:text-tx;
-	}
-
-	.ascii-ramp {
-		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors inline-flex items-center text-tx-3 hover:text-tx aria-pressed:text-tx font-mono text-sm leading-none normal-case tracking-wider;
-	}
-
-	.ascii-swatch {
-		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors before:block before:size-2.5 before:rounded-full before:opacity-65 before:content-[''] before:transition before:duration-150 hover:before:opacity-100 aria-pressed:before:opacity-100 aria-pressed:before:ring-1 aria-pressed:before:ring-tx aria-pressed:before:ring-offset-1 aria-pressed:before:ring-offset-bg;
-		line-height: 0;
-	}
-
-	.ascii-group {
-		@apply inline-flex items-center gap-1.5;
-	}
-
-	.ascii-divider {
-		@apply h-3.5 w-px flex-none bg-ui-3;
-	}
-
-	.ascii-invert {
-		@apply cursor-pointer border-0 bg-transparent p-0 transition-colors inline-flex items-center gap-0.5 align-middle text-tx-3 hover:text-tx before:box-border before:size-2.5 before:rounded-full before:border before:border-current before:bg-tx before:content-[''] after:box-border after:size-2.5 after:rounded-full after:border after:border-current after:content-[''] aria-pressed:before:bg-transparent aria-pressed:after:bg-tx;
-	}
-
-	/* —— Motion —— */
-	/* The one orchestrated moment on the site: the home page settling in. */
-	@keyframes rise {
-		from {
-			opacity: 0;
-			transform: translateY(0.5rem);
-		}
-		to {
-			opacity: 1;
-			transform: none;
-		}
-	}
-
-	.rise {
-		animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
 	}
 }
 

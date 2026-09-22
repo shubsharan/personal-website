@@ -17,16 +17,11 @@ const writing = defineCollection({
   }),
 });
 
-// A flat photo grid, Instagram-style. Each row points at an image in
-// `public/art/` and carries alt text plus an optional caption/date.
 const art = defineCollection({
   loader: file("src/content/art.yaml"),
   schema: z.object({
-    // Path under `public/`, e.g. "/art/piece-01.jpg".
     src: z.string(),
-    // Alt text for the grid image and lightbox.
     alt: z.string(),
-    // Optional line shown in the lightbox.
     caption: z.string().optional(),
     createdDate: z.coerce.date().optional(),
   }),
@@ -35,16 +30,11 @@ const art = defineCollection({
 const experience = defineCollection({
   loader: file("src/content/experience.yaml"),
   schema: z.object({
-    // Role/title, e.g. "Senior Product Manager, Enterprise".
     title: z.string(),
-    // Company/organization.
     org: z.string(),
     startDate: z.coerce.date(),
-    // Leave off while the role is current.
     endDate: z.coerce.date().optional(),
-    // One line.
     description: z.string(),
-    // Optional external link.
     url: z.string().url().optional(),
   }),
 });

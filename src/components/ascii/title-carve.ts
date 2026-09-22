@@ -1,19 +1,3 @@
-/*
- * Turns the real <h2> heading into the data the renderer carves it with. The
- * heading is drawn to an offscreen raster in the canvas's own pixel space and
- * sampled twice: once at the animation's coarse grid (to CLEAR the big glyphs
- * where the title sits), and once, per letter, at a much finer grid of its own
- * (to DRAW the letters crisply on top). Decoupling the title from the animation
- * resolution is what makes the words legible.
- *
- * Line-breaking is delegated to @chenglou/pretext — accurate, unicode-aware wrap
- * that matches real browser metrics — so the wrapped lines are the source of
- * truth for what the reader sees. Within each line, letters are split into their
- * own little ASCII bitmaps (positioned on a shared fine grid) so the pointer
- * scatter can displace each one independently while they still line up as one
- * word at rest. The pixel->cell sampling is pure and tested in carve.mjs;
- * this factory is the DOM half that produces the alpha raster.
- */
 import { layoutWithLines, prepareWithSegments } from '@chenglou/pretext';
 import { coverageMask, dilateMask } from './carve.mjs';
 import {
@@ -35,7 +19,11 @@ type CarverDeps = {
 
 const EMPTY: TitleMasks = { titleMask: null, fine: null, letters: null };
 
-/** Split into grapheme clusters (so accents/emoji stay whole), with a fallback. */
+function canvasFont(cs: CSSStyleDeclaration): string {
+	const family = cs.fontFamily.split(',')[0]?.trim() || 'monospace';
+	return `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${family}`;
+}
+
 function makeSegmenter(): (text: string) => string[] {
 	if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
 		const seg = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
@@ -48,9 +36,6 @@ export function createTitleCarver({ canvas, title, rasterCanvas, rasterCtx }: Ca
 	const titleText = (title?.textContent ?? '').replace(/\s+/g, ' ').trim();
 	const splitGraphemes = makeSegmenter();
 
-	// Rebuild everything for the current layout / resolution. Owns the <h2>'s own
-	// visual state: once carved, the ASCII rendering IS the visible title, so the
-	// real heading is kept for accessibility / no-JS but its glyphs are hidden.
 	const rebuild = (active: Frameset): TitleMasks => {
 		if (!title || !rasterCtx) return EMPTY;
 		const cssW = canvas.clientWidth;
@@ -61,16 +46,14 @@ export function createTitleCarver({ canvas, title, rasterCanvas, rasterCtx }: Ca
 		const fontSize = parseFloat(cs.fontSize) || 16;
 		let lineHeight = parseFloat(cs.lineHeight);
 		if (!lineHeight || cs.lineHeight === 'normal') lineHeight = fontSize * 1.2;
-		else if (lineHeight < 4) lineHeight = fontSize * lineHeight; // unitless ratio
-		const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+		else if (lineHeight < 4) lineHeight = fontSize * lineHeight;
+		const font = canvasFont(cs);
 		const maxWidth = title.clientWidth;
 		if (!titleText || maxWidth <= 0) {
 			title.style.opacity = '';
 			return EMPTY;
 		}
 
-		// Wrap with pretext: accurate, unicode-aware line breaking. This is the
-		// layout the reader sees, so it's the source of truth for the phrasing.
 		let lineTexts: string[];
 		try {
 			const prepared = prepareWithSegments(titleText, font, { whiteSpace: 'normal' });
@@ -92,10 +75,6 @@ export function createTitleCarver({ canvas, title, rasterCanvas, rasterCtx }: Ca
 		rasterCtx.textBaseline = 'alphabetic';
 		rasterCtx.fillStyle = '#fff';
 
-		// Place each baseline the way CSS does: the extra line-height is split as
-		// half-leading above and below the ascent+descent, the block centered in
-		// the band and each line centered horizontally. Drawn left-aligned (not
-		// centered) so per-letter pen positions below match the painted pixels.
 		const fm = rasterCtx.measureText('Hg');
 		const ascent = fm.fontBoundingBoxAscent || fontSize * 0.8;
 		const descent = fm.fontBoundingBoxDescent || fontSize * 0.2;
@@ -112,7 +91,6 @@ export function createTitleCarver({ canvas, title, rasterCanvas, rasterCtx }: Ca
 		const alpha = new Uint8Array(W * H);
 		for (let i = 0; i < alpha.length; i++) alpha[i] = rgba[i * 4 + 3];
 
-		// Coarse mask: clear the animation's big glyphs wherever the title sits.
 		const titleMask = coverageMask(alpha, W, H, {
 			cols: active.cols,
 			rows: active.rows,
@@ -120,7 +98,6 @@ export function createTitleCarver({ canvas, title, rasterCanvas, rasterCtx }: Ca
 			dilate: CARVE_HALO,
 		});
 
-		// The title's own fine grid, independent of the animation resolution.
 		const tCols = Math.max(1, Math.round(cssW / (TITLE_CELL_PX * CHAR_W)));
 		const tRows = Math.max(1, Math.round(cssH / TITLE_CELL_PX));
 		const cellW = cssW / tCols;
@@ -133,13 +110,11 @@ export function createTitleCarver({ canvas, title, rasterCanvas, rasterCtx }: Ca
 			const lineBot = line.baseline + descent;
 			let prefix = '';
 			for (const g of splitGraphemes(line.text)) {
-				// Kerned pen positions: the letter spans the advance the prefix grows by.
 				const x0 = line.left + rasterCtx.measureText(prefix).width;
 				prefix += g;
 				const x1 = line.left + rasterCtx.measureText(prefix).width;
-				if (!g.trim()) continue; // spaces advance the pen but carry no ink
+				if (!g.trim()) continue;
 
-				// Tight advance box in fine cells — sampled from the raster.
 				const tc0 = Math.max(0, Math.floor(x0 / cellW));
 				const tc1 = Math.min(tCols, Math.ceil(x1 / cellW));
 				const tr0 = Math.max(0, Math.floor(lineTop / rowH));
@@ -148,8 +123,6 @@ export function createTitleCarver({ canvas, title, rasterCanvas, rasterCtx }: Ca
 				const trH = tr1 - tr0;
 				if (tcW <= 0 || trH <= 0) continue;
 
-				// Copy the letter's raster window (snapped to cell edges) and reduce it
-				// to a per-cell coverage mask.
 				const rx = Math.min(W - 1, Math.max(0, Math.round(tc0 * cellW)));
 				const ry = Math.min(H - 1, Math.max(0, Math.round(tr0 * rowH)));
 				const rw = Math.min(W - rx, Math.max(1, Math.round(tc1 * cellW) - rx));
@@ -170,8 +143,6 @@ export function createTitleCarver({ canvas, title, rasterCanvas, rasterCtx }: Ca
 				}
 				if (!inked) continue;
 
-				// Grow the box by the outline radius so the bg ring has room, and place
-				// the tight glyph inside it (the padding samples no neighbor ink).
 				const c0 = Math.max(0, tc0 - pad);
 				const c1 = Math.min(tCols, tc1 + pad);
 				const r0 = Math.max(0, tr0 - pad);

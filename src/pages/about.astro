@@ -1,19 +1,18 @@
 ---
 import { getCollection } from 'astro:content';
-import TimelineRow from '../components/TimelineRow.astro';
+import EntryRow from '../components/EntryRow.astro';
+import Section from '../components/Section.astro';
 import { SITE_TITLE } from '../consts';
 import Base from '../layouts/Base.astro';
 import { span } from '../utils/dates';
 
 const description = 'A decade of building products, and how I got here.';
 
-// Normalize each entry into one row shape, then sort newest-first. Anything
-// still going has no end date, so `new Date()` floats it to the top.
 type Row = {
 	sortKey: number;
 	rail: string;
 	title: string;
-	org?: string;
+	org: string;
 	description: string;
 	href?: string;
 };
@@ -33,12 +32,10 @@ const rows: Row[] = experience
 ---
 
 <Base title={`About · ${SITE_TITLE}`} description={description}>
-	<div class="container max-w-3xl">
-		<header class="page-head">
-			<h1 class="page-title">About</h1>
-		</header>
+	<Section index="01">
+		<h1>About</h1>
 
-		<p class="mt-6 text-lg text-tx-2">
+		<p>
 			I’ve spent about a decade in product, mostly at the messy 0-to-1 end —
 			turning tangled operational processes into software people actually use.
 			Most recently I co-founded Impact Labs, an AI platform for philanthropic
@@ -47,22 +44,22 @@ const rows: Row[] = experience
 			early, when a problem is still vague: talking to users, mapping the
 			workflow, and building the first version myself.
 		</p>
+	</Section>
 
-		<section class="mt-16 max-md:mt-12">
-			<h2 class="label mb-4 text-tx-3">Timeline</h2>
-			<ul>
-				{
-					rows.map((row) => (
-						<TimelineRow
-							rail={row.rail}
-							title={row.title}
-							org={row.org}
-							description={row.description}
-							href={row.href}
-						/>
-					))
-				}
-			</ul>
-		</section>
-	</div>
+	<Section index="02">
+		<h2>Timeline</h2>
+		<ul class="divide-y divide-ui border-t border-ui">
+			{
+				rows.map((row) => (
+					<EntryRow
+						href={row.href}
+						rail={row.rail}
+						label={row.org}
+						title={row.title}
+						description={row.description}
+					/>
+				))
+			}
+		</ul>
+	</Section>
 </Base>

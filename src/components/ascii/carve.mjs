@@ -1,29 +1,3 @@
-/*
- * Pure geometry for the "carved title" effect: turn a coverage raster of the
- * heading's glyphs into per-cell data the ASCII renderer uses to either blank
- * those cells or paint them as ASCII letters, so the words read as part of the
- * same field the animation lives in.
- *
- * No DOM here — the alpha raster is produced by drawing the heading to an
- * offscreen canvas in the browser, but the sampling (alpha -> cells) is plain
- * arithmetic and lives here so it stays testable with `node --test`
- * (see ascii-carve.test.mjs).
- */
-
-/**
- * Reduce a single-channel alpha raster (row-major, `width*height`, values
- * 0..255) to a per-cell coverage grid: a row-major `Uint8Array(cols*rows)`
- * where each entry is 0..255 = the fraction of that cell's pixels that are ink.
- * Every pixel is assigned to exactly one cell, so thin strokes can't slip
- * between sample points.
- *
- * @param {Uint8Array|Uint8ClampedArray|number[]} alpha
- * @param {number} width
- * @param {number} height
- * @param {{ cols: number, rows: number, alphaFloor?: number }} options
- *   `alphaFloor`: alpha above which a pixel counts as ink (default 16).
- * @returns {Uint8Array}
- */
 export function coverageLevels(alpha, width, height, { cols, rows, alphaFloor = 16 }) {
 	const out = new Uint8Array(cols * rows);
 	if (width <= 0 || height <= 0) return out;
@@ -50,28 +24,6 @@ export function coverageLevels(alpha, width, height, { cols, rows, alphaFloor = 
 	return out;
 }
 
-/**
- * @typedef {Object} CoverageOptions
- * @property {number} cols
- * @property {number} rows
- * @property {number} [threshold]  Coverage fraction (0..1) a cell needs to be
- *                                 carved. LOW = carve any cell the glyph
- *                                 touches. Default 0.15.
- * @property {number} [alphaFloor] Alpha above which a pixel counts as ink.
- * @property {number} [dilate]     Grow the mask by this many cells afterward,
- *                                 to clear the antialiased fringe. Default 0.
- */
-
-/**
- * Boolean carve mask: 1 where a cell should be left blank. Thin wrapper over
- * {@link coverageLevels} plus a threshold and optional dilation.
- *
- * @param {Uint8Array|Uint8ClampedArray|number[]} alpha
- * @param {number} width
- * @param {number} height
- * @param {CoverageOptions} options
- * @returns {Uint8Array}
- */
 export function coverageMask(alpha, width, height, { cols, rows, threshold = 0.15, alphaFloor = 16, dilate = 0 }) {
 	const levels = coverageLevels(alpha, width, height, { cols, rows, alphaFloor });
 	const mask = new Uint8Array(levels.length);
@@ -80,17 +32,6 @@ export function coverageMask(alpha, width, height, { cols, rows, threshold = 0.1
 	return dilate > 0 ? dilateMask(mask, cols, rows, dilate) : mask;
 }
 
-/**
- * Separable box blur of a grid of 0..255 values, clamped at the edges. Used to
- * turn the title's per-cell coverage into a soft "glow" that fades outward, so
- * the field can be dimmed around the letters for contrast.
- *
- * @param {Uint8Array|number[]} src   Row-major grid, length cols*rows.
- * @param {number} cols
- * @param {number} rows
- * @param {number} radius             Blur radius in cells.
- * @returns {Uint8Array}
- */
 export function boxBlur(src, cols, rows, radius) {
 	if (radius <= 0) return Uint8Array.from(src);
 	const tmp = new Float32Array(src.length);
@@ -128,14 +69,6 @@ export function boxBlur(src, cols, rows, radius) {
 	return out;
 }
 
-/**
- * Grow a cell mask outward by `radius` cells (Chebyshev / square neighbourhood).
- * @param {Uint8Array} mask
- * @param {number} cols
- * @param {number} rows
- * @param {number} radius
- * @returns {Uint8Array}
- */
 export function dilateMask(mask, cols, rows, radius) {
 	const out = new Uint8Array(mask.length);
 	for (let cy = 0; cy < rows; cy++) {

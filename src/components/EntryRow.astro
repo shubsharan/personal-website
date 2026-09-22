@@ -1,32 +1,43 @@
 ---
 interface Props {
-	href: string;
-	rail: string;
-	label: string;
-	title: string;
-	description: string;
+  href?: string;
+  rail: string;
+  label: string;
+  title: string;
+  description: string;
 }
 
 const { href, rail, label, title, description } = Astro.props;
+const Tag = href ? "a" : "div";
 ---
 
-<li class="border-t border-ui">
-	<a
-		href={href}
-		class="group grid gap-x-8 gap-y-1.5 py-7 no-underline md:grid-cols-[7rem_1fr]"
-	>
-		<span class="label text-tx-3 max-md:hidden">{rail}</span>
-		<span class="block">
-			<span class="label flex items-center gap-2 text-tx-3">
-				{label}
-				<span class="md:hidden">· {rail}</span>
-			</span>
-			<h2
-				class="text-2xl mt-2 font-serif text-tx transition-colors duration-150 group-hover:text-accent"
-			>
-				{title}
-			</h2>
-			<p class="mt-1.5 text-tx-2">{description}</p>
-		</span>
-	</a>
+<li>
+  <Tag
+    href={href}
+    class:list={[
+      "grid grid-cols-1 gap-y-2 py-8 text-tx no-underline sm:grid-cols-row",
+      href && "group transition-colors hover:text-accent",
+    ]}
+  >
+    <span
+      class:list={[
+        "row-start-2 pr-2 font-mono text-xs tracking-wide text-tx-3 tabular-nums sm:row-start-1",
+        href && "transition-colors group-hover:text-accent",
+      ]}
+    >
+      {rail}
+    </span>
+    <span class="flex min-w-0 flex-col gap-2">
+      <span
+        class:list={[
+          "font-mono text-xs tracking-wide text-tx-3 tabular-nums",
+          href && "transition-colors group-hover:text-accent",
+        ]}
+      >
+        {label}
+      </span>
+      <h2>{title}</h2>
+      <p>{description}</p>
+    </span>
+  </Tag>
 </li>

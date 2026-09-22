@@ -1,31 +1,79 @@
 ---
-/* The page shell every route sits in: head, header, main, footer. */
-import type { ImageMetadata } from 'astro';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/header/Header.astro';
+import type { ImageMetadata } from "astro";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/header/Header.astro";
 
 interface Props {
-	title: string;
-	description: string;
-	image?: ImageMetadata;
-	canonicalURL?: string;
+  title: string;
+  description: string;
+  image?: ImageMetadata;
+  canonicalURL?: string;
 }
 
 const { title, description, image, canonicalURL } = Astro.props;
+
+// Rails sit on column start lines of the 15-column frame. Below md only the outer pair shows, as 200px stubs.
+const rails = [
+  { col: "col-start-1", line: "h-full bg-ui" },
+  { col: "hidden md:block md:col-start-4", line: "h-full bg-ui" },
+  {
+    col: "hidden md:block md:col-start-5",
+    line: "h-50 bg-linear-to-b from-ui to-transparent",
+  },
+  { col: "hidden md:block md:col-start-13", line: "h-full bg-ui" },
+  {
+    col: "col-start-1 justify-self-end md:col-start-15 md:justify-self-auto",
+    line: "h-full bg-ui",
+  },
+];
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} image={image} canonicalURL={canonicalURL} />
-	</head>
-	<body>
-		<a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>
-		<Header />
-		<main id="main">
-			<slot />
-		</main>
-		<Footer />
-	</body>
+<html lang='en'>
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      image={image}
+      canonicalURL={canonicalURL}
+    />
+  </head>
+  <body>
+    <a href='#main' class='sr-only focus:not-sr-only'>Skip to content</a>
+    <div class='mx-auto w-full max-w-360 px-4 md:px-16' data-site>
+      <div
+        class='relative isolate grid min-h-dvh grid-cols-1 grid-rows-[auto_1fr_auto] md:grid-cols-15 md:grid-rows-[1fr_auto]'
+      >
+        <div
+          class='pointer-events-none absolute inset-x-0 top-0 -z-10 grid h-50 grid-cols-1 md:bottom-0 md:h-auto md:grid-cols-15'
+          aria-hidden='true'
+        >
+          {
+            rails.map((rail) => (
+              <div class:list={["relative row-start-1", rail.col]}>
+                <span
+                  class:list={[
+                    "absolute top-0 left-0 w-px -translate-x-1/2",
+                    rail.line,
+                  ]}
+                />
+                <span class='fixed top-0 -translate-x-1/2 bg-bg pt-2 pb-1'>
+                  <span class='block h-2 w-0.5 bg-tx-3 opacity-50' />
+                </span>
+              </div>
+            ))
+          }
+        </div>
+        <Header />
+        <main
+          id='main'
+          class='grid grid-cols-1 content-start gap-y-12 pt-4 pb-16 md:col-span-12 md:col-start-4 md:row-start-1 md:grid-cols-12 md:pt-32'
+        >
+          <slot />
+        </main>
+        <Footer />
+      </div>
+    </div>
+  </body>
 </html>

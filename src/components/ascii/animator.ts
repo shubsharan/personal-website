@@ -1,10 +1,3 @@
-/*
- * The requestAnimationFrame cadence for the band. The scene supplies the current
- * fps (a getter, so speed changes take effect immediately) and an onFrame
- * callback (advance + render). The band loops forever — there is no play/pause
- * control; pause() exists only so a reduced-motion preference can freeze it on
- * the poster frame. Cleans itself up on pagehide.
- */
 type AnimatorDeps = {
 	getFps: () => number;
 	onFrame: () => void;

@@ -1,77 +1,54 @@
 ---
-/*
- * The Apollo 13 "everything on the table" scene as animated ASCII — a silent,
- * colored band above the hero, with a settings bar to reshape it live.
- *
- * Frames are pre-rendered offline (scripts/ascii-encode.mjs --color) into
- * apollo-ascii*.json. Each cell is ONE packed char encoding a brightness level
- * (0..15) and a Flexoki palette bucket (0..3) — see PACK_ALPHABET. Because we
- * store the level (not a baked glyph), the browser can re-map the ASCII ramp,
- * contrast, invert, and color live without the source video. Only resolution
- * is a true pre-baked variant (coarse/default/fine), loaded on demand.
- *
- * Decorative + accessible: role="img" with a label, a static poster frame for
- * no-JS / reduced-motion, and controls that are just enhancement.
- *
- * Everything for the band is colocated in this folder: the client behavior in
- * the *.ts modules (composed by scene.ts) and the shared, framework-agnostic
- * bits — used at build time here and in the browser — in {config,frames,carve}.mjs.
- */
-import AsciiControls from './AsciiControls.astro';
-import data from '../../assets/apollo-ascii-fine.json';
-import { POSTER_RAMP } from './config.mjs';
-import { buildLut, densestFrame, posterText } from './frames.mjs';
+import AsciiControls from "./AsciiControls.astro";
+import data from "../../assets/apollo-ascii-fine.json";
+import { POSTER_RAMP } from "./config.mjs";
+import { buildLut, densestFrame, posterText } from "./frames.mjs";
 
 const cols: number = data.cols;
 const rows: number = data.rows;
 
-/* Poster (no-JS / reduced-motion still): densest frame, default ramp applied. */
 const lut = buildLut(data.pack);
 const poster = densestFrame(data.frames as string[], lut);
 const posterLines = posterText(poster, { cols, rows, lut, ramp: POSTER_RAMP });
 ---
 
 <figure
-	class="rise w-full"
-	style="animation-delay: 40ms"
-	data-ascii-frame
+  class='animate-rise flex w-full flex-col delay-75 border-b border-ui'
+  data-ascii-frame
 >
-	{/* Positioning + inline-size container so the heading can overlay the stage exactly and size itself to the band (cqi below).
-	    data-theme="dark" pins the band (and its carved title) to the dark palette regardless of the site theme — the settings bar sits outside it and follows the site. */}
-	<div class="relative [container-type:inline-size]" data-theme="dark">
-		<div
-			class="relative aspect-[64/27] overflow-hidden border-b border-ui bg-[radial-gradient(circle_at_50%_45%,var(--bg-2),var(--bg)_72%)]"
-			role="img"
-			aria-label="Engineers spread improvised materials across a workbench, rendered as animated ASCII art."
-		>
-			<pre
-				class="absolute inset-0 m-0 box-border h-full w-full overflow-hidden whitespace-pre py-[0.4rem] font-mono text-[clamp(0.3rem,1.1vw,0.6rem)] font-normal leading-none text-tx-2"
-				data-ascii-fallback
-				aria-hidden="true">{posterLines}</pre>
-			<canvas
-				class="absolute inset-0 block h-full w-full opacity-0 transition-opacity duration-[180ms] [&.is-ready]:opacity-100 motion-reduce:transition-none"
-				data-ascii-canvas
-				aria-hidden="true"></canvas>
-		</div>
-		{/*
-		 * The heading the ASCII parts around. Real text: accessible, indexable,
-		 * and visible without JS. Sized to the band (cqi) and always one line.
-		 * The script carves that single line and adds `.is-carved` once the grid
-		 * is masked, which drops the legibility scrim.
-		 */}
-		<h2
-			class="font-mono pointer-events-none absolute left-1/2 top-1/2 m-0 w-[90%] -translate-x-1/2 -translate-y-1/2 p-0 text-center text-[clamp(2rem,3cqi,16rem)] leading-[1.05] text-balance text-tx [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--bg),0_0_1.2em_var(--bg)]"
-			data-ascii-title>EVERYTHING ON THE TABLE</h2>
-	</div>
+  <div class='@container relative' data-theme='dark'>
+    <div
+      class='relative aspect-[64/27] overflow-hidden bg-[radial-gradient(circle_at_50%_45%,var(--bg-2),var(--bg)_72%)]'
+      role='img'
+      aria-label='Engineers spread improvised materials across a workbench, rendered as animated ASCII art.'
+    >
+      <pre
+        class='absolute inset-0 m-0 box-border h-full w-full overflow-hidden whitespace-pre py-1 font-mono text-[clamp(0.3rem,1.1vw,0.6rem)] font-normal leading-none text-tx-2'
+        data-ascii-fallback
+        aria-hidden='true'>{posterLines}</pre>
+      <canvas
+        class='absolute inset-0 block h-full w-full opacity-0 transition-opacity duration-200 [&.is-ready]:opacity-100 motion-reduce:transition-none'
+        data-ascii-canvas
+        aria-hidden='true'></canvas>
+    </div>
+    <p
+      class='pointer-events-none absolute top-1/2 left-1/2 m-0 w-11/12 -translate-x-1/2 -translate-y-1/2 p-0 text-center font-sans text-[clamp(2rem,3cqi,6rem)] font-bold leading-none tracking-wide text-tx [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--bg),0_0_1.2em_var(--bg)]'
+      data-ascii-title
+    >
+      EVERYTHING ON THE TABLE
+    </p>
+  </div>
 
-	<AsciiControls />
+  <AsciiControls />
 </figure>
 
 <script>
-	import { createAsciiScene } from './scene';
-	import { loadDefault, VARIANTS } from './framesets';
+  import { createAsciiScene } from "./scene";
+  import { loadDefault, VARIANTS } from "./framesets";
 
-	document
-		.querySelectorAll<HTMLElement>('[data-ascii-frame]')
-		.forEach((root) => createAsciiScene(root, { loadDefault, variants: VARIANTS }));
+  document
+    .querySelectorAll<HTMLElement>("[data-ascii-frame]")
+    .forEach((root) =>
+      createAsciiScene(root, { loadDefault, variants: VARIANTS }),
+    );
 </script>

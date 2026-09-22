@@ -13,10 +13,6 @@ import {
 	indexOfKey,
 } from './config.mjs';
 
-// These tests replace the manual "keep the two files in sync" burden: they fail
-// loudly if a toggle in the toolbar has no backing behavior, or if an initial
-// default points at a control that doesn't exist.
-
 test('every ramp toggle shown has a real ramp behind it', () => {
 	for (const { key } of RAMP_ORDER) {
 		assert.ok(key in RAMPS, `RAMP_ORDER key "${key}" is missing from RAMPS`);
@@ -30,7 +26,6 @@ test('single-color modes map onto contiguous palette indices from 0', () => {
 		indices,
 		singles.map((_, i) => i),
 	);
-	// Per-cell modes (full / tone) are not single-color buckets.
 	for (const key of PER_CELL_COLORS) assert.equal(SINGLE[key], undefined);
 });
 

@@ -1,7 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import Entry from '../../layouts/Entry.astro';
-import { longDate, monthYear } from '../../utils/dates';
+import { longDate, shortDate } from '../../utils/dates';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('writing', (p) => !p.data.draft);
@@ -22,16 +22,16 @@ const { title, description, publication, pubDate, updatedDate, canonicalURL } = 
 	description={description}
 	label={publication}
 	rail={longDate(pubDate)}
-	updatedNote={updatedDate ? `Updated ${monthYear(updatedDate)}` : undefined}
+	updatedNote={updatedDate ? `Updated ${shortDate(updatedDate)}` : undefined}
 	backHref="/writing/"
 	backLabel="All writing"
 	canonicalURL={canonicalURL}
 >
 	{
 		canonicalURL && (
-			<p class="mb-2 text-sm text-tx-3">
+			<p class="text-sm text-tx-3">
 				This post originally appeared on{' '}
-				<a href={canonicalURL} target="_blank" rel="noopener" class="text-tx-3">
+				<a href={canonicalURL} target="_blank" rel="noopener">
 					Substack
 				</a>
 				.
