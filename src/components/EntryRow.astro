@@ -15,14 +15,14 @@ const Tag = href ? "a" : "div";
   <Tag
     href={href}
     class:list={[
-      "grid grid-cols-1 gap-y-2 py-8 text-tx no-underline sm:grid-cols-row",
-      href && "group transition-colors hover:text-accent",
+      "grid grid-cols-1 gap-y-2 py-8 text-foreground no-underline sm:grid-cols-row",
+      href && "group transition-colors hover:text-primary",
     ]}
   >
     <span
       class:list={[
-        "row-start-2 pr-2 font-mono text-xs tracking-wide text-tx-3 tabular-nums sm:row-start-1",
-        href && "transition-colors group-hover:text-accent",
+        "row-start-2 pr-2 font-mono text-xs tracking-wide text-muted-foreground tabular-nums sm:row-start-1",
+        href && "transition-colors group-hover:text-primary",
       ]}
     >
       {rail}
@@ -30,8 +30,8 @@ const Tag = href ? "a" : "div";
     <span class="flex min-w-0 flex-col gap-2">
       <span
         class:list={[
-          "font-mono text-xs tracking-wide text-tx-3 tabular-nums",
-          href && "transition-colors group-hover:text-accent",
+          "font-mono text-xs tracking-wide text-muted-foreground tabular-nums",
+          href && "transition-colors group-hover:text-primary",
         ]}
       >
         {label}

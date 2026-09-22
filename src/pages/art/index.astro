@@ -21,12 +21,12 @@ const iconSize = 22;
 			<h1>Art</h1>
 			<div class="flex flex-col gap-2">
 				<p>{description}</p>
-				<p class="font-mono text-xs tracking-wide text-tx-3 tabular-nums">
+				<p class="font-mono text-xs tracking-wide text-muted-foreground tabular-nums">
 					<a
 						href={SOCIALS.instagram}
 						target="_blank"
 						rel="noopener"
-						class="text-tx-3 no-underline transition-colors hover:text-tx"
+						class="text-muted-foreground no-underline transition-colors hover:text-foreground"
 					>
 						@shubdoesart on Instagram ↗
 					</a>
@@ -41,7 +41,7 @@ const iconSize = 22;
 						<li>
 							<button
 								type="button"
-								class="group block aspect-square w-full overflow-hidden bg-ui-2"
+								class="group block aspect-square w-full overflow-hidden bg-muted"
 								data-art-tile
 								data-index={i}
 								data-src={item.data.src}
@@ -60,7 +60,7 @@ const iconSize = 22;
 					))}
 				</ul>
 			) : (
-				<p class="border-t border-ui py-6">
+				<p class="border-t border-border py-6">
 					Nothing here yet. Add rows to <code>src/content/art.yaml</code> and
 					images to <code>public/art/</code>.
 				</p>
@@ -69,14 +69,14 @@ const iconSize = 22;
 	</Section>
 
 	<dialog
-		class="m-0 h-dvh max-h-none w-full max-w-none border-0 bg-bg p-0 text-tx backdrop:bg-bg open:flex open:flex-col"
+		class="m-0 h-dvh max-h-none w-full max-w-none border-0 bg-background p-0 text-foreground backdrop:bg-background open:flex open:flex-col"
 		aria-label="Artwork viewer"
 		data-art-lightbox
 	>
 		<div class="mx-auto flex max-w-3xl justify-end px-6 py-4">
 			<button
 				type="button"
-				class="inline-flex items-center justify-center rounded-sm text-tx-2 hover:text-tx"
+				class="inline-flex items-center justify-center rounded-sm text-muted-foreground hover:text-foreground"
 				aria-label="Close viewer"
 				autofocus
 				data-art-close
@@ -88,7 +88,7 @@ const iconSize = 22;
 		<div class="flex flex-1 items-center justify-center gap-4 px-4 pb-12">
 			<button
 				type="button"
-				class="inline-flex shrink-0 items-center justify-center rounded-sm text-tx-2 hover:text-tx"
+				class="inline-flex shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground"
 				aria-label="Previous"
 				data-art-prev
 			>
@@ -106,7 +106,7 @@ const iconSize = 22;
 
 			<button
 				type="button"
-				class="inline-flex shrink-0 items-center justify-center rounded-sm text-tx-2 hover:text-tx"
+				class="inline-flex shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground"
 				aria-label="Next"
 				data-art-next
 			>

@@ -9,17 +9,23 @@ export type PaletteSnapshot = {
 	haloFade: string;
 };
 
+let probe: CanvasRenderingContext2D | null = null;
+
 function toRgb(color: string): [number, number, number] {
 	const c = color.trim();
-	if (c.startsWith('#')) {
-		let h = c.slice(1);
-		if (h.length === 3 || h.length === 4) h = h.replace(/./g, (ch) => ch + ch);
-		const n = parseInt(h.slice(0, 6), 16);
-		if (!Number.isNaN(n)) return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+	if (!c) return [129, 140, 248];
+	if (!probe) {
+		const canvas = document.createElement('canvas');
+		canvas.width = 1;
+		canvas.height = 1;
+		probe = canvas.getContext('2d', { willReadFrequently: true });
 	}
-	const m = c.match(/[\d.]+/g);
-	if (m && m.length >= 3) return [+m[0], +m[1], +m[2]];
-	return [206, 93, 151];
+	if (!probe) return [129, 140, 248];
+	probe.fillStyle = '#000';
+	probe.fillStyle = c;
+	probe.fillRect(0, 0, 1, 1);
+	const [r, g, b] = probe.getImageData(0, 0, 1, 1).data;
+	return [r, g, b];
 }
 
 export function createPaletteReader(title: HTMLElement | null, scope: HTMLElement) {
@@ -27,7 +33,7 @@ export function createPaletteReader(title: HTMLElement | null, scope: HTMLElemen
 		read(active: Frameset): PaletteSnapshot {
 			const styles = getComputedStyle(scope);
 			const palette = active.palette.map((token) => styles.getPropertyValue(token).trim());
-			const bgColor = styles.getPropertyValue('--bg').trim();
+			const bgColor = styles.getPropertyValue('--background').trim();
 			const titleColor = title ? getComputedStyle(title).color : '';
 			const [r, g, b] = toRgb(styles.getPropertyValue(HALO.token));
 			const haloColor = `rgba(${r}, ${g}, ${b}, ${HALO.strength})`;

@@ -16,8 +16,8 @@ const isActive = href === pathname || href === "/" + (subpath?.[0] || "");
     "relative py-px font-sans font-medium no-underline transition-colors",
     className ?? "text-nav",
     isActive ?
-      "text-accent before:absolute before:top-1/2 before:-left-2.75 before:h-3 before:w-0.5 before:-translate-y-1/2 before:bg-accent before:content-['']"
-    : "text-tx hover:text-accent",
+      "text-primary before:absolute before:top-1/2 before:-left-2.75 before:h-3 before:w-0.5 before:-translate-y-1/2 before:bg-primary before:content-['']"
+    : "text-foreground hover:text-primary",
   ]}
   {...props}
 >

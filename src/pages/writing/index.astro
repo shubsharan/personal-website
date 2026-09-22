@@ -19,7 +19,7 @@ const description = 'Essays, notes, and reviews of what I’m reading.';
 
 		{
 			posts.length > 0 ? (
-				<ul class="divide-y divide-ui border-t border-ui">
+				<ul class="divide-y divide-border border-t border-border">
 					{posts.map((post) => (
 						<EntryRow
 							href={`/writing/${post.id}/`}
@@ -31,7 +31,7 @@ const description = 'Essays, notes, and reviews of what I’m reading.';
 					))}
 				</ul>
 			) : (
-				<p class="border-t border-ui py-6">
+				<p class="border-t border-border py-6">
 					Nothing published yet. The first piece goes in{' '}
 					<code>src/content/writing/</code>.
 				</p>

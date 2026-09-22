@@ -18,22 +18,22 @@ const DETAIL_ICONS = ["lucide:grid-2x2", "lucide:grid-3x2", "lucide:grid-3x3"];
 const SPEED_ICONS = ["lucide:turtle", "lucide:play", "lucide:rabbit"];
 
 const toggleClass =
-  "inline-flex items-center text-tx-3 transition-colors hover:text-tx aria-pressed:text-tx";
+  "inline-flex items-center text-muted-foreground transition-colors hover:text-foreground aria-pressed:text-foreground";
 const swatchClass =
-  "leading-none transition-colors before:block before:size-2.5 before:rounded-full before:opacity-65 before:content-[''] before:transition hover:before:opacity-100 aria-pressed:before:opacity-100 aria-pressed:before:ring-1 aria-pressed:before:ring-tx aria-pressed:before:ring-offset-1 aria-pressed:before:ring-offset-bg";
+  "leading-none transition-colors before:block before:size-2.5 before:rounded-full before:opacity-65 before:content-[''] before:transition hover:before:opacity-100 aria-pressed:before:opacity-100 aria-pressed:before:ring-1 aria-pressed:before:ring-foreground aria-pressed:before:ring-offset-1 aria-pressed:before:ring-offset-background";
 const rampClass =
-  "inline-flex items-center font-mono text-sm leading-none tracking-wider text-tx-3 normal-case transition-colors hover:text-tx aria-pressed:text-tx";
+  "inline-flex items-center font-mono text-sm leading-none tracking-wider text-muted-foreground normal-case transition-colors hover:text-foreground aria-pressed:text-foreground";
 const invertClass =
-  "inline-flex items-center gap-0.5 align-middle text-tx-3 transition-colors hover:text-tx before:box-border before:size-2.5 before:rounded-full before:border before:border-current before:bg-tx before:content-[''] after:box-border after:size-2.5 after:rounded-full after:border after:border-current after:content-[''] aria-pressed:before:bg-transparent aria-pressed:after:bg-tx";
+  "inline-flex items-center gap-0.5 align-middle text-muted-foreground transition-colors hover:text-foreground before:box-border before:size-2.5 before:rounded-full before:border before:border-current before:bg-foreground before:content-[''] after:box-border after:size-2.5 after:rounded-full after:border after:border-current after:content-[''] aria-pressed:before:bg-transparent aria-pressed:after:bg-foreground";
 const groupClass = "inline-flex items-center gap-1.5";
-const dividerClass = "hidden h-3.5 w-px flex-none bg-ui-3 md:block";
+const dividerClass = "hidden h-3.5 w-px flex-none bg-input md:block";
 ---
 
 <div
-  class='flex flex-wrap items-center justify-between bg-bg p-2 gap-4 font-mono text-xs tracking-wide text-tx-3 tabular-nums'
+  class='flex flex-wrap items-center justify-between bg-background p-2 gap-4 font-mono text-xs tracking-wide text-muted-foreground tabular-nums'
 >
   <a
-    class='whitespace-nowrap text-tx-3 no-underline transition-colors hover:text-tx'
+    class='whitespace-nowrap text-muted-foreground no-underline transition-colors hover:text-foreground'
     href='https://www.youtube.com/watch?v=ry55--J4_VQ&t=38s'
     target='_blank'
     rel='noreferrer'>[src]</a
@@ -41,14 +41,14 @@ const dividerClass = "hidden h-3.5 w-px flex-none bg-ui-3 md:block";
 
   <details data-ascii-controls-wrap class='relative md:static' hidden>
     <summary
-      class='inline-flex h-6 w-6 list-none items-center justify-center rounded text-tx-3 transition-colors hover:text-tx md:hidden [&::-webkit-details-marker]:hidden [&::marker]:hidden'
+      class='inline-flex h-6 w-6 list-none items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground md:hidden [&::-webkit-details-marker]:hidden [&::marker]:hidden'
       aria-label='Controls'
     >
       <Icon name='lucide:ellipsis' width={20} height={20} aria-hidden='true' />
     </summary>
 
     <div
-      class='absolute top-full right-0 z-20 grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-4 rounded-md border border-ui bg-bg-2 p-4 shadow-lg md:static md:z-auto md:flex md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-1 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none'
+      class='absolute top-full right-0 z-20 grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-4 rounded-md border border-border bg-popover p-4 shadow-lg md:static md:z-auto md:flex md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-1 md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none'
       data-ascii-controls
       hidden
     >
@@ -177,12 +177,12 @@ const dividerClass = "hidden h-3.5 w-px flex-none bg-ui-3 md:block";
           <Icon name='lucide:contrast' size={14} aria-hidden='true' />
           <span class='inline-flex items-center gap-0.5' aria-hidden='true'>
             <span
-              class='h-3 w-1 rounded-sm bg-tx-3 group-data-[level=0]:bg-tx group-data-[level=1]:bg-tx group-data-[level=2]:bg-tx'
+              class='h-3 w-1 rounded-sm bg-muted-foreground group-data-[level=0]:bg-foreground group-data-[level=1]:bg-foreground group-data-[level=2]:bg-foreground'
             ></span>
             <span
-              class='h-3 w-1 rounded-sm bg-tx-3 group-data-[level=1]:bg-tx group-data-[level=2]:bg-tx'
+              class='h-3 w-1 rounded-sm bg-muted-foreground group-data-[level=1]:bg-foreground group-data-[level=2]:bg-foreground'
             ></span>
-            <span class='h-3 w-1 rounded-sm bg-tx-3 group-data-[level=2]:bg-tx'
+            <span class='h-3 w-1 rounded-sm bg-muted-foreground group-data-[level=2]:bg-foreground'
             ></span>
           </span>
         </button>
@@ -195,12 +195,12 @@ const dividerClass = "hidden h-3.5 w-px flex-none bg-ui-3 md:block";
         >
           <span class='inline-flex items-center gap-0.5' aria-hidden='true'>
             <span
-              class='h-3 w-1 rounded-sm bg-tx-3 group-data-[level=0]:bg-tx group-data-[level=1]:bg-tx group-data-[level=2]:bg-tx'
+              class='h-3 w-1 rounded-sm bg-muted-foreground group-data-[level=0]:bg-foreground group-data-[level=1]:bg-foreground group-data-[level=2]:bg-foreground'
             ></span>
             <span
-              class='h-3 w-1 rounded-sm bg-tx-3 group-data-[level=1]:bg-tx group-data-[level=2]:bg-tx'
+              class='h-3 w-1 rounded-sm bg-muted-foreground group-data-[level=1]:bg-foreground group-data-[level=2]:bg-foreground'
             ></span>
-            <span class='h-3 w-1 rounded-sm bg-tx-3 group-data-[level=2]:bg-tx'
+            <span class='h-3 w-1 rounded-sm bg-muted-foreground group-data-[level=2]:bg-foreground'
             ></span>
           </span>
         </button>

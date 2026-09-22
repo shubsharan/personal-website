@@ -38,13 +38,13 @@ const displayUrl = url?.replace(/^https?:\/\//, "").replace(/\/$/, "");
 				<div class="flex flex-col gap-4">
 					<a
 						href={backHref}
-						class="font-mono text-xs tracking-wide text-tx-3 tabular-nums no-underline transition-colors hover:text-tx"
+						class="font-mono text-xs tracking-wide text-muted-foreground tabular-nums no-underline transition-colors hover:text-foreground"
 					>
 						← {backLabel}
 					</a>
 
 					<div
-						class="flex items-center justify-between gap-4 font-mono text-xs tracking-wide text-tx-3 tabular-nums"
+						class="flex items-center justify-between gap-4 font-mono text-xs tracking-wide text-muted-foreground tabular-nums"
 					>
 						<span class="flex items-center gap-2">
 							{label}
@@ -77,8 +77,8 @@ const displayUrl = url?.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
 			{
 				updatedNote && (
-					<footer class="border-t border-ui">
-						<span class="block py-6 font-mono text-xs tracking-wide text-tx-3 tabular-nums">
+					<footer class="border-t border-border">
+						<span class="block py-6 font-mono text-xs tracking-wide text-muted-foreground tabular-nums">
 							{updatedNote}
 						</span>
 					</footer>

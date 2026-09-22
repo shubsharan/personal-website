@@ -23,9 +23,9 @@ export const RAMP_ORDER = [
 ];
 
 export const COLORS = [
-	{ key: 'tone', label: 'Tone', dot: 'before:bg-[linear-gradient(var(--bl),var(--tx),var(--or))]' },
-	{ key: 'full', label: 'Color', dot: 'before:bg-[conic-gradient(var(--or),var(--cy),var(--bl),var(--or))]' },
-	{ key: 'ink', label: 'BW', dot: 'before:bg-tx' },
+	{ key: 'tone', label: 'Tone', dot: 'before:bg-[linear-gradient(var(--ascii-ink),var(--ascii-accent),var(--ascii-secondary))]' },
+	{ key: 'full', label: 'Color', dot: 'before:bg-[conic-gradient(var(--ascii-secondary),var(--ascii-accent),var(--ascii-ink),var(--ascii-secondary))]' },
+	{ key: 'ink', label: 'BW', dot: 'before:bg-foreground' },
 ];
 
 export const PER_CELL_COLORS = ['full', 'tone'];
@@ -52,7 +52,7 @@ export const CONTRASTS = [
 ];
 
 export const HALO = {
-	token: '--bl',
+	token: '--ascii-accent',
 	radius: 0.1,
 	strength: .5,
 };

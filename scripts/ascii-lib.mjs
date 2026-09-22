@@ -30,7 +30,7 @@ export function streamToFrames(buffer, cols, rows, opts = {}) {
 	return frames;
 }
 
-export const PALETTE_TOKENS = ['--tx', '--or', '--bl', '--cy'];
+export const PALETTE_TOKENS = ['--ascii-ink', '--ascii-secondary', '--ascii-accent', '--ascii-mist'];
 
 export const LEVELS = 16;
 

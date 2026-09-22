@@ -6,7 +6,9 @@ const MONO = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
 const TONE_LOW = 0.34;
 const TONE_HIGH = 0.62;
 function toneBucket(lum: number): number {
-	return lum < TONE_LOW ? 2 : lum < TONE_HIGH ? 0 : 1;
+	if (lum < TONE_LOW) return 0;
+	if (lum < TONE_HIGH) return 2;
+	return 1;
 }
 
 function hash(x: number, y: number): number {

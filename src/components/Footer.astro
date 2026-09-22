@@ -6,7 +6,7 @@ const year = new Date().getFullYear();
 ---
 
 <footer
-  class='relative z-10 col-span-full -ml-px flex items-center justify-between gap-6 border-t border-ui bg-bg pt-8 pb-24 md:row-start-2'
+  class='relative z-10 col-span-full -ml-px flex items-center justify-between gap-6 border-t border-border bg-background pt-8 pb-24 md:row-start-2'
 >
   <span class='font-mono text-xs tracking-wide tabular-nums'
     >{AUTHOR} · {year}</span
@@ -18,13 +18,13 @@ const year = new Date().getFullYear();
       href={SOCIALS.github}
       target='_blank'
       rel='me noopener'
-      class='text-tx no-underline transition-colors hover:text-accent'
+      class='text-foreground no-underline transition-colors hover:text-primary'
     >
       github
     </a>
     <a
       href='/rss.xml'
-      class='text-tx no-underline transition-colors hover:text-accent'
+      class='text-foreground no-underline transition-colors hover:text-primary'
     >
       rss
     </a>

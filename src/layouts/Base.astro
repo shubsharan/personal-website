@@ -15,16 +15,16 @@ const { title, description, image, canonicalURL } = Astro.props;
 
 // Rails sit on column start lines of the 15-column frame. Below md only the outer pair shows, as 200px stubs.
 const rails = [
-  { col: "col-start-1", line: "h-full bg-ui" },
-  { col: "hidden md:block md:col-start-4", line: "h-full bg-ui" },
+  { col: "col-start-1", line: "h-full bg-border" },
+  { col: "hidden md:block md:col-start-4", line: "h-full bg-border" },
   {
     col: "hidden md:block md:col-start-5",
-    line: "h-50 bg-linear-to-b from-ui to-transparent",
+    line: "h-50 bg-linear-to-b from-border to-transparent",
   },
-  { col: "hidden md:block md:col-start-13", line: "h-full bg-ui" },
+  { col: "hidden md:block md:col-start-13", line: "h-full bg-border" },
   {
     col: "col-start-1 justify-self-end md:col-start-15 md:justify-self-auto",
-    line: "h-full bg-ui",
+    line: "h-full bg-border",
   },
 ];
 ---
@@ -58,8 +58,8 @@ const rails = [
                     rail.line,
                   ]}
                 />
-                <span class='fixed top-0 -translate-x-1/2 bg-bg pt-2 pb-1'>
-                  <span class='block h-2 w-0.5 bg-tx-3 opacity-50' />
+                <span class='fixed top-0 -translate-x-1/2 bg-background pt-2 pb-1'>
+                  <span class='block h-2 w-0.5 bg-muted-foreground opacity-50' />
                 </span>
               </div>
             ))

@@ -14,9 +14,11 @@
     "ascii:encode": "npm run ascii:encode:coarse && npm run ascii:encode:default && npm run ascii:encode:fine",
     "ascii:encode:coarse": "node scripts/ascii-encode.mjs media/apollo-13-workbench.mp4 --crop 640:262:0:10 --cols 120 --rows 30 --color --out src/assets/apollo-ascii-coarse.json",
     "ascii:encode:default": "node scripts/ascii-encode.mjs media/apollo-13-workbench.mp4 --crop 640:262:0:10 --cols 180 --rows 45 --color --out src/assets/apollo-ascii.json",
-    "ascii:encode:fine": "node scripts/ascii-encode.mjs media/apollo-13-workbench.mp4 --crop 640:262:0:10 --cols 240 --rows 60 --color --out src/assets/apollo-ascii-fine.json"
+    "ascii:encode:fine": "node scripts/ascii-encode.mjs media/apollo-13-workbench.mp4 --crop 640:262:0:10 --cols 240 --rows 60 --color --out src/assets/apollo-ascii-fine.json",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^14.3.3",
     "@astrojs/mdx": "^7.0.5",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
@@ -29,6 +31,7 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "ffmpeg-static": "^5.3.0"
+    "ffmpeg-static": "^5.3.0",
+    "wrangler": "^4.136.3"
   }
 }

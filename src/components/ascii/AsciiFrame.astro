@@ -13,17 +13,17 @@ const posterLines = posterText(poster, { cols, rows, lut, ramp: POSTER_RAMP });
 ---
 
 <figure
-  class='animate-rise flex w-full flex-col delay-75 border border-ui'
+  class='animate-rise flex w-full flex-col delay-75 border border-border'
   data-ascii-frame
 >
   <div class='@container relative' data-theme='dark'>
     <div
-      class='relative aspect-[64/27] overflow-hidden bg-[radial-gradient(circle_at_50%_45%,var(--bg-2),var(--bg)_72%)]'
+      class='relative aspect-[64/27] overflow-hidden bg-[radial-gradient(circle_at_50%_45%,var(--muted),var(--background)_72%)]'
       role='img'
       aria-label='Engineers spread improvised materials across a workbench, rendered as animated ASCII art.'
     >
       <pre
-        class='absolute inset-0 m-0 box-border h-full w-full overflow-hidden whitespace-pre py-1 font-mono text-[clamp(0.3rem,1.1vw,0.6rem)] font-normal leading-none text-tx-2'
+        class='absolute inset-0 m-0 box-border h-full w-full overflow-hidden whitespace-pre py-1 font-mono text-[clamp(0.3rem,1.1vw,0.6rem)] font-normal leading-none text-muted-foreground'
         data-ascii-fallback
         aria-hidden='true'>{posterLines}</pre>
       <canvas
@@ -32,7 +32,7 @@ const posterLines = posterText(poster, { cols, rows, lut, ramp: POSTER_RAMP });
         aria-hidden='true'></canvas>
     </div>
     <p
-      class='pointer-events-none absolute top-1/2 left-1/2 m-0 w-11/12 -translate-x-1/2 -translate-y-1/2 p-0 text-center font-sans text-[clamp(2rem,3cqi,6rem)] font-bold leading-none tracking-wide text-tx [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--bg),0_0_1.2em_var(--bg)]'
+      class='pointer-events-none absolute top-1/2 left-1/2 m-0 w-11/12 -translate-x-1/2 -translate-y-1/2 p-0 text-center font-sans text-[clamp(2rem,3cqi,6rem)] leading-none tracking-wide text-foreground [&:not(.is-carved)]:[text-shadow:0_0_0.6em_var(--background),0_0_1.2em_var(--background)]'
       data-ascii-title
     >
       EVERYTHING ON THE TABLE

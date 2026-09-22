@@ -20,7 +20,7 @@ const links = [
 			Reach out by email, or find me elsewhere below.
 		</p>
 
-		<ul class="divide-y divide-ui border-y border-ui">
+		<ul class="divide-y divide-border border-y border-border">
 			{
 				links.map((link) => (
 					<li>
@@ -28,9 +28,9 @@ const links = [
 							href={link.href}
 							target={link.href.startsWith('mailto:') ? undefined : '_blank'}
 							rel={link.href.startsWith('mailto:') ? undefined : 'me noopener'}
-							class="flex items-baseline justify-between gap-6 py-4 text-tx no-underline transition-colors hover:text-accent"
+							class="flex items-baseline justify-between gap-6 py-4 text-foreground no-underline transition-colors hover:text-primary"
 						>
-							<span class="font-mono text-xs tracking-wide text-tx-3 tabular-nums">{link.label}</span>
+							<span class="font-mono text-xs tracking-wide text-muted-foreground tabular-nums">{link.label}</span>
 							<span>{link.value}</span>
 						</a>
 					</li>

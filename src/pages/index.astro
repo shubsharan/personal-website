@@ -37,7 +37,7 @@ const posts = (await getCollection("writing", (p) => !p.data.draft))
     posts.length > 0 && (
       <Section index='02'>
         <h2>Latest writing</h2>
-        <ul class='divide-y divide-ui border-t border-ui'>
+        <ul class='divide-y divide-border border-t border-border'>
           {posts.map((post) => (
             <EntryRow
               href={`/writing/${post.id}/`}
@@ -50,7 +50,7 @@ const posts = (await getCollection("writing", (p) => !p.data.draft))
         </ul>
         <a
           href='/writing/'
-          class='self-start font-mono text-xs tracking-wide text-tx-3 tabular-nums no-underline transition-colors hover:text-tx'
+          class='self-start font-mono text-xs tracking-wide text-muted-foreground tabular-nums no-underline transition-colors hover:text-foreground'
         >
           All writing →
         </a>
