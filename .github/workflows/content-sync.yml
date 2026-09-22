@@ -31,6 +31,12 @@ jobs:
       - run: pnpm test:content
       - id: sync
         run: pnpm content:sync
+      - name: Diagnose feed response
+        if: failure() && steps.sync.outcome == 'failure'
+        run: |
+          curl --max-time 30 -sS -D /tmp/feed-headers https://failingloudly.substack.com/feed -o /tmp/feed-body
+          cat /tmp/feed-headers
+          head -c 500 /tmp/feed-body
       - if: steps.sync.outputs.changed == 'true'
         run: pnpm build
       - name: Commit changed posts
