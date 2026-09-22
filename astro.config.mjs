@@ -11,7 +11,7 @@ import icon from 'astro-icon';
 import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://shub.gg',
   integrations: [mdx(), sitemap(), icon()],
 
   fonts: [

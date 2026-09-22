@@ -79,6 +79,16 @@ test('duplicate feed identities and source IDs fail without writes', async (t) =
   assert.deepEqual(await readdir(join(root, 'src/content/writing')), []);
 });
 
+test('a changed canonical URL cannot claim another existing post', async (t) => {
+  const root = await fixture(t);
+  const first = item({ guid: 'first', url: 'https://one.example/first' });
+  const second = item({ guid: 'second', url: 'https://one.example/second' });
+  const result = await syncContent({ root, fetchFeed: response(feed(first, second)) });
+  const before = await Promise.all(result.paths.map((path) => readFile(join(root, path), 'utf8')));
+  await assert.rejects(syncContent({ root, fetchFeed: response(feed(item({ guid: 'first', url: 'https://one.example/second' }))) }), /different local posts/);
+  assert.deepEqual(await Promise.all(result.paths.map((path) => readFile(join(root, path), 'utf8'))), before);
+});
+
 test('Atom article content is supported but an Atom summary alone is rejected', async (t) => {
   const root = await fixture(t);
   const atom = (content) => `<feed xmlns="http://www.w3.org/2005/Atom"><title>One</title><entry><id>urn:post:1</id><title>Atom post</title><link href="https://one.example/atom"/><published>2026-09-22T10:00:00Z</published><updated>2026-09-22T11:00:00Z</updated><summary>Summary only</summary>${content}</entry></feed>`;

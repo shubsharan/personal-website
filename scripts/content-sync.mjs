@@ -106,7 +106,7 @@ export function convertHtml(html, articleURL) {
         })),
     replacement: () => '',
   });
-  return converter.turndown(clean).trim();
+  return converter.turndown(clean).replace(/^[\t ]+$/gm, '').trim();
 }
 
 async function markdownFiles(directory) {
@@ -168,7 +168,8 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
       for (const item of feed.items) {
         try {
           const url = canonical(required(item.link, 'article URL'));
-          const id = JSON.stringify([source.id, item.guid || item.id || url]);
+          const remoteID = required(item.guid || item.id || url, 'remote item ID');
+          const id = JSON.stringify([source.id, remoteID]);
           if (seenIDs.has(id) || seenURLs.has(url)) throw new Error(`Duplicate feed item: ${url}`);
           seenIDs.add(id);
           seenURLs.add(url);
@@ -183,7 +184,10 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
             ...(item.updated ? { updatedDate: date(item.updated) } : {}),
             canonicalURL: url, draft: false,
           };
-          const existing = byID.get(id) || byURL.get(url);
+          const identified = byID.get(id);
+          const linked = byURL.get(url);
+          if (identified && linked && identified !== linked) throw new Error(`Remote ID and canonical URL identify different local posts: ${url}`);
+          const existing = identified || linked;
           const slug = new URL(url).pathname.split('/').filter(Boolean).at(-1)
             ?.replace(/[^a-zA-Z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'post';
           const path = existing || join(directory, source.id, `${slug}-${hash(id).slice(0, 12)}.md`);
@@ -193,7 +197,7 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
           }
           if (existing?.endsWith('.mdx')) throw new Error(`Convert imported MDX to Markdown before syncing: ${existing}`);
           claimed.add(path);
-          const sync = { source: source.id, id: item.guid || item.id || url, hash: hash(JSON.stringify({ data, body })) };
+          const sync = { source: source.id, id: remoteID, hash: hash(JSON.stringify({ data, body })) };
           const text = matter.stringify(`${body}\n`, { ...data, sync });
           if (files.get(path)?.text === text) result.unchanged++;
           else {

@@ -1,4 +1,58 @@
-# Astro Starter Kit: Blog
+# Personal website
+
+## Automatic writing sync
+
+Local Markdown and MDX posts and imported posts share the `writing` collection.
+Add public RSS or Atom feeds to `content-sources.json` with a unique lowercase
+hyphenated `id`, a `publication` label, and an HTTP(S) `feedURL`.
+RSS feeds must expose `content:encoded`; Atom entries must expose `content`.
+Summary-only feeds fail explicitly. Feed content is used as provided; the importer
+cannot determine whether a publisher has truncated an otherwise valid body.
+
+```sh
+pnpm content:sync --dry-run
+pnpm content:sync
+pnpm test:content
+```
+
+The importer matches existing canonical URLs and keeps their filenames. New posts
+go under `src/content/writing/<source-id>/` with stable, collision-resistant
+filenames. Frontmatter records the source, remote ID, and SHA-256 content hash.
+Remote text, metadata, and published status replace the imported copy on every
+change. Local edits to imported content are overwritten. Posts without a matching
+remote identity or canonical URL remain locally authored and retain their drafts.
+
+The importer preserves captions, tables, and footnote anchors, sanitizes retained
+HTML, and replaces interactive embeds with links. Images remain hosted remotely.
+It never deletes posts absent from a feed. Edits outside the feed's current window
+are not detected. To unpublish an imported post permanently, remove its source
+from configuration before editing or deleting the local copy.
+
+The **Sync external posts** GitHub Action runs at minute 17 each hour and can be
+started manually from Actions. It validates all feeds before writing any content,
+runs the sync tests, builds changed content, and commits only changed post files
+to `main`. The connected Cloudflare Git integration builds and deploys that commit.
+Normal site builds do not fetch feeds. Unchanged sync runs skip build, commit, and
+deployment. Failed runs report errors and leave the published site unchanged;
+the next scheduled run retries. Concurrent pushes fail safely without force-pushes.
+
+The repository currently uses **Cloudflare Workers Builds**, configured by
+`wrangler.jsonc`, rather than Cloudflare Pages. Keep the Git integration connected
+to `main` with `pnpm build` as the build command. GitHub Actions requires
+`contents: write` permission and permission to push to `main`. No Cloudflare token
+is needed by the sync workflow. Review the Actions run summary for sync counts and
+the Cloudflare commit check for deployment status.
+
+The production address is `https://shub.gg`. Astro uses it for local canonical
+URLs, sitemap entries, and RSS links; Wrangler attaches the custom domain on
+deployment. Imported posts retain their original publication's canonical URLs.
+
+GitHub schedules are best effort and can be delayed. For public repositories,
+GitHub disables scheduled workflows after 60 days without repository activity.
+Re-enable the workflow in Actions if this occurs; no-change checks do not create
+keepalive commits. See [GitHub's schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+
+## Original starter documentation
 
 ```sh
 pnpm create astro@latest -- --template blog

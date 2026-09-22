@@ -27,7 +27,7 @@
     "@chenglou/pretext": "0.0.8",
     "@iconify-json/lucide": "^1.2.121",
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.2.10",
+    "astro": "^7.3.4",
     "astro-icon": "^1.1.5",
     "sharp": "^0.35.0",
     "tailwindcss": "^4.3.3"
