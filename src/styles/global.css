@@ -188,6 +188,24 @@
 		gap: 1rem;
 		font-family: var(--font-serif);
 	}
+	.prose > h1:not(:first-child) {
+		margin-top: 2rem;
+	}
+	.prose > h2:not(:first-child) {
+		margin-top: 1rem;
+	}
+	.prose > h3:not(:first-child) {
+		margin-top: 0.5rem;
+	}
+	.prose > h4:not(:first-child) {
+		margin-top: 0.5rem;
+	}
+	.prose > h5:not(:first-child) {
+		margin-top: 0.5rem;
+	}
+	.prose > h6:not(:first-child) {
+		margin-top: 0.5rem;
+	}
 	.prose blockquote {
 		padding-left: 1.5rem;
 		border-left: 1px solid var(--input);

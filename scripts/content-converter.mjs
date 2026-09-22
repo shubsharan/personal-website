@@ -11,13 +11,17 @@ function httpURL(value, base) {
 
 function props(values) {
   return Object.entries(values)
-    .filter(([, value]) => value !== undefined && value !== '')
+    .filter(([, value]) => value != null && value !== '')
     .map(([key, value]) => `${key}={${JSON.stringify(value)}}`)
     .join(' ');
 }
 
 function data(node) {
-  return JSON.parse(node.getAttribute('data-attrs') || '{}');
+  try {
+    return JSON.parse(node.getAttribute('data-attrs') || '{}');
+  } catch {
+    return {};
+  }
 }
 
 function tweetURL(value, base) {
@@ -38,9 +42,9 @@ function normalizeDividers(markdown) {
   for (const line of lines) {
     const marker = line.match(/^(```+|~~~+)/)?.[1];
     if (marker) fence = fence ? (marker[0] === fence[0] && marker.length >= fence.length ? undefined : fence) : marker;
-    if (!fence && line === '* * *') {
-      const previous = output.findLast((value) => value.trim());
-      if (previous === '* * *') continue;
+    if (!fence && line.trim() === '* * *') {
+      const previous = output.findLastIndex((value) => value.trim());
+      if (output[previous]?.trim() === '* * *') output.splice(previous);
     }
     output.push(line);
   }
@@ -155,7 +159,9 @@ function convert(html, articleURL, blocks) {
     });
     converter.addRule('tweets', {
       filter: (node) => node.classList.contains('twitter-embed')
-        || (node.nodeName === 'P' && node.children.length === 1 && Boolean(tweetURL(node.children[0].getAttribute?.('href'), articleURL))),
+        || (node.nodeName === 'P' && node.children.length === 1
+          && node.textContent.trim() === node.children[0].textContent.trim()
+          && Boolean(tweetURL(node.children[0].getAttribute?.('href'), articleURL))),
       replacement: (_content, node) => tweetBlock(node),
     });
     converter.addRule('media', {

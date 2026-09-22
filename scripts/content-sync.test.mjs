@@ -33,13 +33,16 @@ test('migration keeps URLs, publishes imports, preserves local drafts, and conve
   await writeFile(local, localText);
   await writeFile(old, '---\ntitle: Old\ncanonicalURL: https://one.example/p/post\ndraft: true\n---\nOld text.\n');
   const fetchFeed = response(feed(item()));
-  assert.equal((await syncContent({ root, fetchFeed, dryRun: true })).updated, 1);
+  const dryRun = await syncContent({ root, fetchFeed, dryRun: true });
+  assert.equal(dryRun.updated, 1);
+  assert.deepEqual(dryRun.paths.sort(), ['src/content/writing/original-slug.md', 'src/content/writing/original-slug.mdx']);
   assert.match(await readFile(old, 'utf8'), /Old text/);
   assert.equal((await syncContent({ root, fetchFeed })).updated, 1);
   await assert.rejects(readFile(old, 'utf8'), { code: 'ENOENT' });
   const text = await readFile(migrated, 'utf8');
   assert.equal(matter(text).data.draft, false);
   assert.match(matter(text).data.sync.hash, /^[a-f0-9]{64}$/);
+  assert.match(text, /import Tweet from '..\/..\/components\/content\/Tweet\.astro';/);
   assert.equal((await syncContent({ root, fetchFeed })).unchanged, 1);
   await writeFile(migrated, text.replace('Hello.', 'Local edit.'));
   assert.equal((await syncContent({ root, fetchFeed })).updated, 1);
@@ -53,6 +56,18 @@ test('migration keeps URLs, publishes imports, preserves local drafts, and conve
   assert.equal(await readFile(migrated, 'utf8'), edited);
   assert.equal(await readFile(local, 'utf8'), localText);
   assert.deepEqual((await readdir(join(root, 'src/content/writing'))).sort(), ['local.md', 'original-slug.mdx']);
+});
+
+test('migration rejects an occupied MDX destination without changing either file', async (t) => {
+  const root = await fixture(t);
+  const markdown = join(root, 'src/content/writing/post.md');
+  const mdx = join(root, 'src/content/writing/post.mdx');
+  const original = '---\ncanonicalURL: https://one.example/p/post\n---\nOld Markdown.\n';
+  await writeFile(markdown, original);
+  await writeFile(mdx, 'Unrelated MDX.\n');
+  await assert.rejects(syncContent({ root, fetchFeed: response(feed(item())) }), /MDX migration collision/);
+  assert.equal(await readFile(markdown, 'utf8'), original);
+  assert.equal(await readFile(mdx, 'utf8'), 'Unrelated MDX.\n');
 });
 
 test('source namespaces and remote identity keep same-slug posts distinct and URLs stable', async (t) => {
@@ -131,21 +146,25 @@ test('feed endpoint only fetches configured sources and rejects upstream failure
 test('conversion preserves MDX structure and footnotes, removes controls, and escapes remote code', () => {
   const md = convertHtml(`
     <h2>A heading</h2><p>Hello <strong>world</strong>.<a id="footnote-anchor-1" href="#footnote-1">1</a></p>
-    <ul><li>First</li></ul><pre><code>const n = 1;</code></pre>
+    <ul><li>First<ol><li>Nested</li></ol></li></ul><pre><code>const n = { safe: true };</code></pre>
     <figure><a href="/image"><picture><img src="/photo.jpg" alt="Photo" onerror="alert(1)"></picture></a><figcaption>A caption.</figcaption><button>Image control</button></figure>
     <table><tr><th>Column</th></tr><tr><td>Value</td></tr></table>
     <div class="footnote"><a id="footnote-1" href="#footnote-anchor-1">1</a><p>Footnote text.</p></div>
-    <div data-component-name="SubscribeWidgetToDOM"><p>Subscribe CTA</p></div>
+    <hr><div data-component-name="SubscribeWidgetToDOM"><p>Subscribe CTA</p></div><div><hr></div>
     <div class="captioned-button-wrap"><p>Share CTA</p><a href="?action=share">Share</a></div>
-    <iframe src="https://www.youtube.com/embed/123"></iframe>
+    <iframe src="https://www.youtube.com/embed/123" title="Demo"></iframe>
+    <video><source src="/clip.mp4"></video><audio src="/sound.mp3"></audio>
     <div class="native-video-embed" data-attrs='{"mediaUploadId":"123"}'></div>
     <div class="twitter-embed" data-attrs='{"url":"https://x.com/example/status/123"}'></div>
+    <p><a href="https://twitter.com/example/status/456">A standalone tweet</a></p>
+    <p>An inline <a href="https://x.com/example/status/789">tweet link</a> stays inline.</p>
+    <div class="twitter-embed" data-attrs="not-json"></div>
     <script>alert(1)</script><a href="javascript:alert(1)">Unsafe link</a>
     <p>&lt;script&gt;alert(2)&lt;/script&gt;</p>
     <p>{process.exit(1)}</p><p>import fs from 'node:fs'</p>
   `, 'https://one.example/post');
   assert.match(md, /- +First/);
-  for (const value of ['## A heading', '**world**', '```', '<ImportedImage', 'captionHtml={"A caption."}', '<SafeHtml', '<table>', 'footnote-1', 'https://one.example/photo.jpg', 'https://www.youtube.com/embed/123', '<Tweet url={"https://x.com/i/status/123"}', '<ImportedMedia kind={"link"}', '&#123;process.exit(1)&#125;', '&#105;mport']) assert.ok(md.includes(value), value);
+  for (const value of ['## A heading', '**world**', '```', '<ImportedImage', 'captionHtml={"A caption."}', '<SafeHtml', '<table>', 'footnote-1', 'https://one.example/photo.jpg', 'kind={"youtube"}', 'kind={"video"}', 'kind={"audio"}', '<Tweet url={"https://x.com/i/status/123"}', '<Tweet url={"https://x.com/i/status/456"}', 'An inline [tweet link]', '<ImportedMedia kind={"link"}', '&#123;process.exit(1)&#125;', '&#105;mport']) assert.ok(md.includes(value), value);
   assert.doesNotMatch(md, /<script|onerror|javascript:|Subscribe CTA|Share CTA|Image control|<iframe|data-attrs/);
   assert.match(md, /&lt;script&gt;/);
 });
@@ -154,4 +173,5 @@ test('empty and control-only content terminate, and dividers inside code survive
   assert.equal(convertDescription('', 'https://one.example'), '');
   assert.equal(convertHtml('<div data-component-name="SubscribeWidgetToDOM">Subscribe</div>', 'https://one.example'), '');
   assert.match(convertHtml('<pre><code>* * *\n* * *</code></pre>', 'https://one.example'), /\* \* \*\n\* \* \*/);
+  assert.equal(convertHtml('<ol><li>Share<div><hr></div></li></ol><div data-component-name="SubscribeWidgetToDOM">Subscribe</div><div><hr></div><p>Next</p>', 'https://one.example').match(/^\s*\* \* \*\s*$/gm)?.length, 1);
 });

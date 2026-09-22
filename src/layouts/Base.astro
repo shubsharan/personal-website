@@ -13,7 +13,9 @@ interface Props {
 
 const { title, description, image, canonicalURL } = Astro.props;
 
-// Rails sit on column start lines of the 15-column frame. Below md only the outer pair shows, as 200px stubs.
+// Rails sit on column starts of the 15-column frame. The trailing rail is
+// justify-self-end so its line meets the footer rule. Below md only the outer
+// pair shows, as 200px stubs.
 const rails = [
   { col: "col-start-1", line: "h-full bg-border" },
   { col: "hidden md:block md:col-start-4", line: "h-full bg-border" },
@@ -23,7 +25,7 @@ const rails = [
   },
   { col: "hidden md:block md:col-start-13", line: "h-full bg-border" },
   {
-    col: "col-start-1 justify-self-end md:col-start-15 md:justify-self-auto",
+    col: "col-start-1 justify-self-end md:col-start-15",
     line: "h-full bg-border",
   },
 ];

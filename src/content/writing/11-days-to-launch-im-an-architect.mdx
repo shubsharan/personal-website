@@ -8,7 +8,7 @@ draft: false
 sync:
   source: failing-loudly
   id: 'https://failingloudly.substack.com/p/11-days-to-launch-im-an-architect'
-  hash: 091da2076ce983bcd162fb323a297efdbcaec8596c43a1e09379fe8a1d96e3dd
+  hash: 7aa2db0c5f8ec3045aa16d89771b1c6b52fcfa8a35cccc94947890316effa2aa
 ---
 import ImportedImage from '../../components/content/ImportedImage.astro';
 import ImportedMedia from '../../components/content/ImportedMedia.astro';
@@ -26,7 +26,7 @@ What are we talking about today?
 2.  We launched a waitlist website!
 
 
-<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!OSXp!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd231007e-0cf9-4dd1-81d1-8640ec20d84b_640x360.jpeg"} title={null} width={640} height={360} href={"https://substackcdn.com/image/fetch/$s_!OSXp!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd231007e-0cf9-4dd1-81d1-8640ec20d84b_640x360.jpeg"} captionHtml={"Me, deploying my build to Cloudflare"} />
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!OSXp!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd231007e-0cf9-4dd1-81d1-8640ec20d84b_640x360.jpeg"} width={640} height={360} href={"https://substackcdn.com/image/fetch/$s_!OSXp!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd231007e-0cf9-4dd1-81d1-8640ec20d84b_640x360.jpeg"} captionHtml={"Me, deploying my build to Cloudflare"} />
 
 # 👀 Introducing… Plotpoint!
 
@@ -63,7 +63,6 @@ I’d love to add more challenges over time so that anyone else who makes their 
 
 * * *
 
-
 ## 🛠️ How did we build this?
 
 1.  We created a backend using [supabase](https://supabase.com/). When we add information to our database, our app will pick it up and update accordingly. This is where we save information like users, stories, saves, etc.
@@ -73,7 +72,7 @@ I’d love to add more challenges over time so that anyone else who makes their 
 3.  For the Waypoint Challenge, we are using open-source tools like [MapLibre](https://maplibre.org/) (Mapping), [OpenStreetMaps](https://www.openstreetmap.org/#map=5/38.01/-95.84) (Location data and map tiles) and [Turf](https://turfjs.org/) (geospatial analysis).
 
 
-<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!Aqvf!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F849759d1-f162-44cb-b4ab-e4df273aed3e_3840x2160.png"} title={null} width={1456} height={819} href={"https://substackcdn.com/image/fetch/$s_!Aqvf!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F849759d1-f162-44cb-b4ab-e4df273aed3e_3840x2160.png"} captionHtml={"this is what our database looks like"} />
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!Aqvf!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F849759d1-f162-44cb-b4ab-e4df273aed3e_3840x2160.png"} width={1456} height={819} href={"https://substackcdn.com/image/fetch/$s_!Aqvf!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F849759d1-f162-44cb-b4ab-e4df273aed3e_3840x2160.png"} captionHtml={"this is what our database looks like"} />
 
 Why do we have so many tables all linked together? Wouldn’t it be easier to have one big “file” that has all the data we need for each story?
 
@@ -85,7 +84,7 @@ Maybe! If the goal is to just deliver one game to play at Outside Lands, then th
 
 I’d like to create a platform where anyone can create and publish their own stories. I’m hacking together this first one, sure, but I’d like to invite writers and creators everywhere to join us and start creating stories for locations that are special to them, all across the world.
 
-<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!0Jap!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd95eec65-e032-47f1-95ea-d46c87361bc5_245x152.gif"} title={null} width={320} height={198.53061224489795} href={"https://substackcdn.com/image/fetch/$s_!0Jap!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd95eec65-e032-47f1-95ea-d46c87361bc5_245x152.gif"} />
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!0Jap!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd95eec65-e032-47f1-95ea-d46c87361bc5_245x152.gif"} width={320} height={198.53061224489795} href={"https://substackcdn.com/image/fetch/$s_!0Jap!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd95eec65-e032-47f1-95ea-d46c87361bc5_245x152.gif"} />
 
 ## 🗒️ What’s next for product?
 
@@ -104,7 +103,7 @@ In terms of the product, here’s what’s left:
 
 # 👀 We launched a waitlist!
 
-<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!4kn9!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F82de5a1b-fe35-474f-bb6b-d861faeee780_4800x4800.png"} title={null} width={1456} height={1456} href={"https://substackcdn.com/image/fetch/$s_!4kn9!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F82de5a1b-fe35-474f-bb6b-d861faeee780_4800x4800.png"} captionHtml={"Check it out at plotpoint.io"} />
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!4kn9!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F82de5a1b-fe35-474f-bb6b-d861faeee780_4800x4800.png"} width={1456} height={1456} href={"https://substackcdn.com/image/fetch/$s_!4kn9!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F82de5a1b-fe35-474f-bb6b-d861faeee780_4800x4800.png"} captionHtml={"Check it out at plotpoint.io"} />
 
 We launched a [waitlist website](https://plotpoint.io/) on Saturday. It’s extremely janky and it’s only one page, but it does the job. Here’s how it works:
 
@@ -119,7 +118,7 @@ I’m using the plotpoint.io domain I bought last year when I set this up to pro
 
 ## 📊 Let’s talk numbers
 
-<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!Qbfr!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff1523016-d33d-4872-a878-8b6dc45f914f_1024x1190.png"} title={null} width={1024} height={1190} href={"https://substackcdn.com/image/fetch/$s_!Qbfr!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff1523016-d33d-4872-a878-8b6dc45f914f_1024x1190.png"} captionHtml={"Substack stats after 1 week"} />
+<ImportedImage src={"https://substackcdn.com/image/fetch/$s_!Qbfr!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff1523016-d33d-4872-a878-8b6dc45f914f_1024x1190.png"} width={1024} height={1190} href={"https://substackcdn.com/image/fetch/$s_!Qbfr!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff1523016-d33d-4872-a878-8b6dc45f914f_1024x1190.png"} captionHtml={"Substack stats after 1 week"} />
 
 I created this Substack newsletter on July 20th and published my first post ([Let’s Build a Company in Two Weeks](https://failingloudly.substack.com/p/lets-build-a-company-in-two-weeks)) on July 22nd. That means we’ve been building publicly for just about one week, and we have 11 days left to get as many waitlist users as possible.
 
@@ -159,9 +158,6 @@ As of now, I know almost everyone on this mailing list personally. That’s amaz
 The next step is to break out of this bubble. I need to start bringing in people from outside my personal network. There are a couple ways I plan on doing this:
 
 1.  **Ask all of you to share my content with your networks**
-
-    * * *
-
 
 * * *
 

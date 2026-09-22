@@ -26,6 +26,9 @@ remote identity or canonical URL remain locally authored and retain their drafts
 The importer preserves captions, tables, and footnote anchors and sanitizes retained
 HTML. MDX components render images, tweets, YouTube, audio, and video; unsupported
 embeds become links to the source. Images remain hosted remotely.
+To support another block, add its sanitized matcher and replacement in
+`scripts/content-converter.mjs`, then add the corresponding Astro component under
+`src/components/content/` and a focused conversion fixture.
 It never deletes posts absent from a feed. Edits outside the feed's current window
 are not detected. To unpublish an imported post permanently, remove its source
 from configuration before editing or deleting the local copy.
