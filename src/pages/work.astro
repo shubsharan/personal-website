@@ -67,7 +67,7 @@ const skills = [
 ];
 ---
 
-<Base title={`Work · ${SITE_TITLE}`} description={description}>
+<Base title={`Work | ${SITE_TITLE}`} description={description}>
   <Section index='01'>
     <h1>Work</h1>
     <p>
@@ -141,7 +141,10 @@ const skills = [
     <h2>Education</h2>
     <ul class='divide-y divide-border border-t border-border'>
       <EntryRow
-        rail={span(new Date(Date.UTC(2013, 0, 1)), new Date(Date.UTC(2016, 0, 1)))}
+        rail={span(
+          new Date(Date.UTC(2013, 0, 1)),
+          new Date(Date.UTC(2016, 0, 1)),
+        )}
         label='University of California, Santa Cruz'
         title='B.A. Business Management Economics'
       />

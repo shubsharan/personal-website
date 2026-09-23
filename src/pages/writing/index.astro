@@ -1,41 +1,39 @@
 ---
-import { getCollection } from 'astro:content';
-import EntryRow from '../../components/EntryRow.astro';
-import Section from '../../components/Section.astro';
-import { SITE_TITLE } from '../../consts';
-import Base from '../../layouts/Base.astro';
-import { shortDate } from '../../utils/dates';
+import { getCollection } from "astro:content";
+import EntryRow from "../../components/EntryRow.astro";
+import Section from "../../components/Section.astro";
+import { SITE_TITLE } from "../../consts";
+import Base from "../../layouts/Base.astro";
+import { shortDate } from "../../utils/dates";
 
-const posts = (await getCollection('writing', (p) => !p.data.draft)).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+const posts = (await getCollection("writing", (p) => !p.data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-const description = 'Essays, notes, and reviews of what I’m reading.';
+const description = "Essays, notes, and reviews of what I’m reading.";
 ---
 
-<Base title={`Writing · ${SITE_TITLE}`} description={description}>
-	<Section index="01">
-		<h1>Writing</h1>
+<Base title={`Writing | ${SITE_TITLE}`} description={description}>
+  <Section index='01'>
+    <h1>Writing</h1>
 
-		{
-			posts.length > 0 ? (
-				<ul class="divide-y divide-border border-t border-border">
-					{posts.map((post) => (
-						<EntryRow
-							href={`/writing/${post.id}/`}
-							rail={shortDate(post.data.pubDate)}
-							label={post.data.publication}
-							title={post.data.title}
-							description={post.data.description}
-						/>
-					))}
-				</ul>
-			) : (
-				<p class="border-t border-border py-6">
-					Nothing published yet. The first piece goes in{' '}
-					<code>src/content/writing/</code>.
-				</p>
-			)
-		}
-	</Section>
+    {
+      posts.length > 0 ?
+        <ul class='divide-y divide-border border-t border-border'>
+          {posts.map((post) => (
+            <EntryRow
+              href={`/writing/${post.id}/`}
+              rail={shortDate(post.data.pubDate)}
+              label={post.data.publication}
+              title={post.data.title}
+              description={post.data.description}
+            />
+          ))}
+        </ul>
+      : <p class='border-t border-border py-6'>
+          Nothing published yet. The first piece goes in{" "}
+          <code>src/content/writing/</code>.
+        </p>
+    }
+  </Section>
 </Base>

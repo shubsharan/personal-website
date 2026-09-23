@@ -2,7 +2,7 @@ export const SITE_TITLE = "shub.gg";
 export const SITE_DESCRIPTION =
   "Shubhankar Sharan — founder and builder. Essays, art, and notes on what I’m reading.";
 export const AUTHOR = "Shubhankar Sharan";
-export const AUTHOR_EMAIL = "shubhankarsharan@gmail.com";
+export const AUTHOR_EMAIL = "shub@shub.gg";
 
 export const NAV = [
   { href: "/", label: "Home" },
