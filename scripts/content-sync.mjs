@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
-import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { parseArgs } from 'node:util';
 import matter from 'gray-matter';
 import Parser from 'rss-parser';
 import { convertDescription, convertHtml } from './content-converter.mjs';
@@ -49,7 +50,8 @@ async function markdownFiles(directory) {
   return files;
 }
 
-export async function syncContent({ root = process.cwd(), dryRun = false, fetchFeed = fetch, feedBaseURL } = {}) {
+export async function syncContent({ root = process.cwd(), dryRun = false, readFeed, sourceID } = {}) {
+  if (typeof readFeed !== 'function') throw new Error('Provide a saved feed to import');
   const sources = JSON.parse(await readFile(join(root, 'content-sources.json'), 'utf8'));
   if (!Array.isArray(sources) || !sources.length) throw new Error('Configure at least one content source');
   const sourceIDs = new Set();
@@ -61,6 +63,7 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
     required(source.publication, 'publication');
     httpURL(required(source.feedURL, 'feed URL'));
   }
+  if (sourceID !== undefined && !sourceIDs.has(sourceID)) throw new Error(`Unknown source: ${sourceID}`);
   const directory = join(root, 'src/content/writing');
   const files = new Map();
   const byURL = new Map();
@@ -88,17 +91,9 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
   const result = { added: 0, updated: 0, unchanged: 0, failed: 0, paths: [] };
   const errors = [];
   for (const source of sources) {
+    if (sourceID !== undefined && source.id !== sourceID) continue;
     try {
-      const feedURL = feedBaseURL ? httpURL(`${feedBaseURL.replace(/\/$/, '')}/${source.id}`) : source.feedURL;
-      const response = await fetchFeed(feedURL, {
-        signal: AbortSignal.timeout(30_000),
-        headers: {
-          Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml',
-          'User-Agent': 'shub.gg-content-sync/1.0 (+https://shub.gg)',
-        },
-      });
-      if (!response.ok) throw new Error(`Feed returned HTTP ${response.status}`);
-      const xml = await response.text();
+      const xml = await readFeed(source.feedURL);
       const feed = await new Parser({ customFields: { item: [['description', 'description'], ['updated', 'updated']] } }).parseString(xml);
       const atom = /<(?:\w+:)?feed[\s>]/.test(xml);
       for (const item of feed.items) {
@@ -181,12 +176,17 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
 }
 
 async function main() {
-  const args = process.argv.slice(2);
-  if (args.some((arg) => arg !== '--dry-run')) throw new Error('Usage: pnpm content:sync [--dry-run]');
-  const dryRun = args.includes('--dry-run');
+  let dryRun = false;
   let result;
   try {
-    result = await syncContent({ dryRun, feedBaseURL: process.env.CONTENT_FEED_BASE_URL });
+    const { values } = parseArgs({ options: {
+      source: { type: 'string' }, file: { type: 'string' }, 'dry-run': { type: 'boolean' },
+    } });
+    dryRun = values['dry-run'] || false;
+    if (!values.source || !values.file) throw new Error('Usage: pnpm content:sync --source <id> --file <feed.xml> [--dry-run]');
+    result = await syncContent({
+      dryRun, sourceID: values.source, readFeed: () => readFile(values.file, 'utf8'),
+    });
   } catch (error) {
     result = error.result || { added: 0, updated: 0, unchanged: 0, failed: 1, paths: [] };
     console.error(error.message);
@@ -194,10 +194,6 @@ async function main() {
   }
   const summary = `${dryRun ? 'Dry run: ' : ''}${result.added} added, ${result.updated} updated, ${result.unchanged} unchanged, ${result.failed} failed${process.exitCode ? '. No batch published.' : '.'}`;
   console.log(summary);
-  if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, `${summary}\n`);
-  if (process.env.GITHUB_OUTPUT) {
-    await appendFile(process.env.GITHUB_OUTPUT, `changed=${!process.exitCode && result.paths.length > 0}\npaths=${JSON.stringify(result.paths)}\n`);
-  }
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
