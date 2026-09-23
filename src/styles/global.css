@@ -188,6 +188,15 @@
 		gap: 1rem;
 		font-family: var(--font-serif);
 	}
+	.prose h1 {
+		scroll-margin-top: 11rem;
+	}
+	.prose h2 {
+		scroll-margin-top: 11rem;
+	}
+	.prose h3 {
+		scroll-margin-top: 11rem;
+	}
 	.prose > h1:not(:first-child) {
 		margin-top: 2rem;
 	}

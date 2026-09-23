@@ -8,32 +8,15 @@ interface Props {
   updatedDate?: Date;
   tags?: string[];
   canonicalURL?: string;
-  backHref: string;
-  backLabel: string;
 }
 
-const {
-  title,
-  publication,
-  pubDate,
-  updatedDate,
-  tags,
-  canonicalURL,
-  backHref,
-  backLabel,
-} = Astro.props;
+const { title, publication, pubDate, updatedDate, tags, canonicalURL } =
+  Astro.props;
 
 const cell = "border border-border p-4 align-top";
 ---
 
 <header class='flex flex-col gap-4 md:gap-6'>
-  <a
-    href={backHref}
-    class='px-4 font-mono text-xs tracking-wide text-muted-foreground tabular-nums no-underline transition-colors hover:text-foreground'
-  >
-    ← {backLabel}
-  </a>
-
   <table class='w-full border-collapse'>
     <caption class='sr-only'>Post metadata</caption>
     <tbody>

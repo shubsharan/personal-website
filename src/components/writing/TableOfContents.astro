@@ -1,0 +1,109 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+const items = headings.filter((heading) => heading.depth <= 3);
+const minDepth = items.reduce(
+  (min, heading) => Math.min(min, heading.depth),
+  Infinity,
+);
+
+function indentClass(depth: number) {
+  const level = depth - minDepth;
+  switch (level) {
+    case 0:
+      return "";
+    case 1:
+      return "pl-4";
+    case 2:
+      return "pl-8";
+    default:
+      return "pl-8";
+  }
+}
+
+const show = items.length >= 2;
+---
+
+{
+  show && (
+    <nav
+      aria-label='Table of contents'
+      class='sticky top-44 flex flex-col gap-4 px-4'
+      data-toc
+    >
+      <p class='font-mono text-xs tracking-wide text-muted-foreground uppercase'>
+        Table of contents
+      </p>
+      <ul class='flex flex-col gap-2'>
+        {items.map((heading) => (
+          <li class='min-w-0'>
+            <a
+              href={`#${heading.slug}`}
+              class:list={[
+                "relative block min-w-0 text-sm text-muted-foreground no-underline hover:text-foreground",
+                "aria-[current=true]:text-primary",
+                "aria-[current=true]:before:absolute aria-[current=true]:before:top-1/2 aria-[current=true]:before:-left-4.25 aria-[current=true]:before:h-3 aria-[current=true]:before:w-0.5 aria-[current=true]:before:-translate-y-1/2 aria-[current=true]:before:bg-primary aria-[current=true]:before:content-['']",
+                indentClass(heading.depth),
+              ]}
+            >
+              <span class='block truncate'>{heading.text}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  function headingId(link: HTMLAnchorElement) {
+    return decodeURIComponent(link.hash.slice(1));
+  }
+
+  function setCurrent(nav: HTMLElement, id: string | null) {
+    const links = nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]');
+    for (const link of links) {
+      if (id && headingId(link) === id) {
+        link.setAttribute("aria-current", "true");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    }
+  }
+
+  function initToc(nav: HTMLElement) {
+    const links = Array.from(
+      nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'),
+    );
+    const headings = links
+      .map((link) => document.getElementById(headingId(link)))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (!headings.length) return;
+
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+        const current = headings.find((heading) => visible.has(heading.id));
+        if (current) setCurrent(nav, current.id);
+      },
+      { rootMargin: "-176px 0px -60% 0px" },
+    );
+
+    for (const heading of headings) observer.observe(heading);
+  }
+
+  for (const nav of document.querySelectorAll<HTMLElement>("[data-toc]")) {
+    initToc(nav);
+  }
+</script>

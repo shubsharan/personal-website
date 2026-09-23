@@ -1,6 +1,8 @@
 ---
+import type { MarkdownHeading } from "astro";
 import Section from "../components/Section.astro";
 import PostHeader from "../components/writing/PostHeader.astro";
+import TableOfContents from "../components/writing/TableOfContents.astro";
 import Base from "./Base.astro";
 
 interface Props {
@@ -10,9 +12,8 @@ interface Props {
   pubDate: Date;
   updatedDate?: Date;
   tags?: string[];
-  backHref: string;
-  backLabel: string;
   canonicalURL?: string;
+  headings?: MarkdownHeading[];
 }
 
 const {
@@ -22,9 +23,8 @@ const {
   pubDate,
   updatedDate,
   tags,
-  backHref,
-  backLabel,
   canonicalURL,
+  headings,
 } = Astro.props;
 ---
 
@@ -38,8 +38,6 @@ const {
         updatedDate={updatedDate}
         tags={tags}
         canonicalURL={canonicalURL}
-        backHref={backHref}
-        backLabel={backLabel}
       />
 
       <div class='prose'>
@@ -48,5 +46,6 @@ const {
 
       <slot name='related' />
     </article>
+    {headings && <TableOfContents slot='aside' headings={headings} />}
   </Section>
 </Base>
