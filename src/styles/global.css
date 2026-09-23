@@ -176,9 +176,9 @@
 	}
 }
 
-/* Date column grows to fit the date, but never narrower than one of seven columns. */
+/* Date column grows to fit the date, but never narrower than one content column. */
 @utility grid-cols-row {
-	grid-template-columns: minmax(max-content, 1fr) 6fr;
+	grid-template-columns: minmax(max-content, 1fr) 7fr;
 }
 
 @layer components {

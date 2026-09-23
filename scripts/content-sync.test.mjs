@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { test } from 'node:test';
 import matter from 'gray-matter';
 import { convertHtml, syncContent } from './content-sync.mjs';
@@ -24,25 +24,27 @@ async function fixture(t, sources = [source]) {
   return root;
 }
 
-test('migration keeps URLs, publishes imports, preserves local drafts, and converges after edits', async (t) => {
+test('migration namespaces synced posts, preserves local drafts, and converges after edits', async (t) => {
   const root = await fixture(t);
   const old = join(root, 'src/content/writing/original-slug.md');
-  const migrated = join(root, 'src/content/writing/original-slug.mdx');
   const local = join(root, 'src/content/writing/local.md');
   const localText = '---\ntitle: Local\ndraft: true\n---\nLocal text.\n';
   await writeFile(local, localText);
-  await writeFile(old, '---\ntitle: Old\ncanonicalURL: https://one.example/p/post\ndraft: true\n---\nOld text.\n');
+  await writeFile(old, '---\ntitle: Old\ntags:\n  - Product\n  - Launch\ncanonicalURL: https://one.example/p/post\ndraft: true\n---\nOld text.\n');
   const fetchFeed = response(feed(item()));
   const dryRun = await syncContent({ root, fetchFeed, dryRun: true });
   assert.equal(dryRun.updated, 1);
-  assert.deepEqual(dryRun.paths.sort(), ['src/content/writing/original-slug.md', 'src/content/writing/original-slug.mdx']);
+  const migratedPath = dryRun.paths.find((path) => path.endsWith('.mdx'));
+  assert.match(migratedPath, /^src\/content\/writing\/one\//);
+  const migrated = join(root, migratedPath);
   assert.match(await readFile(old, 'utf8'), /Old text/);
   assert.equal((await syncContent({ root, fetchFeed })).updated, 1);
   await assert.rejects(readFile(old, 'utf8'), { code: 'ENOENT' });
   const text = await readFile(migrated, 'utf8');
   assert.equal(matter(text).data.draft, false);
+  assert.deepEqual(matter(text).data.tags, ['Product', 'Launch']);
   assert.match(matter(text).data.sync.hash, /^[a-f0-9]{64}$/);
-  assert.match(text, /import Tweet from '..\/..\/components\/content\/Tweet\.astro';/);
+  assert.match(text, /import Tweet from '..\/..\/..\/components\/content\/Tweet\.astro';/);
   assert.equal((await syncContent({ root, fetchFeed })).unchanged, 1);
   await writeFile(migrated, text.replace('Hello.', 'Local edit.'));
   assert.equal((await syncContent({ root, fetchFeed })).updated, 1);
@@ -51,19 +53,22 @@ test('migration keeps URLs, publishes imports, preserves local drafts, and conve
   await syncContent({ root, fetchFeed: editedFeed });
   const edited = await readFile(migrated, 'utf8');
   assert.match(edited, /Remote edit/);
+  assert.deepEqual(matter(edited).data.tags, ['Product', 'Launch']);
   assert.notEqual(matter(edited).data.sync.hash, matter(text).data.sync.hash);
   await syncContent({ root, fetchFeed: response(feed()) });
   assert.equal(await readFile(migrated, 'utf8'), edited);
   assert.equal(await readFile(local, 'utf8'), localText);
-  assert.deepEqual((await readdir(join(root, 'src/content/writing'))).sort(), ['local.md', 'original-slug.mdx']);
+  assert.deepEqual((await readdir(join(root, 'src/content/writing'))).sort(), ['local.md', 'one']);
 });
 
 test('migration rejects an occupied MDX destination without changing either file', async (t) => {
   const root = await fixture(t);
   const markdown = join(root, 'src/content/writing/post.md');
-  const mdx = join(root, 'src/content/writing/post.mdx');
   const original = '---\ncanonicalURL: https://one.example/p/post\n---\nOld Markdown.\n';
   await writeFile(markdown, original);
+  const preview = await syncContent({ root, fetchFeed: response(feed(item())), dryRun: true });
+  const mdx = join(root, preview.paths.find((path) => path.endsWith('.mdx')));
+  await mkdir(dirname(mdx), { recursive: true });
   await writeFile(mdx, 'Unrelated MDX.\n');
   await assert.rejects(syncContent({ root, fetchFeed: response(feed(item())) }), /MDX migration collision/);
   assert.equal(await readFile(markdown, 'utf8'), original);

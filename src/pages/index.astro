@@ -18,25 +18,13 @@ const posts = (await getCollection("writing", (p) => !p.data.draft))
   </Section>
 
   <Section index='01'>
-    <h1 class='animate-rise'>Hello world.</h1>
-
-    <p class='animate-rise delay-100'>
-      I'm Shub. I’ve spent about a decade building products at the messy 0-to-1
-      end — talking to users, mapping the workflow, and building the first
-      version myself.
-    </p>
-
-    <p class='animate-rise delay-200'>
-      In between I write —{" "}
-      <a href='/writing/' class='whitespace-nowrap'>essays</a>, and notes on
-      whatever I’m reading — and I <a href='/art/'>paint</a>.
-    </p>
+    <h1 class='animate-rise'>Hey, I'm Shub.</h1>
   </Section>
 
   {
     posts.length > 0 && (
       <Section index='02'>
-        <h2>Latest writing</h2>
+        <h2>Recent</h2>
         <ul class='divide-y divide-border border-t border-border'>
           {posts.map((post) => (
             <EntryRow
@@ -52,7 +40,7 @@ const posts = (await getCollection("writing", (p) => !p.data.draft))
           href='/writing/'
           class='self-start font-mono text-xs tracking-wide text-muted-foreground tabular-nums no-underline transition-colors hover:text-foreground'
         >
-          All writing →
+          More →
         </a>
       </Section>
     )

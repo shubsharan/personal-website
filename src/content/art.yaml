@@ -1,40 +1,191 @@
-# Photo grid for the Art page (Instagram-style). Newest first.
-# Replace these placeholders: drop images in `public/art/` and point `src` at them.
-# `caption` (optional) shows in the lightbox; `createdDate` (optional) sets order.
-- id: placeholder-01
-  src: /art/placeholder-01.svg
-  alt: Placeholder artwork 1
-  caption: Replace me — drop a real image in public/art/ and update this row.
-  createdDate: 2026-08-01
-- id: placeholder-02
-  src: /art/placeholder-02.svg
-  alt: Placeholder artwork 2
-  createdDate: 2026-07-01
-- id: placeholder-03
-  src: /art/placeholder-03.svg
-  alt: Placeholder artwork 3
-  createdDate: 2026-06-01
-- id: placeholder-04
-  src: /art/placeholder-04.svg
-  alt: Placeholder artwork 4
-  createdDate: 2026-05-01
-- id: placeholder-05
-  src: /art/placeholder-05.svg
-  alt: Placeholder artwork 5
-  createdDate: 2026-04-01
-- id: placeholder-06
-  src: /art/placeholder-06.svg
-  alt: Placeholder artwork 6
-  createdDate: 2026-03-01
-- id: placeholder-07
-  src: /art/placeholder-07.svg
-  alt: Placeholder artwork 7
-  createdDate: 2026-02-01
-- id: placeholder-08
-  src: /art/placeholder-08.svg
-  alt: Placeholder artwork 8
-  createdDate: 2026-01-01
-- id: placeholder-09
-  src: /art/placeholder-09.svg
-  alt: Placeholder artwork 9
-  createdDate: 2025-12-01
+# Photo grid for the Art page. Newest first.
+# Images live in public/art/. caption shows in the lightbox; createdDate sets order.
+- id: CFnVk95jRxK
+  src: /art/CFnVk95jRxK.jpg
+  alt: Self Portrait No.4
+  caption: |
+    Self Portrait No.4
+    Oil on canvas board
+    16in x 20in
+  createdDate: 2020-09-26T12:00:00.000Z
+- id: CFnVk96j2Dz
+  src: /art/CFnVk96j2Dz.jpg
+  alt: Self Portrait No.4
+  caption: |
+    Self Portrait No.4
+    Oil on canvas board
+    16in x 20in
+  createdDate: 2020-09-26T11:00:00.000Z
+- id: CFWPal0jiXU
+  src: /art/CFWPal0jiXU.jpg
+  alt: Working through some stuff rn
+  caption: |
+    Working through some stuff rn
+    16in. x 20in.
+    Oil on canvas
+  createdDate: 2020-09-19
+- id: CDAPv9mjnke
+  src: /art/CDAPv9mjnke.jpg
+  alt: "“As these canyons deepen, I cast a longer shadow.”"
+  caption: |
+    “As these canyons deepen, I cast a longer shadow.”
+    16in x 20in
+    Oil on canvas
+  createdDate: 2020-07-23
+- id: CAoSHRajBKU
+  src: /art/CAoSHRajBKU.jpg
+  alt: Commission
+  caption: |
+    Commission
+    Oil on canvas
+    16in. x 20in.
+  createdDate: 2020-05-25
+- id: B_6CKa7DRNo
+  src: /art/B_6CKa7DRNo.jpg
+  alt: "One of the first self portraits I ever did. It’s fun to see how my style has changed in some aspects and stayed the same in others."
+  caption: |
+    One of the first self portraits I ever did. It’s fun to see how my style has changed in some aspects and stayed the same in others.
+    Oil on canvas
+    16in x 20in
+  createdDate: 2020-05-07
+- id: B_1EJVNDzvX
+  src: /art/B_1EJVNDzvX.jpg
+  alt: Melting
+  caption: |
+    Melting
+    20in x 16in
+    Oil on canvas
+  createdDate: 2020-05-05
+- id: B-sscWADe2T
+  src: /art/B-sscWADe2T.jpg
+  alt: "Taking this time to figure out how I want to represent bodies and form. Practice makes perfect ~"
+  caption: "Taking this time to figure out how I want to represent bodies and form. Practice makes perfect ~"
+  createdDate: 2020-04-07
+- id: B-nm6jsjL7R
+  src: /art/B-nm6jsjL7R.jpg
+  alt: "“Consternation”"
+  caption: |
+    “Consternation”
+    16in. x 20in.
+    Oil on canvas board
+  createdDate: 2020-04-05
+- id: B-ag5s1jQR9
+  src: /art/B-ag5s1jQR9.jpg
+  alt: "“At Least We Understand One Another”"
+  caption: |
+    “At Least We Understand One Another”
+    Oil on canvas
+    16in x 20in
+  createdDate: 2020-03-31
+- id: B94eAAdg4qj
+  src: /art/B94eAAdg4qj.jpg
+  alt: "“I’d love to lay with you, but I’m afraid of thorns”"
+  caption: |
+    “I’d love to lay with you, but I’m afraid of thorns”
+    Oil on canvas
+    24in x 36in
+  createdDate: 2020-03-18
+- id: B9p0dM2gzSA
+  src: /art/B9p0dM2gzSA.jpg
+  alt: Self Portrait No.2
+  caption: |
+    Self Portrait No.2
+    Oil on canvas board
+    12in x 16in
+  createdDate: 2020-03-12
+- id: B9Szytsglla
+  src: /art/B9Szytsglla.jpg
+  alt: "“A Mess”"
+  caption: |
+    “A Mess”
+    Oil on canvas
+    16in x 20in
+  createdDate: 2020-03-03
+- id: B9DeU_qAQMg
+  src: /art/B9DeU_qAQMg.jpg
+  alt: "Inspired by @studio_ashleen 🎉"
+  caption: |
+    Inspired by @studio_ashleen 🎉
+    Oil on canvas
+    20in x 20in.
+  createdDate: 2020-02-26
+- id: B8ujxKZAZ2l
+  src: /art/B8ujxKZAZ2l.jpg
+  alt: v1
+  caption: |
+    v1
+    Oil on canvas
+    20in. x 20in.
+  createdDate: 2020-02-18
+- id: B8kW7HpA7la
+  src: /art/B8kW7HpA7la.jpg
+  alt: "“Bewildered”"
+  caption: |
+    “Bewildered”
+    Oil on canvas board
+    12in x 16in
+  createdDate: 2020-02-14
+- id: B8eLIucAAtN
+  src: /art/B8eLIucAAtN.jpg
+  alt: "“Self Portrait No.1”"
+  caption: |
+    “Self Portrait No.1”
+    Oil on canvas
+    24in x 36in
+  createdDate: 2020-02-12
+- id: B8aEnNDAuio
+  src: /art/B8aEnNDAuio.jpg
+  alt: "“Untitled”"
+  caption: |
+    “Untitled”
+    Oil on canvas
+    12in x 16in
+  createdDate: 2020-02-10
+- id: B8NNACygdtF
+  src: /art/B8NNACygdtF.jpg
+  alt: "“I think I should go”"
+  caption: |
+    “I think I should go”
+    Oil on canvas
+    16in x 20in
+  createdDate: 2020-02-05T18:00:00.000Z
+- id: B8NM8dCgzlh
+  src: /art/B8NM8dCgzlh.jpg
+  alt: "“Saying something dumb to someone cool”"
+  caption: |
+    “Saying something dumb to someone cool”
+    Oil on canvas
+    16in x 20in
+  createdDate: 2020-02-05T17:00:00.000Z
+- id: B8NM32uAEXf
+  src: /art/B8NM32uAEXf.jpg
+  alt: "“Fuck, I forgot my keys.”"
+  caption: |
+    “Fuck, I forgot my keys.”
+    Oil on canvas
+    16in x 20in
+  createdDate: 2020-02-05T16:00:00.000Z
+- id: B8NMyWcgsnN
+  src: /art/B8NMyWcgsnN.jpg
+  alt: "“Can I borrow your jacket?”"
+  caption: |
+    “Can I borrow your jacket?”
+    Oil on canvas
+    16in x 20in
+  createdDate: 2020-02-05T15:00:00.000Z
+- id: B8NMvFeAnR_
+  src: /art/B8NMvFeAnR_.jpg
+  alt: "“I’m an instant star. Just add water and stir.”"
+  caption: |
+    “I’m an instant star. Just add water and stir.”
+    Oil on canvas
+    24in x 18in
+  createdDate: 2020-02-05T14:00:00.000Z
+- id: B8NMrZUAGut
+  src: /art/B8NMrZUAGut.jpg
+  alt: "“Say it to my face”"
+  caption: |
+    “Say it to my face”
+    Oil on canvas
+    16in x 20in
+  createdDate: 2020-02-05T13:00:00.000Z

@@ -9,11 +9,12 @@ interface Props {
 
 const { index, span = "content", class: className } = Astro.props;
 
-// Columns within the 12-column page grid: 1 is the index gutter, content starts on the section rail at 2.
+// Page columns inside the 12-column main grid. Content starts on the section rail
+// and ends on the content rail; wide and full end on the outer right rail.
 const spanClass: Record<Span, string> = {
-  content: "md:col-start-2 md:col-span-7",
-  wide: "md:col-start-2 md:col-span-10",
-  full: "md:col-start-1 md:col-span-11",
+  content: "md:col-start-2 md:col-span-8",
+  wide: "md:col-start-2 md:col-span-11",
+  full: "md:col-start-1 md:col-span-12",
 };
 ---
 
@@ -38,6 +39,7 @@ const spanClass: Record<Span, string> = {
   <div
     class:list={[
       "col-span-full flex min-w-0 flex-col gap-4 md:row-start-1 md:gap-6",
+      "[&>:not(ul,figure,article)]:pr-4",
       spanClass[span],
     ]}
   >

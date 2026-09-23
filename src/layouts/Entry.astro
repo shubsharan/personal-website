@@ -1,89 +1,52 @@
 ---
 import Section from "../components/Section.astro";
+import PostHeader from "../components/writing/PostHeader.astro";
 import Base from "./Base.astro";
 
 interface Props {
-	title: string;
-	description: string;
-	label: string;
-	rail: string;
-	subtitle?: string;
-	url?: string;
-	updatedNote?: string;
-	backHref: string;
-	backLabel: string;
-	canonicalURL?: string;
+  title: string;
+  description: string;
+  publication: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  backHref: string;
+  backLabel: string;
+  canonicalURL?: string;
 }
 
 const {
-	title,
-	description,
-	label,
-	rail,
-	subtitle,
-	url,
-	updatedNote,
-	backHref,
-	backLabel,
-	canonicalURL,
+  title,
+  description,
+  publication,
+  pubDate,
+  updatedDate,
+  tags,
+  backHref,
+  backLabel,
+  canonicalURL,
 } = Astro.props;
-
-const displayUrl = url?.replace(/^https?:\/\//, "").replace(/\/$/, "");
 ---
 
 <Base title={title} description={description} canonicalURL={canonicalURL}>
-	<Section index="01">
-		<article class="flex flex-col gap-12">
-			<header class="flex flex-col gap-6">
-				<div class="flex flex-col gap-4">
-					<a
-						href={backHref}
-						class="font-mono text-xs tracking-wide text-muted-foreground tabular-nums no-underline transition-colors hover:text-foreground"
-					>
-						← {backLabel}
-					</a>
+  <Section index='01'>
+    <article class='flex flex-col gap-12 [&>:not(header)]:pr-4'>
+      <PostHeader
+        title={title}
+        publication={publication}
+        pubDate={pubDate}
+        updatedDate={updatedDate}
+        tags={tags}
+        canonicalURL={canonicalURL}
+        backHref={backHref}
+        backLabel={backLabel}
+      />
 
-					<div
-						class="flex items-center justify-between gap-4 font-mono text-xs tracking-wide text-muted-foreground tabular-nums"
-					>
-						<span class="flex items-center gap-2">
-							{label}
-						</span>
-						<span>{rail}</span>
-					</div>
-				</div>
+      <div class='prose'>
+        <slot />
+      </div>
 
-				<div class="flex flex-col gap-2">
-					<h1>{title}</h1>
-					{subtitle && <p class="italic">{subtitle}</p>}
-				</div>
-
-				{
-					url && (
-						<p>
-							<a href={url} target="_blank" rel="noopener">
-								{displayUrl} ↗
-							</a>
-						</p>
-					)
-				}
-			</header>
-
-			<div class="prose">
-				<slot />
-			</div>
-
-			<slot name="related" />
-
-			{
-				updatedNote && (
-					<footer class="border-t border-border">
-						<span class="block py-6 font-mono text-xs tracking-wide text-muted-foreground tabular-nums">
-							{updatedNote}
-						</span>
-					</footer>
-				)
-			}
-		</article>
-	</Section>
+      <slot name='related' />
+    </article>
+  </Section>
 </Base>

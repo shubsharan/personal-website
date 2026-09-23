@@ -4,30 +4,34 @@ interface Props {
   rail: string;
   label: string;
   title: string;
-  description: string;
+  description?: string;
+  points?: string[];
+  shared?: boolean;
 }
 
-const { href, rail, label, title, description } = Astro.props;
+const { href, rail, label, title, description, points, shared } = Astro.props;
 const Tag = href ? "a" : "div";
 ---
 
-<li>
+<li class:list={[shared && "sm:col-span-2 sm:grid sm:grid-cols-subgrid"]}>
   <Tag
     href={href}
     class:list={[
-      "grid grid-cols-1 gap-y-2 py-8 text-foreground no-underline sm:grid-cols-row",
+      "grid grid-cols-1 gap-y-2 pr-4 py-8 text-foreground no-underline",
+      shared ? "sm:col-span-2 sm:grid-cols-subgrid" : "sm:grid-cols-row",
       href && "group transition-colors hover:text-primary",
     ]}
   >
     <span
       class:list={[
-        "row-start-2 pr-2 font-mono text-xs tracking-wide text-muted-foreground tabular-nums sm:row-start-1",
+        "pr-2 font-mono text-xs tracking-wide text-muted-foreground tabular-nums sm:row-start-1",
+        !points?.length && "row-start-2",
         href && "transition-colors group-hover:text-primary",
       ]}
     >
       {rail}
     </span>
-    <span class="flex min-w-0 flex-col gap-2">
+    <span class='flex min-w-0 flex-col gap-4'>
       <span
         class:list={[
           "font-mono text-xs tracking-wide text-muted-foreground tabular-nums",
@@ -37,7 +41,24 @@ const Tag = href ? "a" : "div";
         {label}
       </span>
       <h2>{title}</h2>
-      <p>{description}</p>
+      {description && <p>{description}</p>}
+      {
+        points && points.length > 0 && (
+          <ul class='flex list-none flex-col gap-2'>
+            {points.map((point) => (
+              <li class='flex gap-2'>
+                <span
+                  class='text-muted-foreground select-none'
+                  aria-hidden='true'
+                >
+                  —
+                </span>
+                <span class='min-w-0'>{point}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
     </span>
   </Tag>
 </li>

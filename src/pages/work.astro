@@ -1,0 +1,150 @@
+---
+import { getCollection } from "astro:content";
+import EntryRow from "../components/EntryRow.astro";
+import Section from "../components/Section.astro";
+import { SITE_TITLE } from "../consts";
+import Base from "../layouts/Base.astro";
+import { span } from "../utils/dates";
+
+const description =
+  "Forward-deployed product work across enterprise delivery, API implementations, and applied AI.";
+
+const resumeHref = "/resume.pdf";
+
+type Row = {
+  sortKey: number;
+  rail: string;
+  title: string;
+  org: string;
+  points: string[];
+  href?: string;
+};
+
+const experience = await getCollection("experience");
+
+const rows: Row[] = experience
+  .map((e) => ({
+    sortKey: (e.data.endDate ?? new Date()).valueOf(),
+    rail: span(e.data.startDate, e.data.endDate, e.data.precision),
+    title: e.data.title,
+    org: e.data.org,
+    points: e.data.points,
+    href: e.data.url,
+  }))
+  .sort((a, b) => b.sortKey - a.sortKey);
+
+const projects = [
+  {
+    name: "Keynes",
+    tagline: "Runtime economics for agents",
+    description:
+      "A runtime and developer SDK that governs how AI agents spend limited resources. Keynes evaluates policy before model or tool use, reserves and reconciles spend in an authoritative ledger, and runs sweeps that show how quality, cost, and latency change under different budgets.",
+  },
+  {
+    name: "Palimpsest",
+    tagline: "Semantic team-reasoning puzzle for agents",
+    description:
+      "A collaborative reasoning evaluation in which agents solve a word-substitution cipher from sharded evidence under token, time, and coordination limits. Deterministic grading measures recovery, belief revision, adaptation latency, collaboration gain, and calibration, rather than model-as-judge scoring.",
+  },
+];
+
+const skills = [
+  {
+    label: "Product & delivery",
+    value:
+      "Customer discovery, technical scoping, API implementations, user journeys, PRDs, success metrics, roadmap development, project planning, rollout, change management",
+  },
+  {
+    label: "Technical",
+    value:
+      "REST APIs, webhooks, systems integration, TypeScript, React, Node.js, Go, SQL, Postgres, AI agents, tool orchestration, MCP",
+  },
+  {
+    label: "Tools",
+    value:
+      "Postman, Figma, Asana, Linear, Jira, GitHub, Sentry, PostHog, Mixpanel, Claude, Codex, Cursor",
+  },
+];
+---
+
+<Base title={`Work · ${SITE_TITLE}`} description={description}>
+  <Section index='01'>
+    <h1>Work</h1>
+    <p>
+      I’ve spent 10+ years turning ambiguous enterprise problems into shipped
+      B2B products, including six years embedded with customers through
+      technical scoping, solution design, implementation, rollout, and
+      expansion. I partner with executives, product leaders, and engineering
+      teams, and I build with APIs, TypeScript, SQL, and Postgres.
+    </p>
+    <a
+      href={resumeHref}
+      download='Shubhankar-Sharan-Resume.pdf'
+      class='self-start font-mono tracking-wide tabular-nums no-underline transition-colors'
+    >
+      Download resume
+    </a>
+  </Section>
+
+  <Section index='02'>
+    <h2>Experience</h2>
+    <ul
+      class='divide-y divide-border border-t border-border sm:grid sm:grid-cols-row'
+    >
+      {
+        rows.map((row) => (
+          <EntryRow
+            href={row.href}
+            rail={row.rail}
+            label={row.org}
+            title={row.title}
+            points={row.points}
+            shared
+          />
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section index='03'>
+    <h2>Selected work</h2>
+    <ul class='divide-y divide-border border-t border-border'>
+      {
+        projects.map((project) => (
+          <li class='flex flex-col gap-2 px-4 py-8'>
+            <h3>{project.name}</h3>
+            <p>{project.tagline}</p>
+            <p>{project.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section index='04'>
+    <h2>Skills</h2>
+    <ul class='divide-y divide-border border-t border-border'>
+      {
+        skills.map((skill) => (
+          <li class='flex flex-col gap-2 px-4 py-8'>
+            <span class='font-mono text-xs tracking-wide text-muted-foreground'>
+              {skill.label}
+            </span>
+            <p>{skill.value}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section index='05'>
+    <h2>Education</h2>
+    <ul class='divide-y divide-border border-t border-border'>
+      <EntryRow
+        rail={span(new Date(Date.UTC(2013, 0, 1)), new Date(Date.UTC(2016, 0, 1)))}
+        label='University of California, Santa Cruz'
+        title='B.A. Business Management Economics'
+      />
+    </ul>
+  </Section>
+</Base>

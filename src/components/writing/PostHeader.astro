@@ -1,0 +1,110 @@
+---
+import { longDate } from "../../utils/dates";
+
+interface Props {
+  title: string;
+  publication: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  canonicalURL?: string;
+  backHref: string;
+  backLabel: string;
+}
+
+const {
+  title,
+  publication,
+  pubDate,
+  updatedDate,
+  tags,
+  canonicalURL,
+  backHref,
+  backLabel,
+} = Astro.props;
+
+const cell = "border border-border p-4 align-top";
+---
+
+<header class='flex flex-col gap-4 md:gap-6'>
+  <a
+    href={backHref}
+    class='px-4 font-mono text-xs tracking-wide text-muted-foreground tabular-nums no-underline transition-colors hover:text-foreground'
+  >
+    ← {backLabel}
+  </a>
+
+  <table class='w-full border-collapse'>
+    <caption class='sr-only'>Post metadata</caption>
+    <tbody>
+      <tr>
+        <td colspan='2' class={cell}>
+          <div class='flex flex-col gap-8'>
+            <span class='font-mono text-xs uppercase text-muted-foreground'>
+              Title
+            </span>
+            <h1>{title}</h1>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class={cell}>
+          <div class='flex flex-col gap-2'>
+            <span
+              class='font-mono text-xs uppercase tracking-wide text-muted-foreground tabular-nums'
+            >
+              Date
+            </span>
+            <time datetime={pubDate.toISOString()}>{longDate(pubDate)}</time>
+          </div>
+        </td>
+        <td class={cell}>
+          <div class='flex flex-col gap-2'>
+            <span
+              class='font-mono text-xs uppercase tracking-wide text-muted-foreground tabular-nums'
+            >
+              Source
+            </span>
+            {
+              canonicalURL ?
+                <a href={canonicalURL} target='_blank' rel='noopener'>
+                  {publication}
+                </a>
+              : publication
+            }
+          </div>
+        </td>
+      </tr>
+      {
+        updatedDate && (
+          <tr>
+            <td colspan='2' class={cell}>
+              <div class='flex flex-col gap-2'>
+                <span class='font-mono text-xs uppercase tracking-wide text-muted-foreground tabular-nums'>
+                  Date
+                </span>
+                <time datetime={updatedDate.toISOString()}>
+                  {longDate(updatedDate)}
+                </time>
+              </div>
+            </td>
+          </tr>
+        )
+      }
+      {
+        tags?.length && (
+          <tr>
+            <td colspan='2' class={cell}>
+              <div class='flex flex-col gap-8'>
+                <span class='font-mono text-xs tracking-wide text-muted-foreground tabular-nums'>
+                  Tags
+                </span>
+                <span>{tags.join(", ")}</span>
+              </div>
+            </td>
+          </tr>
+        )
+      }
+    </tbody>
+  </table>
+</header>

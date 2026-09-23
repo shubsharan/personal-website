@@ -22,9 +22,32 @@ export function longDate(date: Date): string {
 	});
 }
 
-export function span(startDate: Date, endDate?: Date): string {
-	const start = startDate.getUTCFullYear();
-	if (!endDate) return `${start}–now`;
-	const end = endDate.getUTCFullYear();
-	return start === end ? `${start}` : `${start}–${end}`;
+type DatePrecision = 'year' | 'month';
+
+function twoDigitYear(date: Date): string {
+	return String(date.getUTCFullYear()).slice(-2);
+}
+
+function tenureLabel(date: Date, precision: DatePrecision): string {
+	switch (precision) {
+		case 'month':
+			return `${String(date.getUTCMonth() + 1).padStart(2, '0')}.${twoDigitYear(date)}`;
+		case 'year':
+			return twoDigitYear(date);
+		default: {
+			const exhaustive: never = precision;
+			return exhaustive;
+		}
+	}
+}
+
+export function span(
+	startDate: Date,
+	endDate?: Date,
+	precision: DatePrecision = 'year',
+): string {
+	const start = tenureLabel(startDate, precision);
+	if (!endDate) return `${start}-Now`;
+	const end = tenureLabel(endDate, precision);
+	return start === end ? start : `${start}-${end}`;
 }

@@ -10,6 +10,7 @@ const writing = defineCollection({
     publication: z.string().trim().min(1).default("Essays"),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
+    tags: z.array(z.string().trim().min(1)).optional(),
     canonicalURL: z.url().optional(),
     draft: z.boolean().default(false),
     sync: z.object({
@@ -37,7 +38,8 @@ const experience = defineCollection({
     org: z.string(),
     startDate: z.coerce.date(),
     endDate: z.coerce.date().optional(),
-    description: z.string(),
+    precision: z.enum(["year", "month"]).default("year"),
+    points: z.array(z.string().trim().min(1)).min(1),
     url: z.string().url().optional(),
   }),
 });

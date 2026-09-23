@@ -1,34 +1,52 @@
-- id: plotpoint
-  title: Founder
-  org: Plotpoint
-  startDate: 2025-07-20
-  endDate: 2025-08-31
-  description: A location-based storytelling game that used your phone to get you off your phone.
+- id: consulting
+  title: Product & Applied AI
+  org: Independent Consulting
+  startDate: 2026-02-01
+  precision: month
+  points:
+    - Building applied-AI workflows for clients in private-market investing and healthcare, translating expert processes into agentic products with explicit evaluation criteria, provenance, and human review.
+    - "Kosha Capital Partners: built agents for deal screening and diligence that evaluate companies against investment criteria, traverse deal-room materials, surface missing or contradictory evidence, and generate targeted follow-up questions."
+    - "Recoup Health: built patient health-scoring and care-planning workflows that synthesize longitudinal records, labs, diagnostics, and medical and drug reference material into structured profiles for physician review."
 
 - id: impact-labs
-  title: Co-founder, Head of Product
+  title: Co-Founder, Head of Product
   org: Impact Labs
-  startDate: 2022-01-01
-  endDate: 2025-01-01
-  description: An index fund for philanthropy — curated baskets of nonprofit programs, scored by a research-backed impact model.
+  startDate: 2022-04-01
+  endDate: 2026-01-01
+  precision: month
+  points:
+    - Co-founded and led a fintech data platform from customer discovery through production, raising $1.2M and launching two products across 17 major metros with Stripe, Plaid, and Mercury integrations.
+    - Owned product and implementation end to end; built the first version hands-on and shipped GenAI workflows that monitored newsletters, social posts, blogs, and real-world events, mapped new information to our impact model, and generated personalized fund updates based on each donor’s interests and perspective. Later recruited and directed a distributed engineering team of 10.
+    - Served as the primary product and technical partner to family offices, investment groups, and nonprofit operators, mapping onboarding, payments, reporting, grant allocation, and data-integration workflows into deployable customer experiences.
 
 - id: regalix-senior-pm
-  title: Senior Product Manager, Enterprise
+  title: Senior Product Manager, Enterprise Solutions
   org: Regalix
   startDate: 2020-01-01
   endDate: 2022-01-01
-  description: Built a forward-deployed product practice around a Twilio partnership, from zero to seven-figure revenue.
+  precision: year
+  points:
+    - Built and scaled a forward-deployed Twilio solutions practice to eight-figure ARR and seven-figure ACV, reducing customer activation time by 30% and increasing 30-day conversion by 20%.
+    - Owned enterprise engagements end to end, from pre-sales discovery and solution shaping through API implementation, launch, and expansion across communications APIs, routing, automation, reporting, and agent workflows.
+    - Embedded with customer product and engineering teams to whiteboard user and technical flows, define API and integration requirements, sequence roadmap dependencies, and turn ambiguous enterprise needs into executable delivery plans.
 
-- id: regalix-pm
-  title: Product Manager, Enterprise
+- id: regalix-fdpm
+  title: Forward-Deployed Product Manager
   org: Regalix
   startDate: 2018-01-01
   endDate: 2020-01-01
-  description: Product lead embedded in SAP Ariba's supply-chain org on a multi-million-dollar lifecycle initiative.
+  precision: year
+  points:
+    - Increased acquisition by 15% and retention by 27%, generating low-eight-figure business impact for a Fortune 500 global supply-chain organization.
+    - Turned a loosely defined, multi-million-dollar lifecycle initiative into prioritized workflows, product requirements, implementation milestones, pilots, and automated offerings for complex supply-chain processes.
+    - Led execution across a 115+ person cross-functional organization spanning executives, operations, product, engineering, and delivery, resolving implementation dependencies and moving successful pilots into scaled production programs.
 
-- id: regalix-product-designer
-  title: Product Designer
+- id: regalix-designer
+  title: Product Designer (later Product Manager)
   org: Regalix
   startDate: 2016-01-01
   endDate: 2018-01-01
-  description: First design hire for Nytro.ai, an AI-first sales enablement platform; grew into product management.
+  precision: year
+  points:
+    - First design hire for a B2B sales enablement platform, partnering with enterprise users to map end-to-end workflows and design customer-facing experiences for demonstration authoring, pitch analysis, sales coaching, and representative upskilling.
+    - Built prototypes and wireframes for early enterprise pilots, translated user feedback into product requirements, established the foundational design system, and moved into product management as the platform scaled.

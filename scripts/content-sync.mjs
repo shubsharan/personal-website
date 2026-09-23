@@ -114,21 +114,25 @@ export async function syncContent({ root = process.cwd(), dryRun = false, fetchF
           const title = required(item.title, 'title');
           const description = convertDescription(item.description || item.summary || '', url)
             || convertDescription(html, url).slice(0, 200);
-          const data = {
-            title, description, publication: source.publication,
-            pubDate: date(item.pubDate || item.isoDate),
-            ...(item.updated ? { updatedDate: date(item.updated) } : {}),
-            canonicalURL: url, draft: false,
-          };
           const identified = byID.get(id);
           const linked = byURL.get(url);
           if (identified && linked && identified !== linked) throw new Error(`Remote ID and canonical URL identify different local posts: ${url}`);
           const existing = identified || linked;
+          const tags = existing ? files.get(existing).data.tags : undefined;
+          const data = {
+            title, description, publication: source.publication,
+            pubDate: date(item.pubDate || item.isoDate),
+            ...(item.updated ? { updatedDate: date(item.updated) } : {}),
+            ...(tags ? { tags } : {}),
+            canonicalURL: url, draft: false,
+          };
           const slug = new URL(url).pathname.split('/').filter(Boolean).at(-1)
             ?.replace(/[^a-zA-Z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'post';
           const originalPath = existing;
-          const path = existing ? existing.slice(0, -extname(existing).length) + '.mdx'
-            : join(directory, source.id, `${slug}-${hash(id).slice(0, 12)}.mdx`);
+          const sourceDirectory = join(directory, source.id);
+          const path = existing?.startsWith(`${sourceDirectory}/`)
+            ? existing.slice(0, -extname(existing).length) + '.mdx'
+            : join(sourceDirectory, `${slug}-${hash(id).slice(0, 12)}.mdx`);
           if (claimed.has(path) || (!existing && files.has(path))) throw new Error(`File collision: ${path}`);
           if (originalPath !== path && files.has(path)) throw new Error(`MDX migration collision: ${path}`);
           if (existing && files.get(existing).data.sync && files.get(existing).data.sync.source !== source.id) {
